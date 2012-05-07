@@ -21,6 +21,7 @@ public class StartScreen extends Activity implements OnClickListener
         
         LevelStorage storage = new LevelStorage(this);
         storage.get_level_names();
+        storage.loadGameLevelbyName("First level");
         
         
         // Кнопка "Start"

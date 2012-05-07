@@ -9,6 +9,22 @@ public class Ball extends GameObject
     private Point mSpeed;
  
     /**
+     *  онструктор дл€ инициализации объекта с начальными координатами и диаметром
+     * @input pos - позици€ центра шара
+     * @input diam - диаметр шара
+     * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
+     */
+    public Ball(Drawable image, Point pos, int diam)
+    {
+        super(image);
+ 
+        mPoint = pos;
+        this.mHeight = this.mWidth = diam;
+        
+        mSpeed = DEFAULT_SPEED;    // задали скорость по умолчанию
+    }
+    
+    /**
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
     public Ball(Drawable image)

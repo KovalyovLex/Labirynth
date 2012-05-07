@@ -12,6 +12,7 @@ import com.flexymind.labirynth.objects.Wall;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.graphics.Point;
 import android.util.Log;
 
 /**
@@ -71,7 +72,12 @@ public class LevelStorage {
 		
 		return strs;
 	}
-	
+
+	/**
+	 * «агружает из xml файла обьект GameLevel
+	 * @param <code>String name<code> - им€ уровн€
+	 * @return <code>GameLevel</code>, загруженный из базы
+	 */
 	public GameLevel loadGameLevelbyName(String name){
 		GameLevel game = null;
 		XmlResourceParser xml = context.getResources().getXml(R.xml.levels);
@@ -105,19 +111,78 @@ public class LevelStorage {
 	 */
 	private GameLevel loadGameLevelfromxml(XmlResourceParser xml){
 		GameLevel game = null;
+		Vector<Wall> walls = new Vector<Wall>();
 		Wall twall = null;
 		Ball tball = null;
-		int X1, X2, Y1, Y2, D;
+		int X1 = 0, X2 = 0, Y1 = 0, Y2 = 0, D = 0, deep = 0;
+		int finX = 0, finY = 0, finDiam = 0;
+		
 		try {
 			while (xml.next() != XmlPullParser.END_DOCUMENT){
-				if ( LEVEL.equals(xml.getName()) ){
-					for (int i = 0; i < xml.getAttributeCount(); i++){
-						if ( ATTR_NAME.equals(xml.getAttributeName(i)) ){
-							if (xml.getAttributeValue(i).equals(name) ){
-								game = loadGameLevelfromxml(xml);
-							}
+				if (BALL.equals(xml.getName())){
+					deep = xml.getDepth();
+					xml.next();
+					while(xml.getDepth() > deep){
+						if (PROP_X.equals(xml.getName())){
+							X1 = new Integer(xml.nextText());
 						}
+						if (PROP_Y.equals(xml.getName())){
+							Y1 = new Integer(xml.nextText());
+						}
+						if (PROP_DIAM.equals(xml.getName())){
+							D = new Integer(xml.nextText());
+						}
+						xml.next();
 					}
+					// загрузка шара с текстурой ball
+					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball),
+										new Point(X1, Y1), 
+										D);
+				}else if (WALL.equals(xml.getName())){
+					deep = xml.getDepth();
+					xml.next();
+					while(xml.getDepth() > deep){
+						if (PROP_X1.equals(xml.getName())){
+							X1 = new Integer(xml.nextText());
+						}
+						if (PROP_Y1.equals(xml.getName())){
+							Y1 = new Integer(xml.nextText());
+						}
+						if (PROP_X2.equals(xml.getName())){
+							X2 = new Integer(xml.nextText());
+						}
+						if (PROP_Y2.equals(xml.getName())){
+							Y2 = new Integer(xml.nextText());
+						}
+						if (PROP_WIDTH.equals(xml.getName())){
+							D = new Integer(xml.nextText());
+						}
+						xml.next();
+					}
+					// загрузка стены с текстурой stenka
+					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka),
+										new Point(X1, Y1), 
+										new Point(X2, Y2), 
+										D);
+					walls.add(twall);
+				}else if (FINISH.equals(xml.getName())){
+					deep = xml.getDepth();
+					xml.next();
+					while(xml.getDepth() > deep){
+						if (PROP_X.equals(xml.getName())){
+							finX = new Integer(xml.nextText());
+						}
+						if (PROP_Y.equals(xml.getName())){
+							finY = new Integer(xml.nextText());
+						}
+						if (PROP_DIAM.equals(xml.getName())){
+							finDiam = new Integer(xml.nextText());
+						}
+						xml.next();
+					}
+				}
+				if ( LEVEL.equals(xml.getName()) ){
+					break;
 				}
 			}
 			
@@ -128,6 +193,14 @@ public class LevelStorage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		game = new GameLevel(	walls,
+								tball,
+								finX,
+								finY,
+								finDiam,
+								context.getResources().getDrawable(R.drawable.flexy3));
+		
 		return game;
 	}
 	
