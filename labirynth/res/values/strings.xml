@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Labirynth_2D</string>
+    <string name="start_title">Start Game</string>
+    <string name="settings_title">Settings</string>
+    <string name="exit_title">Exit</string>
+
+</resources>

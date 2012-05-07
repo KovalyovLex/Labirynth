@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<levels>
+	<level name="First level">
+    	
+    	<ball>
+    	    <X>10</X>
+    	    <Y>20</Y>
+    	    <D>20</D>
+    	</ball>
+    	
+    	<finish>
+    		<X>200</X>
+    	    <Y>300</Y>
+    	    <D>40</D>
+    	</finish>
+    	
+    	<wall>
+    	    <X1>30</X1>
+    	    <Y1>40</Y1>
+    	    <X2>130</X2>
+    	    <Y2>60</Y2>
+    	    <width>20</width>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>130</X1>
+    	    <Y1>40</Y1>
+    	    <X2>230</X2>
+    	    <Y2>60</Y2>
+    	    <width>20</width>
+    	</wall>
+	</level>
+	
+	<level name="Second level">
+    	
+    	<ball>
+    	    <X>15</X>
+    	    <Y>20</Y>
+    	    <D>20</D>
+    	</ball>
+    	
+    	<finish>
+    		<X>200</X>
+    	    <Y>300</Y>
+    	    <D>40</D>
+    	</finish>
+    	
+    	<wall>
+    	    <X1>30</X1>
+    	    <Y1>40</Y1>
+    	    <X2>130</X2>
+    	    <Y2>60</Y2>
+    	    <width>20</width>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>130</X1>
+    	    <Y1>40</Y1>
+    	    <X2>230</X2>
+    	    <Y2>60</Y2>
+    	    <width>20</width>
+    	</wall>
+	</level>
+</levels>
