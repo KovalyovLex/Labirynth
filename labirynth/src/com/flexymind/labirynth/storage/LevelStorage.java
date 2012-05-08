@@ -13,7 +13,6 @@ import com.flexymind.labirynth.objects.Wall;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
-import android.util.Log;
 
 /**
  * Класс сохранения состояния уровня, и загрузки уровней из хранилища
@@ -160,7 +159,7 @@ public class LevelStorage {
 						xml.next();
 					}
 					// загрузка стены с текстурой stenka
-					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka),
+					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka2),
 										new Point(X1, Y1), 
 										new Point(X2, Y2), 
 										D);

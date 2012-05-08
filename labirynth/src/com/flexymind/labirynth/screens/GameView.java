@@ -1,8 +1,11 @@
 package com.flexymind.labirynth.screens;
 
 
+import com.flexymind.labirynth.storage.LevelStorage;
+
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -37,8 +40,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         
+        // загрузка уровня
+        LevelStorage storage = new LevelStorage(context);
+        
         // Создание менеджера игровых объектов
-        mGameManager = new GameManager(mSurfaceHolder, context);
+        mGameManager = new GameManager(mSurfaceHolder, storage.loadGameLevelbyName("First level") );
         
         // Разрешаем форме обрабатывать события клавиатуры
         setFocusable(true);
@@ -58,7 +64,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
      * Создание области рисования
      */
     public void surfaceCreated(SurfaceHolder holder)
-    {
+    {	
         mGameManager.setRunning(true);
         mGameManager.start();
     }
@@ -69,18 +75,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
      */
     public void surfaceDestroyed(SurfaceHolder holder)
     {
-        boolean retry = true;
         mGameManager.setRunning(false);
-        while (retry) 
+        while (true) 
         {
             try 
             {
                 // ожидание завершение потока
-                mGameManager.join(); 
-                retry = false;
+                mGameManager.join();
+                break;
             } 
             catch (InterruptedException e) { }
         }
+        
     }
     
     /**

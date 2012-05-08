@@ -17,11 +17,6 @@ public class StartScreen extends Activity implements OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
-
-        
-        LevelStorage storage = new LevelStorage(this);
-        storage.get_level_names();
-        storage.loadGameLevelbyName("First level");
         
         
         // Кнопка "Start"

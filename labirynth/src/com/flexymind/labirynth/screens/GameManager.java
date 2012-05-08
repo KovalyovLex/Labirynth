@@ -1,20 +1,19 @@
 package com.flexymind.labirynth.screens;
 
 
-import com.android.pingpong.R;
-import com.flexymind.labirynth.objects.Ball;
-import com.flexymind.labirynth.objects.GameObject;
-import com.flexymind.labirynth.objects.Wall;
+import java.util.Vector;
+
+import com.flexymind.labirynth.objects.GameLevel;
+import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
@@ -22,10 +21,6 @@ public class GameManager extends Thread
 {
     private static final int FIELD_WIDTH  = 800;
     private static final int FIELD_HEIGHT = 410;
-    private static final int X_1   = 100; //Начальная позиция центра шарика на игровом поле
-    private static final int Y_1   = 100;
-    private static final int DIAM  = 10;  //Начальный диаметр шарика
-
 
     /** Область, на которой будем рисовать */
     private SurfaceHolder mSurfaceHolder;
@@ -37,17 +32,32 @@ public class GameManager extends Thread
     private Paint mPaint;
     
     /** Прямоугольник игрового поля */
-    private Rect mField,Pole;
+    private Rect mField;
     
-    /** Мячик */
-    private Ball mBall;    
-    
-    /** Фоновый рисунок и стенки */
-    private Wall stenka2,stenka,phon;
-    
+    private GameLevel mlevel = null;
 
     /** Фон */
     private Bitmap mBackground;
+    
+    /**
+     * Конструктор
+     * @param surfaceHolder Область рисования
+     * @param context Контекст приложения
+     * @param level Игровой уровень
+     */
+    public GameManager(SurfaceHolder surfaceHolder, GameLevel level)
+    {
+    	mlevel = level;
+        mSurfaceHolder = surfaceHolder;
+        mRunning = false;
+        // инициализация стилей рисования
+        mPaint = new Paint();
+        mPaint.setColor(Color.BLACK);
+        mPaint.setStrokeWidth(2);
+        mPaint.setStyle(Style.STROKE);
+
+        mField = new Rect();
+    }
     
     /**
      * Конструктор
@@ -63,21 +73,14 @@ public class GameManager extends Thread
         mPaint.setColor(Color.BLACK);
         mPaint.setStrokeWidth(2);
         mPaint.setStyle(Style.STROKE);
-
-        Resources res = context.getResources();
-
+        
+        // загрузка первого уровня из файла
+        LevelStorage storage = new LevelStorage(context);
+        Vector<String> names = storage.get_level_names();
+        mlevel = storage.loadGameLevelbyName(names.elementAt(0));
+        
         mField = new Rect();
-        Pole   = new Rect(100,65,720,360);
-        mBall  = new Ball(res.getDrawable(R.drawable.ball2), Point(X_1, Y_1), DIAM);
-        //stenka2 = new Racquet(res.getDrawable(R.drawable.stenka2));
-        //stenka = new Racquet(res.getDrawable(R.drawable.stenka));
-        //phon = new Racquet (res.getDrawable(R.drawable.flexy3));
     }
-    
-    private Point Point(int x1, int y1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/**
      * Задание состояния потока
@@ -92,16 +95,18 @@ public class GameManager extends Thread
     /** Действия, выполняемые в потоке */
     public void run()
     {
+    	Canvas canvas = null;
         while (mRunning)
-        {
-            Canvas canvas = null;
+        {	
+        	canvas = null;
             try
             {
+            	//Log.v("Gman","run");
                 // подготовка Canvas-а
                 canvas = mSurfaceHolder.lockCanvas(); 
                 synchronized (mSurfaceHolder)
                 {
-                    //updateObjects();     // обновляем объекты
+                    updateObjects();     // обновляем объекты
                     refreshCanvas(canvas); // обновляем экран
                     sleep(20);
                 }
@@ -120,31 +125,21 @@ public class GameManager extends Thread
     /** Обновление объектов на экране */
     private void refreshCanvas(Canvas canvas)
     {
-        // вывод фонового изображения
+    	
+    	// вывод фонового изображения
     	canvas.drawBitmap(mBackground, 0, 0, null);
-        canvas.drawRect(mField, mPaint);
-       
-        // рисуем игровые объекты
-       //phon.draw(canvas);
-       //stenka2.draw(canvas);
-       //mBall.draw(canvas);
-       //stenka.draw(canvas);
-       // рисуем игровое поле
-       canvas.drawRect(Pole, null);
-
+    	canvas.drawRect(mField, mPaint);
+    	
+    	// рисуем уровень
+    	mlevel.Draw(canvas);
     }
 
         
     /** Обновление состояния игровых объектов */
-    /*private void updateObjects()
+    private void updateObjects()
     {
-        //phon.update();
-    	//mBall.update();
-    	//stenka.update();
-    	//stenka2.update();
-     }
-
-
+        mlevel.Update();
+    }
    
     /**
      * Инициализация положения объектов, в соответствии с размерами экрана
@@ -159,21 +154,6 @@ public class GameManager extends Thread
         mField.set(left, top, left + FIELD_WIDTH, top + FIELD_HEIGHT);
         
         mBackground = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
-        
-        // мячик ставится в центр поля
-        //mBall.setCenterX(Pole.centerX());
-        //mBall.setCenterY(Pole.centerY());
-        
-        //phon.setLeft(mField.left);
-        //phon.setBottom(mField.bottom);
-        
-        
-        //stenka2.setCenterX(Pole.centerX());
-        //stenka2.setBottom(Pole.bottom);
-    
-        // ракетка компьютера - сверху по центру
-        //stenka.setCenterX(Pole.centerX()+100);
-        //stenka.setBottom(Pole.bottom-60);
     }
     
     /**

@@ -2,8 +2,6 @@ package com.flexymind.labirynth.objects;
 
 import java.util.Vector;
 
-import com.android.pingpong.R;
-
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -48,7 +46,7 @@ public class GameLevel extends GameObject{
     @Override
     /** Отрисовка объектов на игровом поле */
     public void Draw(Canvas canvas)
-    {
+    {	
     	this.mImage.setBounds(canvas.getClipBounds());
     	this.mImage.draw(canvas);
         mball.Draw(canvas);
@@ -61,7 +59,7 @@ public class GameLevel extends GameObject{
     @Override
     /** Перемещение объекта */
     public void Update()
-    {
+    {	
         mball.Update();
         Number = Walls.size();
         for(int i=0;i<Number;i++){
@@ -69,10 +67,9 @@ public class GameLevel extends GameObject{
         }
     }
 
-    /** Функция, описывающая столкновения объектов между собой */
+    /** Функция, описывающая столкновения объектов шар и станки между собой */
     private void collision(Ball ball, Vector <Wall> walls)
     {
-
     	if (GameObject.intersects(ball, walls, index))
         {
         	//проверка столкновения с верхней и нижней границей стенки
@@ -96,7 +93,7 @@ public class GameLevel extends GameObject{
     	    else if(ball.getLeft() >=  walls.elementAt(index).getLeft())
             {
             	ball.setBottom( walls.elementAt(index).getBottom() - Math.abs( walls.elementAt(index).getBottom() - ball.getBottom()));
-            	ball.reflectVertical();  
+            	ball.reflectVertical();
             }
        	
         }
@@ -104,34 +101,29 @@ public class GameLevel extends GameObject{
     }
 
 
-    /** Функция, описывающая столкновения шарика с вертикальными стенками */
-    private void collisionVertical (Ball ball, Rect PlayField){
+    /** Функция, описывающая столкновения шарика с ограничивающими стенками */
+    private void collision_Vith_Field (Ball ball, Rect PlayField){
     	
     	if (ball.getLeft() <= PlayField.left)
         {
-            ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
+            //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
             ball.reflectVertical();
         }
         else if (ball.getRight() >= PlayField.right)
         {
-        	ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
+        	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
         	ball.reflectVertical();
         }
-    }
-    
-    /** Функция, описывающая столкновения шарика с горизонтальными стенками */
-    
-    private void collisionHorizontal(Ball ball, Rect PlayField){
- 
-	    if (ball.getLeft() <= PlayField.left)
+    	
+    	if (ball.getTop() <= PlayField.top)
 	    {
-	        ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
-	        ball.reflectVertical();
+	        //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
+	        ball.reflectHorizontal();
 	    }
-	    else if (ball.getRight() >= PlayField.right)
+	    else if (ball.getBottom() >= PlayField.bottom)
 	    {
-	    	ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
-	    	ball.reflectVertical();
+	    	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
+	    	ball.reflectHorizontal();
 	    }
     }
     
