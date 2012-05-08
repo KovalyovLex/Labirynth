@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 /**
  * Класс 
@@ -41,6 +42,7 @@ public class GameLevel extends GameObject{
 		diam  = finish_Diam;
 		mball = ball;
 		Walls = walls;
+		Number = Walls.size();
 	}
 
     @Override
@@ -50,7 +52,6 @@ public class GameLevel extends GameObject{
     	this.mImage.setBounds(canvas.getClipBounds());
     	this.mImage.draw(canvas);
         mball.Draw(canvas);
-        Number = Walls.size();
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Draw(canvas);
         }
@@ -60,17 +61,67 @@ public class GameLevel extends GameObject{
     /** Перемещение объекта */
     public void Update()
     {	
+    	collisionsCheck();
         mball.Update();
-        Number = Walls.size();
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Update(); 
         }
     }
 
     /** Функция, описывающая столкновения объектов шар и станки между собой */
-    private void collision(Ball ball, Vector <Wall> walls)
+    private void collisionsCheck()
     {
-    	if (GameObject.intersects(ball, walls, index))
+    	Point vec1, vec2, ballvec;
+    	Wall twall;
+    	int vec1Len, vec2Len;
+
+        for(int i=0;i<Number;i++){
+        	twall = Walls.elementAt(i);
+        	vec1 = new Point (	twall.getPoint2().x - twall.getPoint1().x,
+        						twall.getPoint2().y - twall.getPoint1().y);
+        	vec1Len = (int)Math.sqrt(scal_mul(vec1,vec1));
+        	vec1.x += (int)(vec1.x * (float)(mball.mWidth / vec1Len));
+        	vec1.y += (int)(vec1.x * (float)(mball.mHeight / vec1Len));
+        	vec1Len = (int)Math.sqrt(scal_mul(vec1,vec1));
+        	
+        	vec1.x /= vec1Len;
+        	vec1.y /= vec1Len;
+        	
+        	vec2 = new Point (	twall.getPoint3().x - twall.getPoint2().x,
+								twall.getPoint3().y - twall.getPoint2().y);
+        	vec2Len = (int)Math.sqrt(scal_mul(vec2,vec2));
+        	vec2.x += (int)(vec1.x * (float)(mball.mWidth / vec2Len));
+        	vec2.y += (int)(vec1.x * (float)(mball.mHeight / vec2Len));
+        	vec2Len = (int)Math.sqrt(scal_mul(vec2,vec2));
+        	
+        	ballvec = new Point(mball.getCenter().x - twall.getPoint1().x,
+        						mball.getCenter().y - twall.getPoint1().y);
+        	
+        	vec2.x /= vec2Len;
+        	vec2.y /= vec2Len;
+        	
+    		//Log.v("HIT",Integer.toString(scal_mul(ballvec,vec1)) + " " + Integer.toString(scal_mul(ballvec,vec2)));
+    		//Log.v("LEN",Integer.toString(vec1Len) + " " + Integer.toString(vec2Len));
+        	
+        	if (	scal_mul(ballvec,vec1) >= 0 
+        		 && scal_mul(ballvec,vec1) <= vec1Len 
+        		 && scal_mul(ballvec,vec2) >= 0
+        		 && scal_mul(ballvec,vec2) <= vec2Len){
+        		
+        		Log.v("HIT", Integer.toString(mball.getCenter().x) + " " + Integer.toString(mball.getCenter().y));
+        		
+        		// удар об стенку
+        		if ((float)scal_mul(ballvec,vec1) / vec1Len > (float)scal_mul(ballvec,vec2) / vec2Len){
+        			// отражение от стенки в напрвлении vec2
+        			mball.reflectWallVec1(twall);
+        		}else{
+        			// отражение от стенки в напрвлении vec1
+        			mball.reflectWallVec2(twall);
+        		}
+        	}
+        }
+    	
+    	/*if (GameObject.intersects(ball, walls, index))
         {
         	//проверка столкновения с верхней и нижней границей стенки
     	    if(ball.getTop() <=  walls.elementAt(index).getTop())
@@ -96,10 +147,13 @@ public class GameLevel extends GameObject{
             	ball.reflectVertical();
             }
        	
-        }
+        }*/
     	
     }
 
+    private int scal_mul(Point p1, Point p2){
+    	return p1.x * p2.x + p1.y * p2.y;
+    }
 
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
     private void collision_Vith_Field (Ball ball, Rect PlayField){

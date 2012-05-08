@@ -24,12 +24,13 @@ public class LevelStorage {
 	private static final String BALL = "ball";
 	private static final String WALL = "wall";
 	private static final String FINISH = "finish";
-	private static final String PROP_WIDTH = "width";
 	private static final String PROP_DIAM = "D";
 	private static final String PROP_X1 = "X1";
 	private static final String PROP_X2 = "X2";
+	private static final String PROP_X3 = "X3";
 	private static final String PROP_Y1 = "Y1";
 	private static final String PROP_Y2 = "Y2";
+	private static final String PROP_Y3 = "Y3";
 	private static final String PROP_X = "X";
 	private static final String PROP_Y = "Y";
 	private static final String ATTR_NAME = "name";
@@ -113,7 +114,7 @@ public class LevelStorage {
 		Vector<Wall> walls = new Vector<Wall>();
 		Wall twall = null;
 		Ball tball = null;
-		int X1 = 0, X2 = 0, Y1 = 0, Y2 = 0, D = 0, deep = 0;
+		int X1 = 0, X2 = 0, Y1 = 0, Y2 = 0, D = 0, deep = 0, X3 = 0, Y3 = 0;
 		int finX = 0, finY = 0, finDiam = 0;
 		
 		try {
@@ -153,8 +154,11 @@ public class LevelStorage {
 						if (PROP_Y2.equals(xml.getName())){
 							Y2 = new Integer(xml.nextText());
 						}
-						if (PROP_WIDTH.equals(xml.getName())){
-							D = new Integer(xml.nextText());
+						if (PROP_X3.equals(xml.getName())){
+							X3 = new Integer(xml.nextText());
+						}
+						if (PROP_Y3.equals(xml.getName())){
+							Y3 = new Integer(xml.nextText());
 						}
 						xml.next();
 					}
@@ -162,7 +166,7 @@ public class LevelStorage {
 					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka2),
 										new Point(X1, Y1), 
 										new Point(X2, Y2), 
-										D);
+										new Point(X3, Y3));
 					walls.add(twall);
 				}else if (FINISH.equals(xml.getName())){
 					deep = xml.getDepth();

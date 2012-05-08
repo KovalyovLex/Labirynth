@@ -11,10 +11,10 @@ import android.graphics.drawable.Drawable;
 
 public class Ball extends GameObject
 {
-    private static final Point NULL_SPEED = new Point(0,0);
+    private static final Point NULL_SPEED = new Point(2,-5);
 	
     /**Скорость шарика */
-    private Point mSpeed = NULL_SPEED;
+    private Point mSpeed;
     
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
@@ -25,6 +25,7 @@ public class Ball extends GameObject
     public Ball(Drawable image, Point pos, int diam)
     {
         super(image);
+        mSpeed = NULL_SPEED;
         this.mHeight = this.mWidth = diam;
         pos = mPoint;
     }
@@ -47,6 +48,47 @@ public class Ball extends GameObject
 		return mSpeed;
     }
 	
+    /**
+	 * отражение от стены в направлении vec1 (Point2 - Point1)
+	 * @param wall стена
+	 */
+	public void reflectWallVec1(Wall wall){
+		Point vec1;
+		int project;
+		
+		vec1 = new Point (	wall.getPoint2().x - wall.getPoint1().x,
+							wall.getPoint2().y - wall.getPoint1().y);
+		
+		float length = (float)Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
+		
+		vec1.x /= length;
+		vec1.y /= length;
+		
+		project = vec1.x * mSpeed.x + vec1.y * mSpeed.y;
+		mSpeed.x -= 2 * project * vec1.x;
+		mSpeed.y -= 2 * project * vec1.y;
+	}
+    
+	/**
+	 * отражение от стены в направлении vec2 (Point3 - Point2)
+	 * @param wall стена
+	 */
+	public void reflectWallVec2(Wall wall){
+		Point vec2;
+		int project;
+		
+		vec2 = new Point (	wall.getPoint3().x - wall.getPoint2().x,
+							wall.getPoint3().y - wall.getPoint2().y);
+		
+		float length = (float)Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
+		
+		vec2.x /= length;
+		vec2.y /= length;
+		
+		project = vec2.x * mSpeed.x + vec2.y * mSpeed.y;
+		mSpeed.x -= 2 * project * vec2.x;
+		mSpeed.y -= 2 * project * vec2.y;
+	}
 	
     /** Отражение мячика от вертикали */
     public void reflectVertical()

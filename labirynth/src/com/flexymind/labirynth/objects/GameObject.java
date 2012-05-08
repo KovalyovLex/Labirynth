@@ -93,6 +93,9 @@ public abstract class GameObject {
     /** Центральная точка объекта */
     public Point getCenter() { return new Point(mPoint.x + mWidth / 2, mPoint.y + mHeight / 2); }
 
+    /** Верхняя левая точка объекта */
+    public Point getPoint() { return mPoint; }
+    
     /** Высота объекта */
     public int getHeight() { return mHeight; }
 
