@@ -11,28 +11,18 @@
         android:label="@string/app_name" >
         <activity
             android:name="com.flexymind.labirynth.screens.GameScreen"
-            android:label="@string/app_name"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:configChanges="orientation" >
-            
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
         
-        <activity 
-            android:name="com.flexymind.labirynth.screens.StartScreen"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:configChanges="orientation" >
-            
+        <activity android:name="com.flexymind.labirynth.screens.StartScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        
         </activity>
     </application>
 

@@ -23,8 +23,19 @@ public class Ball extends GameObject
     /** Ускорение шарика */
     private float[] macelleration = new float[3];
     
+    /** Данные компаса */
+    private float[] compassValues = new float[3];
+    
+    /** Массив для вычисления углов наклона */
+    private float[] inR = new float[9];
+    
+    /** Углы наклона */
+    private float[] tiltAngles = new float[3];
+    
     /** Сенсор для акселерометра */
     private SensorManager sMan;
+    
+               
     
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
@@ -51,6 +62,30 @@ public class Ball extends GameObject
 			}
 			}, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         
+        sMan.registerListener(new SensorEventListener(){
+
+			public void onAccuracyChanged(Sensor sensor, int accuracy) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void onSensorChanged(SensorEvent event) {
+				// TODO Auto-generated method stub
+				compassValues = event.values;
+				if (SensorManager.getRotationMatrix(inR, null, macelleration, compassValues)) {
+					SensorManager.getOrientation(inR, tiltAngles);
+				}
+				
+				for (int i=0; i<3; i++) {
+					tiltAngles[i] = (float) Math.toDegrees(tiltAngles[i]);
+					if(tiltAngles[i] < 0) {
+						tiltAngles[i] += 360.0f;
+					}
+				}
+				
+			}
+			}, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        
         mSpeed = NULL_SPEED;
         mPoint = pos;
         mPoint.x -= diam / 2;
@@ -65,8 +100,8 @@ public class Ball extends GameObject
      */
     protected void updatePoint()
     {
-		mSpeed.x += 0.1 * macelleration[0];
-        mSpeed.y -= 0.1 * macelleration[1];
+		mSpeed.x += 0.01 * macelleration[0];
+        mSpeed.y -= 0.01 * macelleration[1];
         
         mPoint.x += mSpeed.x;
         mPoint.y += mSpeed.y;
