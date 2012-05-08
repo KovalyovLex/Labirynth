@@ -94,10 +94,10 @@ public class GameLevel extends GameObject{
         	
         	sum = new Point(	mball.getCenter().x - p1.x,
         						mball.getCenter().y - p1.y);
-        	
+        	// проекция sum на v2
         	vec2 = new Point(	sum.x - scal_mul(sum,v1) * v1.x / scal_mul(v1,v1),
         						sum.y - scal_mul(sum,v1) * v1.y / scal_mul(v1,v1));
-        	
+        	// проекция sum на v1
         	vec1 = new Point(	sum.x - vec2.x,
         						sum.y - vec2.y);
         	
@@ -107,11 +107,11 @@ public class GameLevel extends GameObject{
         		 && scal_mul(vec2,vec2) <= scal_mul(v2,v2)){
         		// удар
         		if (((float)scal_mul(vec1,vec1) / scal_mul(v1,v1)) > ((float)scal_mul(vec2,vec2) / scal_mul(v2,v2)) ){
-        			// удар в направлении vec2
-            		mball.reflectWallVec2(twall);	
+        			// удар в направлении v2
+            		mball.reflectWallV2(twall);	
         		}else{
-        			// удар в направлении vec1
-            		mball.reflectWallVec1(twall);
+        			// удар в направлении v1
+            		mball.reflectWallV1(twall);
         		}
         	}
         }

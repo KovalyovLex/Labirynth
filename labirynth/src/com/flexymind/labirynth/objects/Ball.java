@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 
 /**
@@ -31,6 +30,7 @@ public class Ball extends GameObject
      * Конструктор для инициализации объекта с начальными координатами и диаметром
      * @input pos - позиция центра шара
      * @input diam - диаметр шара
+     * @input sensMan - сенсор акселерометра
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
 	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
@@ -38,14 +38,18 @@ public class Ball extends GameObject
         super(image);
         this.sMan = sensMan;
         		
-        sMan.registerListener(new SensorListener(){
+        sMan.registerListener(new SensorEventListener(){
 
-			public void onAccuracyChanged(int sensor, int accuracy) { }
-
-			public void onSensorChanged(int sensor, float[] values) {
-				macelleration = values;
+			public void onAccuracyChanged(Sensor sensor, int accuracy) {
+				// TODO Auto-generated method stub
+				
 			}
-			}, sMan.SENSOR_ACCELEROMETER, sMan.SENSOR_DELAY_GAME);
+
+			public void onSensorChanged(SensorEvent event) {
+				// TODO Auto-generated method stub
+				macelleration = event.values;
+			}
+			}, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         
         mSpeed = NULL_SPEED;
         mPoint = pos;
@@ -76,10 +80,10 @@ public class Ball extends GameObject
     }
 	
     /**
-	 * отражение от стены в направлении vec1 (Point2 - Point1)
+	 * отражение от стены в направлении v1 (Point2 - Point1)
 	 * @param wall стена
 	 */
-	public void reflectWallVec1(Wall wall){
+	public void reflectWallV1(Wall wall){
 		Point vec1;
 		int project;
 		
@@ -98,10 +102,10 @@ public class Ball extends GameObject
 	}
     
 	/**
-	 * отражение от стены в направлении vec2 (Point3 - Point2)
+	 * отражение от стены в направлении v2 (Point3 - Point2)
 	 * @param wall стена
 	 */
-	public void reflectWallVec2(Wall wall){
+	public void reflectWallV2(Wall wall){
 		Point vec2;
 		int project;
 		
