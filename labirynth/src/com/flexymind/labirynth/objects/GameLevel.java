@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 /**
  * Класс 
@@ -102,8 +101,6 @@ public class GameLevel extends GameObject{
         	vec1 = new Point(	sum.x - vec2.x,
         						sum.y - vec2.y);
         	
-        	//Log.v("Hit",Integer.toString(scal_mul(vec1,vec1)) + " " +Integer.toString(scal_mul(v1,v1)));
-        	
         	if (	scal_mul(vec1,v1) >= 0 
         		 && scal_mul(vec1,vec1) <= scal_mul(v1,v1)
         		 && scal_mul(vec2,v2) >= 0
@@ -111,43 +108,13 @@ public class GameLevel extends GameObject{
         		// удар
         		if (((float)scal_mul(vec1,vec1) / scal_mul(v1,v1)) > ((float)scal_mul(vec2,vec2) / scal_mul(v2,v2)) ){
         			// удар в направлении vec2
-            		Log.v("Hit","V2" + Integer.toString(i));
             		mball.reflectWallVec2(twall);	
         		}else{
         			// удар в направлении vec1
-            		Log.v("Hit","V1" + Integer.toString(i));
             		mball.reflectWallVec1(twall);
         		}
         	}
         }
-    	
-    	/*if (GameObject.intersects(ball, walls, index))
-        {
-        	//проверка столкновения с верхней и нижней границей стенки
-    	    if(ball.getTop() <=  walls.elementAt(index).getTop())
-        	{
-        		ball.setBottom( walls.elementAt(index).getBottom() - Math.abs( walls.elementAt(index).getBottom() - ball.getBottom()));
-        		ball.reflectHorizontal();
-        	}
-    	    else if(ball.getBottom() >=  walls.elementAt(index).getBottom())
-            {
-            	ball.setTop(walls.elementAt(index).getTop() + Math.abs( walls.elementAt(index).getTop() - ball.getTop()));
-            	ball.reflectHorizontal();  
-            }
-
-          	//проверка столкновения с правой и левой границей стенки
-    	    else if(ball.getRight() <=  walls.elementAt(index).getRight())
-            {
-            	ball.setBottom(walls.elementAt(index).getBottom() - Math.abs(walls.elementAt(index).getBottom() - ball.getBottom()));
-            	ball.reflectVertical();
-            }
-    	    else if(ball.getLeft() >=  walls.elementAt(index).getLeft())
-            {
-            	ball.setBottom( walls.elementAt(index).getBottom() - Math.abs( walls.elementAt(index).getBottom() - ball.getBottom()));
-            	ball.reflectVertical();
-            }
-       	
-        }*/
     	
     }
 

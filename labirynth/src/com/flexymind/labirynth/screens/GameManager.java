@@ -13,7 +13,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
