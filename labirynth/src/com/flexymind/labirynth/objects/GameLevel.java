@@ -62,6 +62,7 @@ public class GameLevel extends GameObject{
     public void Update()
     {	
     	collisionsCheck();
+    	//collision_With_Field (mball, mplayField);
         mball.Update();
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Update(); 
@@ -71,52 +72,51 @@ public class GameLevel extends GameObject{
     /** Функция, описывающая столкновения объектов шар и станки между собой */
     private void collisionsCheck()
     {
-    	Point vec1, vec2, ballvec;
+    	Point p1, p2, p3, v1, v2;
+    	Point vec1, vec2, sum;
     	Wall twall;
-    	int vec1Len, vec2Len;
 
         for(int i=0;i<Number;i++){
         	twall = Walls.elementAt(i);
-        	vec1 = new Point (	twall.getPoint2().x - twall.getPoint1().x,
-        						twall.getPoint2().y - twall.getPoint1().y);
-        	vec1Len = (int)Math.sqrt(scal_mul(vec1,vec1));
-        	vec1.x += (int)(vec1.x * (float)(mball.mWidth / vec1Len));
-        	vec1.y += (int)(vec1.x * (float)(mball.mHeight / vec1Len));
-        	vec1Len = (int)Math.sqrt(scal_mul(vec1,vec1));
+        	p1 = new Point (	twall.getPoint1().x - mball.mWidth / 2,
+        						twall.getPoint1().y -  mball.mHeight / 2);
         	
-        	vec1.x /= vec1Len;
-        	vec1.y /= vec1Len;
+        	p2 = new Point (	twall.getPoint2().x - mball.mWidth / 2,
+								twall.getPoint2().y +  mball.mHeight / 2);
+
+        	p3 = new Point (	twall.getPoint3().x + mball.mWidth / 2,
+								twall.getPoint3().y -  mball.mHeight / 2);
         	
-        	vec2 = new Point (	twall.getPoint3().x - twall.getPoint2().x,
-								twall.getPoint3().y - twall.getPoint2().y);
-        	vec2Len = (int)Math.sqrt(scal_mul(vec2,vec2));
-        	vec2.x += (int)(vec1.x * (float)(mball.mWidth / vec2Len));
-        	vec2.y += (int)(vec1.x * (float)(mball.mHeight / vec2Len));
-        	vec2Len = (int)Math.sqrt(scal_mul(vec2,vec2));
+        	v1 = new Point( p2.x - p1.x,
+        					p2.y - p1.y);
         	
-        	ballvec = new Point(mball.getCenter().x - twall.getPoint1().x,
-        						mball.getCenter().y - twall.getPoint1().y);
+        	v2 = new Point( p3.x - p2.x,
+							p3.y - p2.y);
         	
-        	vec2.x /= vec2Len;
-        	vec2.y /= vec2Len;
+        	sum = new Point(	mball.getCenter().x - p1.x,
+        						mball.getCenter().y - p1.y);
         	
-    		//Log.v("HIT",Integer.toString(scal_mul(ballvec,vec1)) + " " + Integer.toString(scal_mul(ballvec,vec2)));
-    		//Log.v("LEN",Integer.toString(vec1Len) + " " + Integer.toString(vec2Len));
+        	vec2 = new Point(	sum.x - scal_mul(sum,v1) * v1.x / scal_mul(v1,v1),
+        						sum.y - scal_mul(sum,v1) * v1.y / scal_mul(v1,v1));
         	
-        	if (	scal_mul(ballvec,vec1) >= 0 
-        		 && scal_mul(ballvec,vec1) <= vec1Len 
-        		 && scal_mul(ballvec,vec2) >= 0
-        		 && scal_mul(ballvec,vec2) <= vec2Len){
-        		
-        		Log.v("HIT", Integer.toString(mball.getCenter().x) + " " + Integer.toString(mball.getCenter().y));
-        		
-        		// удар об стенку
-        		if ((float)scal_mul(ballvec,vec1) / vec1Len > (float)scal_mul(ballvec,vec2) / vec2Len){
-        			// отражение от стенки в напрвлении vec2
-        			mball.reflectWallVec1(twall);
+        	vec1 = new Point(	sum.x - vec2.x,
+        						sum.y - vec2.y);
+        	
+        	//Log.v("Hit",Integer.toString(scal_mul(vec1,vec1)) + " " +Integer.toString(scal_mul(v1,v1)));
+        	
+        	if (	scal_mul(vec1,v1) >= 0 
+        		 && scal_mul(vec1,vec1) <= scal_mul(v1,v1)
+        		 && scal_mul(vec2,v2) >= 0
+        		 && scal_mul(vec2,vec2) <= scal_mul(v2,v2)){
+        		// удар
+        		if (((float)scal_mul(vec1,vec1) / scal_mul(v1,v1)) > ((float)scal_mul(vec2,vec2) / scal_mul(v2,v2)) ){
+        			// удар в направлении vec2
+            		Log.v("Hit","V2" + Integer.toString(i));
+            		mball.reflectWallVec2(twall);	
         		}else{
-        			// отражение от стенки в напрвлении vec1
-        			mball.reflectWallVec2(twall);
+        			// удар в направлении vec1
+            		Log.v("Hit","V1" + Integer.toString(i));
+            		mball.reflectWallVec1(twall);
         		}
         	}
         }
@@ -156,7 +156,7 @@ public class GameLevel extends GameObject{
     }
 
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
-    private void collision_Vith_Field (Ball ball, Rect PlayField){
+    private void collision_With_Field (Ball ball, Rect PlayField){
     	
     	if (ball.getLeft() <= PlayField.left)
         {

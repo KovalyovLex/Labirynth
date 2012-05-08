@@ -26,8 +26,10 @@ public class Ball extends GameObject
     {
         super(image);
         mSpeed = NULL_SPEED;
+        mPoint = pos;
+        mPoint.x -= diam / 2;
+        mPoint.y -= diam / 2;
         this.mHeight = this.mWidth = diam;
-        pos = mPoint;
     }
     
 	@Override
@@ -67,6 +69,7 @@ public class Ball extends GameObject
 		project = vec1.x * mSpeed.x + vec1.y * mSpeed.y;
 		mSpeed.x -= 2 * project * vec1.x;
 		mSpeed.y -= 2 * project * vec1.y;
+		
 	}
     
 	/**
@@ -88,6 +91,7 @@ public class Ball extends GameObject
 		project = vec2.x * mSpeed.x + vec2.y * mSpeed.y;
 		mSpeed.x -= 2 * project * vec2.x;
 		mSpeed.y -= 2 * project * vec2.y;
+		
 	}
 	
     /** Отражение мячика от вертикали */

@@ -135,7 +135,7 @@ public class LevelStorage {
 						xml.next();
 					}
 					// загрузка шара с текстурой ball
-					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball),
+					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
 										new Point(X1, Y1), 
 										D);
 				}else if (WALL.equals(xml.getName())){

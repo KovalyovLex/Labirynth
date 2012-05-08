@@ -20,8 +20,8 @@ public class Wall extends GameObject{
 					Point third){
 		super(mBackG);
 		mImage.setBounds(first.x, first.y, third.x, third.y);
-		mWidth = mImage.getIntrinsicWidth();
-        mHeight = mImage.getIntrinsicHeight();
+		mWidth = mImage.getBounds().width();
+        mHeight = mImage.getBounds().height();
 		
 		this.mPoint = first;
 		thirdPoint = third;
