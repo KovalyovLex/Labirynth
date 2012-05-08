@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.view.KeyEvent;
@@ -21,6 +22,10 @@ public class GameManager extends Thread
 {
     private static final int FIELD_WIDTH  = 800;
     private static final int FIELD_HEIGHT = 410;
+    private static final int X_1   = 100; //Начальная позиция центра шарика на игровом поле
+    private static final int Y_1   = 100;
+    private static final int DIAM  = 10;  //Начальный диаметр шарика
+
 
     /** Область, на которой будем рисовать */
     private SurfaceHolder mSurfaceHolder;
@@ -62,14 +67,19 @@ public class GameManager extends Thread
         Resources res = context.getResources();
 
         mField = new Rect();
-        Pole = new  Rect(100,65,720,360);
-        mBall = new Ball(res.getDrawable(R.drawable.ball2));
+        Pole   = new Rect(100,65,720,360);
+        mBall  = new Ball(res.getDrawable(R.drawable.ball2), Point(X_1, Y_1), DIAM);
         //stenka2 = new Racquet(res.getDrawable(R.drawable.stenka2));
         //stenka = new Racquet(res.getDrawable(R.drawable.stenka));
         //phon = new Racquet (res.getDrawable(R.drawable.flexy3));
     }
     
-    /**
+    private Point Point(int x1, int y1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
      * Задание состояния потока
      * @param running
      */
@@ -91,7 +101,7 @@ public class GameManager extends Thread
                 canvas = mSurfaceHolder.lockCanvas(); 
                 synchronized (mSurfaceHolder)
                 {
-                    //updateObjects(); // обновляем объекты
+                    //updateObjects();     // обновляем объекты
                     refreshCanvas(canvas); // обновляем экран
                     sleep(20);
                 }
@@ -123,44 +133,8 @@ public class GameManager extends Thread
        canvas.drawRect(Pole, null);
 
     }
-    
-    /*
-    //функция, описывающая столкновения объектов
-    private void collision(Ball ball, Racquet Wall)
-    {
 
-    	if (GameObject.intersects(ball, Wall))
-        {
-        	//проверка столкновения с верхней и нижней границей стенки
-    	    if(ball.getTop() <=  Wall.getTop())
-        	{
-        		ball.setBottom( Wall.getBottom() - Math.abs( Wall.getBottom() - ball.getBottom()));
-        		ball.reflectHorizontal();
-        	}
-    	    else if(ball.getBottom() >=  Wall.getBottom())
-            {
-            	ball.setTop(Wall.getTop() + Math.abs( Wall.getTop() - ball.getTop()));
-            	ball.reflectHorizontal();  
-            }
-
-          	//проверка столкновения с правой и левой границей стенки
-    	    else if(ball.getRight() <=  Wall.getRight())
-            {
-            	ball.setBottom(Wall.getBottom() - Math.abs(Wall.getBottom() - ball.getBottom()));
-            	ball.reflectVertical();
-            }
-    	    else if(ball.getLeft() >=  Wall.getLeft())
-            {
-            	ball.setBottom( Wall.getBottom() - Math.abs( Wall.getBottom() - ball.getBottom()));
-            	ball.reflectVertical();  
-            }
-       	
-        }
-    	
-    }
-    */
-    
-    
+        
     /** Обновление состояния игровых объектов */
     /*private void updateObjects()
     {
@@ -168,37 +142,7 @@ public class GameManager extends Thread
     	//mBall.update();
     	//stenka.update();
     	//stenka2.update();
-
-        
-        // проверка столкновения мячика с вертикальными стенами
-        if (mBall.getLeft() <= Pole.left)
-        {
-            mBall.setLeft(Pole.left + Math.abs(Pole.left - mBall.getLeft()));
-            mBall.reflectVertical();
-        }
-        else if (mBall.getRight() >= Pole.right)
-        {
-            mBall.setRight(Pole.right - Math.abs(Pole.right - mBall.getRight()));
-            mBall.reflectVertical();
-        }
-        
-     // проверка столкновения мячика с горизонтальными стенами
-        if (mBall.getTop() <= Pole.top)
-        {
-         mBall.setTop(Pole.top + Math.abs(Pole.top - mBall.getTop()));
-         mBall.reflectHorizontal();
-        }
-        else if (mBall.getBottom() >= Pole.bottom)
-        {
-         mBall.setBottom(Pole.bottom - Math.abs(Pole.bottom - mBall.getBottom()));
-         mBall.reflectHorizontal();
-        }
-
-        //collision(mBall, stenka);
-        //collision(mBall, stenka2);
-        
-    }
-    */
+     }
 
 
    

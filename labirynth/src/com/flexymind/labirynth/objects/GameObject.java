@@ -1,6 +1,8 @@
 package com.flexymind.labirynth.objects;
 
 
+import java.util.Vector;
+
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -12,6 +14,7 @@ public abstract class GameObject {
     public final static int DIR_LEFT = -1;
     public final static int DIR_RIGHT = 1;
     public final static int DIR_NONE = 0;
+    public int index = 0; //номер стенки, с которой происходит соударение
  
     /** Координаты опорной точки */
     protected Point mPoint;
@@ -38,7 +41,8 @@ public abstract class GameObject {
         mHeight = image.getIntrinsicHeight();
     }
     /** Перемещение опорной точки */
-    protected abstract void updatePoint();
+    protected void updatePoint() {
+	}
  
     /** Перемещение объекта */
     public void update()
@@ -54,22 +58,22 @@ public abstract class GameObject {
     }
     
     /** Задает левую границу объекта */
-    protected void setLeft(int value) { mPoint.x = value; }
+    public void setLeft(int value) { mPoint.x = value; }
  
     /** Задает правую границу объекта */
-    protected void setRight(int value) { mPoint.x = value - mWidth; }
+    public void setRight(int value) { mPoint.x = value - mWidth; }
  
     /** Задает верхнюю границу объекта */
-    protected void setTop(int value) { mPoint.y = value; }
+    public void setTop(int value) { mPoint.y = value; }
  
     /** Задает нижнюю границу объекта */
-    protected void setBottom(int value) { mPoint.y = value - mHeight; }
+    public void setBottom(int value) { mPoint.y = value - mHeight; }
  
     /** Задает абсциссу центра объекта */
-    protected void setCenterX(int value) { mPoint.x = value - mHeight / 2; }
+    public void setCenterX(int value) { mPoint.x = value - mHeight / 2; }
  
     /** Задает левую ординату центра объекта */
-    protected void setCenterY(int value) { mPoint.y = value - mWidth / 2; }
+    public void setCenterY(int value) { mPoint.y = value - mWidth / 2; }
     
     
     
@@ -100,9 +104,17 @@ public abstract class GameObject {
     public Rect getRect() { return mImage.getBounds(); }
 
     /** Проверяет, пересекаются ли два игровых объекта */
-    public static boolean intersects(GameObject obj1, GameObject obj2)
+    public static boolean intersects(GameObject obj1, Vector <Wall> Walls, int index)
     {
-        return Rect.intersects(obj1.getRect(), obj2.getRect());
+    	int Number = Walls.size();
+    	boolean strike = false;
+    	for (int i = 0;i<Number;i++){
+    		strike = Rect.intersects(obj1.getRect(), Walls.elementAt(i).getRect());
+    		if(strike){
+    			index = i;
+    		}
+    	}
+		return strike; // Нужно еще отсюда вытаскивать номер элемента (i)
     }
 
 }

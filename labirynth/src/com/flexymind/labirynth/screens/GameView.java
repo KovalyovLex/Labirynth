@@ -6,6 +6,11 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+/**
+ * Класс 
+ * @author Kurnikov Sergey
+ *
+ */
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
