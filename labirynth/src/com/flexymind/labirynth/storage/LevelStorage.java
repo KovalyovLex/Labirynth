@@ -13,6 +13,7 @@ import com.flexymind.labirynth.objects.Wall;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.hardware.SensorManager;
 
 /**
  * Класс сохранения состояния уровня, и загрузки уровней из хранилища
@@ -137,7 +138,8 @@ public class LevelStorage {
 					// загрузка шара с текстурой ball
 					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
 										new Point(X1, Y1), 
-										D);
+										D,
+										(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
 				}else if (WALL.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();

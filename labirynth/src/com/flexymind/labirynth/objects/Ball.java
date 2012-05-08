@@ -2,6 +2,11 @@ package com.flexymind.labirynth.objects;
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 
 /**
  * Класс Шарик
@@ -11,10 +16,16 @@ import android.graphics.drawable.Drawable;
 
 public class Ball extends GameObject
 {
-    private static final Point NULL_SPEED = new Point(2,-5);
+    private static final Point NULL_SPEED = new Point(2, 5);
 	
     /**Скорость шарика */
     private Point mSpeed;
+    
+    /** Ускорение шарика */
+    private float[] macelleration = new float[3];
+    
+    /** Сенсор для акселерометра */
+    private SensorManager sMan;
     
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
@@ -22,9 +33,20 @@ public class Ball extends GameObject
      * @input diam - диаметр шара
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
-    public Ball(Drawable image, Point pos, int diam)
+	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
     {
         super(image);
+        this.sMan = sensMan;
+        		
+        sMan.registerListener(new SensorListener(){
+
+			public void onAccuracyChanged(int sensor, int accuracy) { }
+
+			public void onSensorChanged(int sensor, float[] values) {
+				macelleration = values;
+			}
+			}, sMan.SENSOR_ACCELEROMETER, sMan.SENSOR_DELAY_GAME);
+        
         mSpeed = NULL_SPEED;
         mPoint = pos;
         mPoint.x -= diam / 2;
@@ -38,9 +60,12 @@ public class Ball extends GameObject
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
     protected void updatePoint()
-    {	
+    {
+		mSpeed.x += macelleration[0];
+        mSpeed.y += macelleration[1];
+        
         mPoint.x += mSpeed.x;
-        mPoint.y -= mSpeed.y;
+        mPoint.y += mSpeed.y;
     }
     
     /**функция, возвращающая скорость с датчиков устройства
