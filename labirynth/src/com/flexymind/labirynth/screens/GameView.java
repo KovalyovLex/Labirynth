@@ -37,7 +37,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         
-        // Создание менеджера игровых объектов 
+        // Создание менеджера игровых объектов
         mGameManager = new GameManager(mSurfaceHolder, context);
         
         // Разрешаем форме обрабатывать события клавиатуры

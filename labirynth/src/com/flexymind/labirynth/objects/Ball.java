@@ -11,12 +11,10 @@ import android.graphics.drawable.Drawable;
 
 public class Ball extends GameObject
 {
-    private static final int PI = 180;
-    
-    /** ”гол, который составл€ет направление полета шарика с осью Ox */
-    private int mAngle;
+    private static final Point NULL_SPEED = new Point(0,0);
+	
     /**—корость шарика */
-    private int mSpeed;
+    private Point mSpeed = NULL_SPEED;
     
     /**
      *  онструктор дл€ инициализации объекта с начальными координатами и диаметром
@@ -29,7 +27,6 @@ public class Ball extends GameObject
         super(image);
         this.mHeight = this.mWidth = diam;
         pos = mPoint;
-        
     }
     
 	@Override
@@ -38,24 +35,14 @@ public class Ball extends GameObject
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
     protected void updatePoint()
-    {
-        double angle = Math.toRadians(mAngle);
-        
-        mPoint.x += (int)Math.round(mSpeed * Math.cos(angle));
-        mPoint.y -= (int)Math.round(mSpeed * Math.sin(angle));
-    }
-    
-	
-	
-    /**функци€, возвращающа€ угол наклона с датчиков устройства*/
-    private int getAngle()
-    {
-		return mAngle;
+    {	
+        mPoint.x += mSpeed.x;
+        mPoint.y -= mSpeed.y;
     }
     
     /**функци€, возвращающа€ скорость с датчиков устройства
      * в зависимости от наклона телефона*/
-    private int getSpeed()
+    private Point getSpeed()
     {
 		return mSpeed;
     }
@@ -64,16 +51,13 @@ public class Ball extends GameObject
     /** ќтражение м€чика от вертикали */
     public void reflectVertical()
     {
-        if (mAngle > 0 && mAngle < PI)
-            mAngle = PI - mAngle;
-        else
-            mAngle = 3 * PI - mAngle;
+        mSpeed.x = -mSpeed.x;
     }
 
     /** ќтражение м€чика от горизонтали */
     public void reflectHorizontal()
     {
-        mAngle = 2 * PI - mAngle;
+    	mSpeed.y = -mSpeed.y;
     }
 
 }

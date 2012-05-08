@@ -26,7 +26,7 @@ public abstract class GameObject {
     protected int mWidth;
  
     /** Изображение */
-    private Drawable mImage;
+    protected Drawable mImage;
  
  
     /**
@@ -45,35 +45,36 @@ public abstract class GameObject {
 	}
  
     /** Перемещение объекта */
-    public void update()
+    public void Update()
     {
         updatePoint();
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
     }
     
     /** Отрисовка объекта */
-    public void draw(Canvas canvas)
+    public void Draw(Canvas canvas)
     {
         mImage.draw(canvas);
     }
     
+    
     /** Задает левую границу объекта */
-    public void setLeft(int value) { mPoint.x = value; }
+    protected void setLeft(int value) { mPoint.x = value; }
  
     /** Задает правую границу объекта */
-    public void setRight(int value) { mPoint.x = value - mWidth; }
+    protected void setRight(int value) { mPoint.x = value - mWidth; }
  
     /** Задает верхнюю границу объекта */
-    public void setTop(int value) { mPoint.y = value; }
+    protected void setTop(int value) { mPoint.y = value; }
  
     /** Задает нижнюю границу объекта */
-    public void setBottom(int value) { mPoint.y = value - mHeight; }
+    protected void setBottom(int value) { mPoint.y = value - mHeight; }
  
     /** Задает абсциссу центра объекта */
-    public void setCenterX(int value) { mPoint.x = value - mHeight / 2; }
+    protected void setCenterX(int value) { mPoint.x = value - mHeight / 2; }
  
     /** Задает левую ординату центра объекта */
-    public void setCenterY(int value) { mPoint.y = value - mWidth / 2; }
+    protected void setCenterY(int value) { mPoint.y = value - mWidth / 2; }
     
     
     

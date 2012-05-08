@@ -11,7 +11,7 @@ import android.graphics.drawable.Drawable;
 
 /**
  * Класс 
- * @author Kurnikov Sergey
+ * @author Kurnikov Sergey + Kovalyov Alexaner
  * отрисовка всех стенок + соударение от стенок и движение шарика, условие прохождения уровня
  */
 public class GameLevel extends GameObject{
@@ -22,6 +22,7 @@ public class GameLevel extends GameObject{
         diam ,
         Number;
     Vector <Wall> Walls;
+    
     /**
      * Конструктор 
      * @param Vector <Wall> walls Все стены данного уровня
@@ -41,29 +42,32 @@ public class GameLevel extends GameObject{
 		end_y = finish_Y;
 		diam  = finish_Diam;
 		mball = ball;
-		Walls = walls;}
+		Walls = walls;
+	}
 
-    
+    @Override
     /** Отрисовка объектов на игровом поле */
-    private void Draw(Canvas canvas)
+    public void Draw(Canvas canvas)
     {
-        mball.draw(canvas);
+    	this.mImage.setBounds(canvas.getClipBounds());
+    	this.mImage.draw(canvas);
+        mball.Draw(canvas);
         Number = Walls.size();
         for(int i=0;i<Number;i++){
-        	Walls.elementAt(i).draw(canvas);
+        	Walls.elementAt(i).Draw(canvas);
         }
     }
     
-    /** Перемещение шарика и обновление объектов на экране */
-    private void updateAllObjects()
+    @Override
+    /** Перемещение объекта */
+    public void Update()
     {
-        mball.update();
+        mball.Update();
         Number = Walls.size();
         for(int i=0;i<Number;i++){
-        	Walls.elementAt(i).update(); 
+        	Walls.elementAt(i).Update(); 
         }
-    } 
-    
+    }
 
     /** Функция, описывающая столкновения объектов между собой */
     private void collision(Ball ball, Vector <Wall> walls)
@@ -134,12 +138,14 @@ public class GameLevel extends GameObject{
     /** условие прохождения уровня */
     protected boolean victory(int end_x, int end_y) {
     	boolean ween = false;
-    		if ((mPoint.x == end_x)&(mPoint.y == end_y)){
+    	Point bCenter = mball.getCenter();
+    		if (	 (bCenter.x >= end_x - diam / 2)
+    			  && (bCenter.x <= end_x + diam / 2)
+    			  && (bCenter.y >= end_y - diam / 2)
+    			  && (bCenter.y <= end_y + diam / 2) ){
     			ween=true;
     		}
-    			
+    	
     	return ween;
-    }
-
-        
+    }     
 }
