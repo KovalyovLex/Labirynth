@@ -1,6 +1,5 @@
 package com.flexymind.labirynth.screens;
 
-
 import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;
@@ -48,7 +47,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         // Разрешаем форме обрабатывать события клавиатуры
         setFocusable(true);
     }
-
     
     /**
      * Изменение области рисования
@@ -57,7 +55,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         mGameManager.initPositions(height, width);
     }
-
     
     /**
      * Создание области рисования

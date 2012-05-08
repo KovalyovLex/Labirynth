@@ -65,8 +65,8 @@ public class Ball extends GameObject
      */
     protected void updatePoint()
     {
-		mSpeed.x += 0.01 * macelleration[0];
-        mSpeed.y -= 0.01 * macelleration[1];
+		mSpeed.x += 0.1 * macelleration[0];
+        mSpeed.y -= 0.1 * macelleration[1];
         
         mPoint.x += mSpeed.x;
         mPoint.y += mSpeed.y;
