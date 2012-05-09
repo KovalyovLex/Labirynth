@@ -183,7 +183,7 @@ public class Ball extends GameObject
     /** Отражение мячика от вертикали */
     public void reflectVertical()
     {
-        mSpeed.x = mSpeed.x;
+        mSpeed.x = -mSpeed.x;
     }
 
     /** Отражение мячика от горизонтали */
