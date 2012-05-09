@@ -143,7 +143,7 @@ public class LevelStorage {
 					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
 										new Point(X1, Y1), 
 										D,
-										(SensorManagerSimulator)context.getSystemService(Context.SENSOR_SERVICE));
+										SensorManagerSimulator.getSystemService(context, Context.SENSOR_SERVICE));
 										//(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
 				}else if (WALL.equals(xml.getName())){
 					deep = xml.getDepth();
