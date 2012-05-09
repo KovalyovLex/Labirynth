@@ -2,10 +2,15 @@ package com.flexymind.labirynth.objects;
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+//import android.hardware.Sensor;
+//import android.hardware.SensorEvent;
+//import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
+import org.openintents.sensorsimulator.hardware.Sensor;
+import org.openintents.sensorsimulator.hardware.SensorEvent;
+import org.openintents.sensorsimulator.hardware.SensorEventListener;
+import org.openintents.sensorsimulator.hardware.SensorManagerSimulator;
 
 /**
  * Класс Шарик
@@ -33,7 +38,8 @@ public class Ball extends GameObject
     private float[] tiltAngles = new float[3];
     
     /** Сенсор для акселерометра */
-    private SensorManager sMan;
+    //private SensorManager sMan;
+    public SensorManagerSimulator sMan;
     
                
     
@@ -44,10 +50,11 @@ public class Ball extends GameObject
      * @input sensMan - сенсор акселерометра
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
-	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
+	public Ball(Drawable image, Point pos, int diam, SensorManagerSimulator sensMan)
     {
         super(image);
         this.sMan = sensMan;
+        sMan.connectSimulator();
         		
         sMan.registerListener(new SensorEventListener(){
 
@@ -100,8 +107,8 @@ public class Ball extends GameObject
      */
     protected void updatePoint()
     {
-		mSpeed.x += 0.1 * macelleration[0];
-        mSpeed.y -= 0.1 * macelleration[1];
+		mSpeed.x += 0.01 * macelleration[0];
+        mSpeed.y -= 0.01 * macelleration[1];
         
         mPoint.x += mSpeed.x;
         mPoint.y += mSpeed.y;

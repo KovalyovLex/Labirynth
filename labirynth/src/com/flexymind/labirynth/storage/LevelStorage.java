@@ -14,6 +14,10 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.hardware.SensorManager;
+import org.openintents.sensorsimulator.hardware.SensorManagerSimulator;
+import org.openintents.sensorsimulator.hardware.Sensor;
+import org.openintents.sensorsimulator.hardware.SensorEvent;
+import org.openintents.sensorsimulator.hardware.SensorEventListener;
 
 /**
  * Класс сохранения состояния уровня, и загрузки уровней из хранилища
@@ -139,7 +143,8 @@ public class LevelStorage {
 					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
 										new Point(X1, Y1), 
 										D,
-										(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
+										(SensorManagerSimulator)context.getSystemService(Context.SENSOR_SERVICE));
+										//(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
 				}else if (WALL.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();
