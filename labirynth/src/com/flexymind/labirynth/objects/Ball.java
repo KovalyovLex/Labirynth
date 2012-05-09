@@ -1,6 +1,7 @@
 package com.flexymind.labirynth.objects;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,7 +20,6 @@ public class Ball extends GameObject
 	
     /**Скорость шарика */
     private Point mSpeed;
-    
     /** Ускорение шарика */
     private float[] macelleration = new float[3];
     

@@ -2,6 +2,7 @@ package com.flexymind.labirynth.objects;
 
 import java.util.Vector;
 
+
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -15,6 +16,9 @@ import android.graphics.drawable.Drawable;
 public class GameLevel extends GameObject{
  
 	private Ball mball;
+	private FINISH mfinish;
+    /**Игровое поле */
+	private Rect mplayField = new Rect(95,70,700, 425);
     int end_x, 
         end_y, 
         diam ,
@@ -28,20 +32,21 @@ public class GameLevel extends GameObject{
      * @param Diam диаметр шарика
      * @param Ball шарик
      */
-    public GameLevel(	Vector <Wall> walls, //как инициализировать этот вектор?
-						Ball ball,
+    public GameLevel(	Vector <Wall> walls,
+						Ball ball, FINISH finish,
 						int finish_X,
 						int finish_Y,
 						int finish_Diam,
 						Drawable mBackGr){
 		//инициализируем параметры, переданные с помощью конструктора
 		super(mBackGr);
-        end_x = finish_X;
-		end_y = finish_Y;
-		diam  = finish_Diam;
-		mball = ball;
-		Walls = walls;
-		Number = Walls.size();
+        end_x   = finish_X;
+		end_y   = finish_Y;
+		diam    = finish_Diam;
+		mball   = ball;
+		mfinish = finish;
+		Walls   = walls;
+		Number  = Walls.size();
 	}
 
     @Override
@@ -50,7 +55,8 @@ public class GameLevel extends GameObject{
     {	
     	this.mImage.setBounds(canvas.getClipBounds());
     	this.mImage.draw(canvas);
-        mball.Draw(canvas);
+    	mfinish.Draw(canvas);
+    	mball.Draw(canvas);
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Draw(canvas);
         }
@@ -61,13 +67,15 @@ public class GameLevel extends GameObject{
     public void Update()
     {	
     	collisionsCheck();
-    	//collision_With_Field (mball, mplayField);
+    	collision_With_Field (mball, mplayField);
+    	victory(end_x,end_y);
         mball.Update();
+        mfinish.Update();
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Update(); 
         }
     }
-
+    
     /** Функция, описывающая столкновения объектов шар и станки между собой */
     private void collisionsCheck()
     {
@@ -148,17 +156,27 @@ public class GameLevel extends GameObject{
 	    }
     }
     
+      	
+    
+    
     /** условие прохождения уровня */
-    protected boolean victory(int end_x, int end_y) {
-    	boolean ween = false;
+    protected void victory(int end_x, int end_y) {
     	Point bCenter = mball.getCenter();
-    		if (	 (bCenter.x >= end_x - diam / 2)
+    		
+    	if(GameObject.intersects_finish(mball, mfinish))
+    	{
+
+			bCenter.y = end_y + diam / 2+(int) Math.sqrt(Math.abs(Math.pow(diam, 2)-Math.pow((bCenter.x-end_x - diam / 2), 2)));
+			mball.setCenterY(bCenter.y);
+			mball.setCenterX(bCenter.x);
+    		
+    	}
+    	/*if (	 (bCenter.x >= end_x - diam / 2)
     			  && (bCenter.x <= end_x + diam / 2)
     			  && (bCenter.y >= end_y - diam / 2)
     			  && (bCenter.y <= end_y + diam / 2) ){
-    			ween=true;
-    		}
-    	
-    	return ween;
-    }     
+    			  bCenter.y =end_y + diam / 2+(int) Math.sqrt(Math.abs(Math.pow(diam, 2)-Math.pow((bCenter.x-end_x - diam / 2), 2)));
+			      mball.setCenterY(bCenter.y);
+    			  }*/
+    }
 }

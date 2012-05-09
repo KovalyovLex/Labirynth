@@ -126,6 +126,7 @@ public class GameManager extends Thread
     {
     	
     	// вывод фонового изображения
+
     	canvas.drawBitmap(mBackground, 0, 0, null);
     	canvas.drawRect(mField, mPaint);
     	

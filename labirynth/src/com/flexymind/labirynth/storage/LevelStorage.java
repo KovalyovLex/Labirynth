@@ -1,6 +1,7 @@
 package com.flexymind.labirynth.storage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -9,7 +10,7 @@ import com.android.pingpong.R;
 import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.objects.Wall;
-
+import com.flexymind.labirynth.objects.FINISH;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
@@ -113,8 +114,9 @@ public class LevelStorage {
 	private GameLevel loadGameLevelfromxml(XmlResourceParser xml){
 		GameLevel game = null;
 		Vector<Wall> walls = new Vector<Wall>();
-		Wall twall = null;
-		Ball tball = null;
+		Wall twall     = null;
+		Ball tball     = null;
+		FINISH tfinish = null;
 		int X1 = 0, X2 = 0, Y1 = 0, Y2 = 0, D = 0, deep = 0, X3 = 0, Y3 = 0;
 		int finX = 0, finY = 0, finDiam = 0;
 		
@@ -186,6 +188,10 @@ public class LevelStorage {
 						xml.next();
 					}
 				}
+				// загрузка  Объекта финиш, с текстурой
+				tfinish = new FINISH (	context.getResources().getDrawable(R.drawable.finish),
+									new Point(finX, finY), 
+									finDiam);
 				if ( LEVEL.equals(xml.getName()) ){
 					break;
 				}
@@ -201,6 +207,7 @@ public class LevelStorage {
 		
 		game = new GameLevel(	walls,
 								tball,
+								tfinish, 
 								finX,
 								finY,
 								finDiam,

@@ -3,6 +3,7 @@ package com.flexymind.labirynth.objects;
 
 import java.util.Vector;
 
+
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -118,7 +119,12 @@ public abstract class GameObject {
     			index = i;
     		}
     	}
-		return strike; // Нужно еще отсюда вытаскивать номер элемента (i)
+		return strike; 
+    }
+    
+    public static boolean intersects_finish(GameObject obj1, GameObject obj2)
+    {
+        return Rect.intersects(obj1.getRect(), obj2.getRect());
     }
 
 }
