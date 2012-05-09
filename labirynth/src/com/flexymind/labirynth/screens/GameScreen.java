@@ -14,5 +14,10 @@ public class GameScreen extends Activity {
     }
     
     @Override
+    public void onPause() {
+    	//надо здесь отключить прослушку сенсоров для sMan класса Ball.
+    }
+    
+    @Override
     public void onConfigurationChanged(Configuration newConfig) { }
 }
