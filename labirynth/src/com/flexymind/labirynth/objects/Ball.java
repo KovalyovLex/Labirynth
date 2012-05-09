@@ -32,10 +32,10 @@ public class Ball extends GameObject
     /** Углы наклона */
     private float[] tiltAngles = new float[3];
     
-    /** Сенсор для акселерометра */
+    /** Объект для прослушки сенсоров */
     private SensorManager sMan;
     
-               
+                 
     
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
@@ -49,42 +49,8 @@ public class Ball extends GameObject
         super(image);
         this.sMan = sensMan;
         		
-        sMan.registerListener(new SensorEventListener(){
-
-			public void onAccuracyChanged(Sensor sensor, int accuracy) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			public void onSensorChanged(SensorEvent event) {
-				// TODO Auto-generated method stub
-				macelleration = event.values;
-			}
-			}, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-        
-        sMan.registerListener(new SensorEventListener(){
-
-			public void onAccuracyChanged(Sensor sensor, int accuracy) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			public void onSensorChanged(SensorEvent event) {
-				// TODO Auto-generated method stub
-				compassValues = event.values;
-				if (SensorManager.getRotationMatrix(inR, null, macelleration, compassValues)) {
-					SensorManager.getOrientation(inR, tiltAngles);
-				}
-				
-				for (int i=0; i<3; i++) {
-					tiltAngles[i] = (float) Math.toDegrees(tiltAngles[i]);
-					if(tiltAngles[i] < 0) {
-						tiltAngles[i] += 360.0f;
-					}
-				}
-				
-			}
-			}, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+        sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
         
         mSpeed = NULL_SPEED;
         mPoint = pos;
@@ -92,6 +58,51 @@ public class Ball extends GameObject
         mPoint.y -= diam / 2;
         this.mHeight = this.mWidth = diam;
     }
+	
+	/** Прослушка акселерометра */
+	final SensorEventListener accelerometerListener = new SensorEventListener() {
+		
+		public void onSensorChanged(SensorEvent event) {
+			macelleration = event.values;
+		}
+		
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
+	/** Прослушка компаса */
+	final SensorEventListener compassListener = new SensorEventListener() {
+		
+		public void onSensorChanged(SensorEvent event) {
+			compassValues = event.values;
+			if (SensorManager.getRotationMatrix(inR, null, macelleration, compassValues)) {
+				SensorManager.getOrientation(inR, tiltAngles);
+			}
+			
+			for (int i=0; i<3; i++) {
+				tiltAngles[i] = (float) Math.toDegrees(tiltAngles[i]);
+				if(tiltAngles[i] < 0) {
+					tiltAngles[i] += 360.0f;
+				}
+			}
+			
+		}
+		
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
+	public void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
+		sMan.unregisterListener(accelerometerListener);
+		sMan.unregisterListener(compassListener);
+	}
+	
+	
+	
     
 	@Override
     /**
@@ -100,11 +111,17 @@ public class Ball extends GameObject
      */
     protected void updatePoint()
     {
-		mSpeed.x += 0.1 * macelleration[0];
-        mSpeed.y -= 0.1 * macelleration[1];
+		//mSpeed.x += 0.1 * macelleration[0];
+        //mSpeed.y -= 0.1 * macelleration[1];
         
-        mPoint.x += mSpeed.x;
-        mPoint.y += mSpeed.y;
+		mPoint.x += mSpeed.x*0.02 + (macelleration[0]*0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
+		mPoint.y += mSpeed.y*0.02 + (macelleration[1]*0.0004)/2;
+		
+		mSpeed.x += 0.02 * macelleration[0];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+        mSpeed.y -= 0.02 * macelleration[1];
+        
+        //mPoint.x += mSpeed.x;
+        //mPoint.y += mSpeed.y;
     }
     
     /**функция, возвращающая скорость с датчиков устройства
