@@ -114,14 +114,19 @@ public class Ball extends GameObject
 		//mSpeed.x += 0.1 * macelleration[0];
         //mSpeed.y -= 0.1 * macelleration[1];
         
-		mPoint.x += mSpeed.x*0.02 + (macelleration[0]*0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
-		mPoint.y += mSpeed.y*0.02 + (macelleration[1]*0.0004)/2;
-		
-		mSpeed.x += 0.02 * macelleration[0];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
-        mSpeed.y -= 0.02 * macelleration[1];
+		//mPoint.x += mSpeed.x*0.02 + (macelleration[0]*0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
+		//mPoint.y += mSpeed.y*0.02 + (macelleration[1]*0.0004)/2;
+		//mSpeed.x += 0.02 * macelleration[0];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+        //mSpeed.y -= 0.02 * macelleration[1];
         
         //mPoint.x += mSpeed.x;
         //mPoint.y += mSpeed.y;
+        
+        mPoint.x += mSpeed.x*0.02 + (9.81 * Math.cos(tiltAngles[2]) * 0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
+		mPoint.y += mSpeed.y*0.02 + (9.81 * Math.cos(tiltAngles[1]) * 0.0004)/2;
+        
+		mSpeed.x += 0.02 * tiltAngles[2];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+        mSpeed.y += 0.02 * tiltAngles[1];
     }
     
     /**функци€, возвращающа€ скорость с датчиков устройства
@@ -178,7 +183,7 @@ public class Ball extends GameObject
     /** ќтражение м€чика от вертикали */
     public void reflectVertical()
     {
-        mSpeed.x = -mSpeed.x;
+        mSpeed.x = mSpeed.x;
     }
 
     /** ќтражение м€чика от горизонтали */

@@ -13,11 +13,7 @@ public class GameScreen extends Activity {
         setContentView(R.layout.main);
     }
     
-    @Override
-    public void onPause() {
-    	//надо здесь отключить прослушку сенсоров для sMan класса Ball.
-    }
-    
+        
     @Override
     public void onConfigurationChanged(Configuration newConfig) { }
 }
