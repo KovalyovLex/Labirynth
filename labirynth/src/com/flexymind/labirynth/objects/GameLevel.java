@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 /**
  *  ласс 
@@ -116,10 +117,12 @@ public class GameLevel extends GameObject{
         		// удар
         		if (((float)scal_mul(vec1,vec1) / scal_mul(v1,v1)) > ((float)scal_mul(vec2,vec2) / scal_mul(v2,v2)) ){
         			// удар в направлении v2
-            		mball.reflectWallV2(twall);	
+            		mball.reflectWallV2(twall);
+            		Log.v("reflect","v2");
         		}else{
         			// удар в направлении v1
             		mball.reflectWallV1(twall);
+            		Log.v("reflect","v1");
         		}
         	}
         }
@@ -137,22 +140,26 @@ public class GameLevel extends GameObject{
         {
             //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
             ball.reflectVertical();
+            Log.v("reflect","vertical");
         }
         else if (ball.getRight() >= PlayField.right)
         {
         	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
         	ball.reflectVertical();
+        	Log.v("reflect","vertical");
         }
     	
     	if (ball.getTop() <= PlayField.top)
 	    {
 	        //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
 	        ball.reflectHorizontal();
+	        Log.v("reflect","horizontal");
 	    }
 	    else if (ball.getBottom() >= PlayField.bottom)
 	    {
 	    	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
 	    	ball.reflectHorizontal();
+	    	Log.v("reflect","horizontal");
 	    }
     }
     

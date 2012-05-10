@@ -35,8 +35,6 @@ public class Ball extends GameObject
     /** Объект для прослушки сенсоров */
     private SensorManager sMan;
     
-                 
-    
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
      * @input pos - позиция центра шара
@@ -48,7 +46,7 @@ public class Ball extends GameObject
     {
         super(image);
         this.sMan = sensMan;
-        		
+        
         sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
         
@@ -66,10 +64,7 @@ public class Ball extends GameObject
 			macelleration = event.values;
 		}
 		
-		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 	};
 	
 	/** Прослушка компаса */
@@ -90,19 +85,13 @@ public class Ball extends GameObject
 			
 		}
 		
-		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 	};
 	
 	public void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
 		sMan.unregisterListener(accelerometerListener);
 		sMan.unregisterListener(compassListener);
 	}
-	
-	
-	
     
 	@Override
     /**
@@ -119,14 +108,14 @@ public class Ball extends GameObject
 		//mSpeed.x += 0.02 * macelleration[0];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
         //mSpeed.y -= 0.02 * macelleration[1];
         
-        //mPoint.x += mSpeed.x;
-        //mPoint.y += mSpeed.y;
-        
         mPoint.x += mSpeed.x*0.02 + (9.81 * Math.cos(tiltAngles[2]) * 0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
 		mPoint.y += mSpeed.y*0.02 + (9.81 * Math.cos(tiltAngles[1]) * 0.0004)/2;
         
 		mSpeed.x += 0.02 * tiltAngles[2];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
         mSpeed.y += 0.02 * tiltAngles[1];
+        
+        mPoint.x += mSpeed.x;
+        mPoint.y += mSpeed.y;
     }
     
     /**функция, возвращающая скорость с датчиков устройства

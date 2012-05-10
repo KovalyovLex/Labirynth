@@ -1,12 +1,12 @@
 package com.flexymind.labirynth.storage;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Vector;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import com.android.pingpong.R;
+
+import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.objects.Wall;

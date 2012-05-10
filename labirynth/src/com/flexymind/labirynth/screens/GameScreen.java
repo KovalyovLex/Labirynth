@@ -1,6 +1,8 @@
 package com.flexymind.labirynth.screens;
 
-import com.android.pingpong.R;
+
+import com.flexymind.labirynth.R;
+
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
