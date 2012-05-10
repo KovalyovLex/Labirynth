@@ -20,10 +20,7 @@ public class GameLevel extends GameObject{
 	private FINISH mfinish;
     /**Игровое поле */
 	private Rect mplayField = new Rect(95,70,700, 425);
-    int end_x, 
-        end_y, 
-        diam ,
-        Number;
+    int Number;
     Vector <Wall> Walls;
     
     /**
@@ -35,15 +32,9 @@ public class GameLevel extends GameObject{
      */
     public GameLevel(	Vector <Wall> walls,
 						Ball ball, FINISH finish,
-						int finish_X,
-						int finish_Y,
-						int finish_Diam,
 						Drawable mBackGr){
 		//инициализируем параметры, переданные с помощью конструктора
 		super(mBackGr);
-        end_x   = finish_X;
-		end_y   = finish_Y;
-		diam    = finish_Diam;
 		mball   = ball;
 		mfinish = finish;
 		Walls   = walls;
@@ -69,7 +60,7 @@ public class GameLevel extends GameObject{
     {	
     	collisionsCheck();
     	collision_With_Field (mball, mplayField);
-    	victory(end_x,end_y);
+    	victory();
         mball.Update();
         mfinish.Update();
         for(int i=0;i<Number;i++){
@@ -115,7 +106,11 @@ public class GameLevel extends GameObject{
         		 && scal_mul(vec2,v2) >= 0
         		 && scal_mul(vec2,vec2) <= scal_mul(v2,v2)){
         		// удар
-        		if (((float)scal_mul(vec1,vec1) / scal_mul(v1,v1)) > ((float)scal_mul(vec2,vec2) / scal_mul(v2,v2)) ){
+        		float minV1 = ((float)scal_mul(vec1,vec1) / scal_mul(v1,v1) > ((float)(scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1)) )?
+        				((float)(scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1)) : (float)scal_mul(vec1,vec1) / scal_mul(v1,v1); 
+        		float minV2 = ((float)scal_mul(vec2,vec2) / scal_mul(v2,v2) > ((float)(scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2)) )?
+                				((float)(scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2)) : (float)scal_mul(vec2,vec2) / scal_mul(v2,v2); 
+        		if ( minV1 > minV2 ){
         			// удар в направлении v2
             		mball.reflectWallV2(twall);
             		Log.v("reflect","v2");
@@ -139,51 +134,47 @@ public class GameLevel extends GameObject{
     	if (ball.getLeft() <= PlayField.left)
         {
             //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
-            ball.reflectVertical();
+            ball.reflectVertical(new Point(PlayField.left, ball.getPoint().y));
             Log.v("reflect","vertical");
         }
         else if (ball.getRight() >= PlayField.right)
         {
         	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
-        	ball.reflectVertical();
+        	ball.reflectVertical(new Point(PlayField.right - ball.getWidth(), ball.getPoint().y));
         	Log.v("reflect","vertical");
         }
     	
     	if (ball.getTop() <= PlayField.top)
 	    {
 	        //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
-	        ball.reflectHorizontal();
+	        ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.top));
 	        Log.v("reflect","horizontal");
 	    }
 	    else if (ball.getBottom() >= PlayField.bottom)
 	    {
 	    	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
-	    	ball.reflectHorizontal();
+	    	ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.bottom - ball.getHeight()));
 	    	Log.v("reflect","horizontal");
 	    }
     }
     
-      	
-    
-    
     /** условие прохождения уровня */
-    protected void victory(int end_x, int end_y) {
-    	Point bCenter = mball.getCenter();
-    		
+    protected void victory() {
+
     	if(GameObject.intersects_finish(mball, mfinish))
     	{
-
-			bCenter.y = end_y + diam / 2+(int) Math.sqrt(Math.abs(Math.pow(diam, 2)-Math.pow((bCenter.x-end_x - diam / 2), 2)));
-			mball.setCenterY(bCenter.y);
-			mball.setCenterX(bCenter.x);
+    		mball.setCenterY(mfinish.getCenter().y);
+			mball.setCenterX(mfinish.getCenter().x);
     		
     	}
     	/*if (	 (bCenter.x >= end_x - diam / 2)
     			  && (bCenter.x <= end_x + diam / 2)
     			  && (bCenter.y >= end_y - diam / 2)
     			  && (bCenter.y <= end_y + diam / 2) ){
-    			  bCenter.y =end_y + diam / 2+(int) Math.sqrt(Math.abs(Math.pow(diam, 2)-Math.pow((bCenter.x-end_x - diam / 2), 2)));
-			      mball.setCenterY(bCenter.y);
-    			  }*/
+    			  
+    		bCenter.y =end_y + diam / 2+(int) Math.sqrt(Math.abs(Math.pow(diam, 2)-Math.pow((bCenter.x-end_x - diam / 2), 2)));
+			mball.setCenterY(bCenter.y);
+			mball.setCenterX(bCenter.x);
+    	}*/
     }
 }

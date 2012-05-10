@@ -169,15 +169,21 @@ public class Ball extends GameObject
 		
 	}
 	
-    /** Отражение мячика от вертикали */
-    public void reflectVertical()
+    /** Отражение мячика от вертикали 
+     * @param newPoint точка шара после соударения
+     * */
+    public void reflectVertical(Point newPoint)
     {
+    	mPoint = newPoint;
         mSpeed.x = -mSpeed.x;
     }
 
-    /** Отражение мячика от горизонтали */
-    public void reflectHorizontal()
+    /** Отражение мячика от горизонтали 
+     * @param newPoint точка шара после соударения
+     * */
+    public void reflectHorizontal(Point newPoint)
     {
+    	mPoint = newPoint;
     	mSpeed.y = -mSpeed.y;
     }
 

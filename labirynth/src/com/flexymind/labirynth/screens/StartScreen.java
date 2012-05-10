@@ -61,5 +61,7 @@ public class StartScreen extends Activity implements OnClickListener
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) { }
+    public void onConfigurationChanged(Configuration newConfig) { 
+    	super.onConfigurationChanged(newConfig);
+    }
 }

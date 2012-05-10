@@ -207,10 +207,7 @@ public class LevelStorage {
 		
 		game = new GameLevel(	walls,
 								tball,
-								tfinish, 
-								finX,
-								finY,
-								finDiam,
+								tfinish,
 								context.getResources().getDrawable(R.drawable.flexy3));
 		
 		return game;

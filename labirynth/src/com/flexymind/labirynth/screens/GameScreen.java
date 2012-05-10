@@ -17,5 +17,7 @@ public class GameScreen extends Activity {
     
         
     @Override
-    public void onConfigurationChanged(Configuration newConfig) { }
+    public void onConfigurationChanged(Configuration newConfig) { 
+    	super.onConfigurationChanged(newConfig);
+    }
 }
