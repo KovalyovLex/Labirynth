@@ -19,7 +19,7 @@ public class GameLevel extends GameObject{
 	private Ball mball;
 	private FINISH mfinish;
     /**Игровое поле */
-	private Rect mplayField = new Rect(95,70,700, 425);
+	private Rect mplayField = new Rect(65,30,720,415);
     int Number;
     Vector <Wall> Walls;
     
