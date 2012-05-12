@@ -38,6 +38,14 @@ public class GameManager extends Thread
     /** Фон */
     private Bitmap mBackground;
     
+    private void AutoSize()
+    {
+        if (ScreenSettings.AutoScale)
+        {
+        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
+        }
+    }
+    
     /**
      * Конструктор
      * @param surfaceHolder Область рисования
@@ -81,6 +89,16 @@ public class GameManager extends Thread
         mField = new Rect();
     }
 
+    public void resize(double ScaleFactorX, double ScaleFactorY)
+    {
+    	int newX;
+    	int newY;
+    	newX=(int)ScaleFactorX*mBackground.getWidth();
+    	newY=(int)ScaleFactorY*mBackground.getHeight();
+    	Bitmap tmp = Bitmap.createScaledBitmap(mBackground, newX, newY, true);
+        mBackground = tmp;
+    }
+    
 	/**
      * Задание состояния потока
      * @param running
@@ -148,12 +166,16 @@ public class GameManager extends Thread
      */
     public void initPositions(int screenHeight, int screenWidth)
     {
-        int left = (screenWidth - FIELD_WIDTH) / 2;
-        int top = (screenHeight - FIELD_HEIGHT) / 2;
+    	
+        int left = (int) ((screenWidth - ScreenSettings.ScaleFactorX * FIELD_WIDTH) / 2);
+        int top = (int) ((screenHeight - ScreenSettings.ScaleFactorY * FIELD_HEIGHT) / 2);
         
         mField.set(left, top, left + FIELD_WIDTH, top + FIELD_HEIGHT);
         
         mBackground = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
+        
+        this.AutoSize();
+        
     }
     
     /**
