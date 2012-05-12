@@ -5,3 +5,10 @@
 *.war
 *.ear
 *.dex
+
+*.apk
+*.psd
+*.jpg
+*.png
+
+./bin/

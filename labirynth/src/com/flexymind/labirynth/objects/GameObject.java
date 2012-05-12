@@ -5,13 +5,17 @@ import java.util.Vector;
 
 import com.flexymind.labirynth.screens.ScreenSettings;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 
 public abstract class GameObject {
 	
@@ -46,7 +50,11 @@ public abstract class GameObject {
         	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
         }
     }
+<<<<<<< HEAD
         
+=======
+    
+>>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
     /**
      * Конструктор
      * @param image Изображение, которое будет обозначать данный объект
@@ -59,12 +67,12 @@ public abstract class GameObject {
         AutoSize();
     }
     /** Перемещение опорной точки */
-    protected void updatePoint() {
-	}
+    protected void updatePoint() { }
  
     public void resize(double ScaleFactorX, double ScaleFactorY)
     {
     	int newX;
+<<<<<<< HEAD
     	int newY;
     	refreshSize();
     	newX=(int)ScaleFactorX*mWidth;
@@ -74,6 +82,17 @@ public abstract class GameObject {
         bmp = tmp;
         mImage = new BitmapDrawable(bmp);
         refreshSize();
+=======
+		int newY;
+		refreshSize();
+		newX=(int)ScaleFactorX*mWidth;
+		newY=(int)ScaleFactorY*mHeight;
+		Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
+		Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
+    	bmp = tmp;
+    	mImage = new BitmapDrawable(bmp);
+    	refreshSize();
+>>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
     }
     
     /** Перемещение объекта */
@@ -150,7 +169,7 @@ public abstract class GameObject {
     			index = i;
     		}
     	}
-		return strike; 
+		return strike;
     }
     
     public static boolean intersects_finish(GameObject obj1, GameObject obj2)
