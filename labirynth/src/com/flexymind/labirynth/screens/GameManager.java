@@ -38,14 +38,7 @@ public class GameManager extends Thread
     /** Фон */
     private Bitmap mBackground;
     
-    private void AutoSize()
-    {
-        if (ScreenSettings.AutoScale)
-        {
-        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
-        }
-    }
-    
+        
     /**
      * Конструктор
      * @param surfaceHolder Область рисования
@@ -89,10 +82,6 @@ public class GameManager extends Thread
         mField = new Rect();
     }
 
-<<<<<<< HEAD
-	   
-=======
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
     public void resize(double ScaleFactorX, double ScaleFactorY)
     {
     	int newX;
@@ -103,7 +92,7 @@ public class GameManager extends Thread
         mBackground = tmp;
     }
     
-<<<<<<< HEAD
+
     private void AutoSize()
     {
         if (ScreenSettings.AutoScale)

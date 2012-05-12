@@ -4,11 +4,6 @@ package com.flexymind.labirynth.objects;
 import java.util.Vector;
 
 import com.flexymind.labirynth.screens.ScreenSettings;
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -50,11 +45,7 @@ public abstract class GameObject {
         	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
         }
     }
-<<<<<<< HEAD
-        
-=======
-    
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
+
     /**
      * Конструктор
      * @param image Изображение, которое будет обозначать данный объект
@@ -72,7 +63,6 @@ public abstract class GameObject {
     public void resize(double ScaleFactorX, double ScaleFactorY)
     {
     	int newX;
-<<<<<<< HEAD
     	int newY;
     	refreshSize();
     	newX=(int)ScaleFactorX*mWidth;
@@ -82,17 +72,6 @@ public abstract class GameObject {
         bmp = tmp;
         mImage = new BitmapDrawable(bmp);
         refreshSize();
-=======
-		int newY;
-		refreshSize();
-		newX=(int)ScaleFactorX*mWidth;
-		newY=(int)ScaleFactorY*mHeight;
-		Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
-		Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
-    	bmp = tmp;
-    	mImage = new BitmapDrawable(bmp);
-    	refreshSize();
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
     }
     
     /** Перемещение объекта */

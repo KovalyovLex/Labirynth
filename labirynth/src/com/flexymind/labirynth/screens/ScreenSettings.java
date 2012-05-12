@@ -1,10 +1,9 @@
 package com.flexymind.labirynth.screens;
 
-<<<<<<< HEAD
+
 import android.view.Display;
 
-=======
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
+
 
 public class ScreenSettings {
 	
@@ -16,10 +15,8 @@ public class ScreenSettings {
     public static int CurrentYRes;
     public static double ScaleFactorX =1;
     public static double ScaleFactorY =1;
-<<<<<<< HEAD
     public Display display;
-=======
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
+
     
  /*   public static void GenerateSettings(int w, int h)
     {
@@ -35,11 +32,8 @@ public class ScreenSettings {
     
     public static void GenerateSettings(int w, int h)
     {
-<<<<<<< HEAD
     	ScreenSettings.CurrentXRes =w;
-=======
         ScreenSettings.CurrentXRes =w;
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
         ScreenSettings.CurrentYRes = h;
         ScreenSettings.ScaleFactorX = ScreenSettings.CurrentXRes/(double)ScreenSettings.DefaultXRes;
         ScreenSettings.ScaleFactorY = ScreenSettings.CurrentYRes/(double)ScreenSettings.DefaultYRes;
