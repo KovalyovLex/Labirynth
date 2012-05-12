@@ -119,7 +119,7 @@ public abstract class GameObject {
     			index = i;
     		}
     	}
-		return strike; 
+		return strike;
     }
     
     public static boolean intersects_finish(GameObject obj1, GameObject obj2)
