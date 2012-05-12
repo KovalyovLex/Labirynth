@@ -3,11 +3,14 @@ package com.flexymind.labirynth.objects;
 
 import java.util.Vector;
 
+import com.flexymind.labirynth.screens.ScreenSettings;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 
 public abstract class GameObject {
 	
@@ -29,7 +32,20 @@ public abstract class GameObject {
     /** Изображение */
     protected Drawable mImage;
  
- 
+    public void refreshSize()
+    {
+    	mWidth = mImage.getIntrinsicWidth();
+        mHeight = mImage.getIntrinsicHeight();
+    }
+    
+    private void AutoSize()
+    {
+        if (ScreenSettings.AutoScale)
+        {
+        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
+        }
+    }
+    
     /**
      * Конструктор
      * @param image Изображение, которое будет обозначать данный объект
@@ -42,9 +58,22 @@ public abstract class GameObject {
         mHeight = image.getIntrinsicHeight();
     }
     /** Перемещение опорной точки */
-    protected void updatePoint() {
-	}
+    protected void updatePoint() { }
  
+    public void resize(double ScaleFactorX, double ScaleFactorY)
+    {
+    	int newX;
+		int newY;
+		refreshSize();
+		newX=(int)ScaleFactorX*mWidth;
+		newY=(int)ScaleFactorY*mHeight;
+		Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
+		Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
+    	bmp = tmp;
+    	mImage = new BitmapDrawable(bmp);
+    	refreshSize();
+    }
+    
     /** Перемещение объекта */
     public void Update()
     {

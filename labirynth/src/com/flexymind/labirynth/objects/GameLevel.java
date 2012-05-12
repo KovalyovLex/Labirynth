@@ -64,7 +64,7 @@ public class GameLevel extends GameObject{
         	Walls.elementAt(i).Update(); 
         }
         collisionsCheck();
-    	collision_With_Field (mball, mplayField);
+    	while (collision_With_Field (mball, mplayField));
     	victory();
     }
     
@@ -159,29 +159,34 @@ public class GameLevel extends GameObject{
     }
 
     /** ‘ункци€, описывающа€ столкновени€ шарика с ограничивающими стенками */
-    private void collision_With_Field (Ball ball, Rect PlayField){
+    private boolean collision_With_Field (Ball ball, Rect PlayField){
     	
     	if (ball.getLeft() <= PlayField.left)
         {
-            ball.reflectVertical(new Point(PlayField.left, ball.getPoint().y));
-            Log.v("reflect","vertical");
+            ball.reflectVertical(new Point(PlayField.left + 1, ball.getPoint().y));
+            return true;
+            //Log.v("reflect","vertical");
         }
         else if (ball.getRight() >= PlayField.right)
         {
-        	ball.reflectVertical(new Point(PlayField.right - ball.getWidth(), ball.getPoint().y));
-        	Log.v("reflect","vertical");
+        	ball.reflectVertical(new Point(PlayField.right - ball.getWidth() - 1, ball.getPoint().y));
+        	return true;
+        	//Log.v("reflect","vertical");
         }
     	
     	if (ball.getTop() <= PlayField.top)
 	    {
-	        ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.top));
-	        Log.v("reflect","horizontal");
+	        ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.top + 1));
+	        return true;
+	        //Log.v("reflect","horizontal");
 	    }
 	    else if (ball.getBottom() >= PlayField.bottom)
 	    {
-	    	ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.bottom - ball.getHeight()));
-	    	Log.v("reflect","horizontal");
+	    	ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.bottom - ball.getHeight() - 1));
+	    	return true;
+	    	//Log.v("reflect","horizontal");
 	    }
+		return false;
     }
     
     /** условие прохождени€ уровн€ */
