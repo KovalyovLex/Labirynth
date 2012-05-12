@@ -1,7 +1,6 @@
 package com.flexymind.labirynth.objects;
 
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,10 +15,20 @@ import android.hardware.SensorManager;
 
 public class Ball extends GameObject
 {
-    private static final Point NULL_SPEED = new Point(2, 5);
+    private static final float[] NULL_SPEED = new float[]{5, 8};
 	
-    /**Скорость шарика */
-    private Point mSpeed;
+    /** Скорость шарика */
+    private float[] mSpeed;
+    
+    /** Коэффициент трения об пол */
+    private float fric_coef = 0.98f;
+    
+    /** Координаты левого верхнего угла шарика (int очень груб) */
+    private float[] mPosition;
+    
+    /** Координаты левого верхнего угла шарика на предыдущем шаге */
+    private Point mPrevPoint = new Point();
+    
     /** Ускорение шарика */
     private float[] macelleration = new float[3];
     
@@ -47,13 +56,18 @@ public class Ball extends GameObject
         super(image);
         this.sMan = sensMan;
         
-        sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-        sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        registerListeners();
         
         mSpeed = NULL_SPEED;
         mPoint = pos;
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
+        mPrevPoint = mPoint;
+        
+        mPosition = new float[2];
+        mPosition[0] = mPoint.x;
+        mPosition[1] = mPoint.y;
+        
         this.mHeight = this.mWidth = diam;
     }
 	
@@ -88,6 +102,13 @@ public class Ball extends GameObject
 		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 	};
 	
+	public void registerListeners() {			//Надо этого метода в OnResume() главной активити
+
+        sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+        sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        
+	}
+	
 	public void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
 		sMan.unregisterListener(accelerometerListener);
 		sMan.unregisterListener(compassListener);
@@ -100,38 +121,47 @@ public class Ball extends GameObject
      */
     protected void updatePoint()
     {
-		//mSpeed.x += 0.1 * macelleration[0];
-        //mSpeed.y -= 0.1 * macelleration[1];
+		// Вязкое трение об пол
+		mSpeed[0] = fric_coef * mSpeed[0];
+		mSpeed[1] = fric_coef * mSpeed[1];
+		
+		mSpeed[0] -= 0.01 * macelleration[1];
+        mSpeed[1] -= 0.01 * macelleration[0];
         
 		//mPoint.x += mSpeed.x*0.02 + (macelleration[0]*0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
 		//mPoint.y += mSpeed.y*0.02 + (macelleration[1]*0.0004)/2;
 		//mSpeed.x += 0.02 * macelleration[0];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
         //mSpeed.y -= 0.02 * macelleration[1];
         
-        mPoint.x += mSpeed.x*0.02 + (9.81 * Math.cos(tiltAngles[2]) * 0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
-		mPoint.y += mSpeed.y*0.02 + (9.81 * Math.cos(tiltAngles[1]) * 0.0004)/2;
+        //mPoint.x += mSpeed.x*0.02 + (9.81 * Math.cos(tiltAngles[2]) * 0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
+		//mPoint.y += mSpeed.y*0.02 + (9.81 * Math.cos(tiltAngles[1]) * 0.0004)/2;
         
-		mSpeed.x += 0.02 * tiltAngles[2];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
-        mSpeed.y += 0.02 * tiltAngles[1];
+		//mSpeed.x += 0.02 * tiltAngles[2];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+        //mSpeed.y += 0.02 * tiltAngles[1];
         
-        mPoint.x += mSpeed.x;
-        mPoint.y += mSpeed.y;
-    }
-    
-    /**функция, возвращающая скорость с датчиков устройства
-     * в зависимости от наклона телефона*/
-    private Point getSpeed()
-    {
-		return mSpeed;
+        mPosition[0] += mSpeed[0];
+        mPosition[1] += mSpeed[1];
+        
+        mPrevPoint = mPoint;
+        
+        mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
     }
 	
+    /** Возвращает предыдущее положение центра шара*/
+    public Point getPrevCenter()
+    {
+    	return new Point(mPrevPoint.x + mWidth / 2, mPrevPoint.y + mHeight / 2);
+    }
+    
     /**
 	 * отражение от стены в направлении v1 (Point2 - Point1)
 	 * @param wall стена
+	 * @param new_pos новая координата по оси V1
 	 */
 	public void reflectWallV1(Wall wall){
 		Point vec1;
-		int project;
+		float project;
 		
 		vec1 = new Point (	wall.getPoint2().x - wall.getPoint1().x,
 							wall.getPoint2().y - wall.getPoint1().y);
@@ -141,19 +171,19 @@ public class Ball extends GameObject
 		vec1.x /= length;
 		vec1.y /= length;
 		
-		project = vec1.x * mSpeed.x + vec1.y * mSpeed.y;
-		mSpeed.x -= 2 * project * vec1.x;
-		mSpeed.y -= 2 * project * vec1.y;
-		
+		project = vec1.x * mSpeed[0] + vec1.y * mSpeed[1];
+		mSpeed[0] -= 2 * project * vec1.x;
+		mSpeed[1] -= 2 * project * vec1.y;
 	}
     
 	/**
 	 * отражение от стены в направлении v2 (Point3 - Point2)
 	 * @param wall стена
+	 * @param new_pos новая координата по оси V2
 	 */
 	public void reflectWallV2(Wall wall){
 		Point vec2;
-		int project;
+		float project;
 		
 		vec2 = new Point (	wall.getPoint3().x - wall.getPoint2().x,
 							wall.getPoint3().y - wall.getPoint2().y);
@@ -163,10 +193,9 @@ public class Ball extends GameObject
 		vec2.x /= length;
 		vec2.y /= length;
 		
-		project = vec2.x * mSpeed.x + vec2.y * mSpeed.y;
-		mSpeed.x -= 2 * project * vec2.x;
-		mSpeed.y -= 2 * project * vec2.y;
-		
+		project = vec2.x * mSpeed[0] + vec2.y * mSpeed[1];
+		mSpeed[0] -= 2 * project * vec2.x;
+		mSpeed[1] -= 2 * project * vec2.y;
 	}
 	
     /** Отражение мячика от вертикали 
@@ -175,7 +204,7 @@ public class Ball extends GameObject
     public void reflectVertical(Point newPoint)
     {
     	mPoint = newPoint;
-        mSpeed.x = -mSpeed.x;
+        mSpeed[0] = -mSpeed[0];
     }
 
     /** Отражение мячика от горизонтали 
@@ -184,7 +213,7 @@ public class Ball extends GameObject
     public void reflectHorizontal(Point newPoint)
     {
     	mPoint = newPoint;
-    	mSpeed.y = -mSpeed.y;
+    	mSpeed[1] = -mSpeed[1];
     }
 
 }
