@@ -58,14 +58,14 @@ public class GameLevel extends GameObject{
     /** Перемещение объекта */
     public void Update()
     {	
-    	collisionsCheck();
-    	collision_With_Field (mball, mplayField);
-    	victory();
         mball.Update();
         mfinish.Update();
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Update(); 
         }
+        collisionsCheck();
+    	collision_With_Field (mball, mplayField);
+    	victory();
     }
     
     /** Функция, описывающая столкновения объектов шар и станки между собой */
