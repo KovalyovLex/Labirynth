@@ -1,5 +1,7 @@
 package com.flexymind.labirynth.objects;
 
+import com.flexymind.labirynth.screens.ScreenSettings;
+
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -30,19 +32,19 @@ public class Ball extends GameObject
     private Point mPrevPoint = new Point();
     
     /** Ускорение шарика */
-    private float[] macelleration = new float[3];
+    private static float[] macelleration = new float[3];
     
     /** Данные компаса */
-    private float[] compassValues = new float[3];
+    private static float[] compassValues = new float[3];
     
     /** Массив для вычисления углов наклона */
-    private float[] inR = new float[9];
+    private static float[] inR = new float[9];
     
     /** Углы наклона */
-    private float[] tiltAngles = new float[3];
+    private static float[] tiltAngles = new float[3];
     
     /** Объект для прослушки сенсоров */
-    private SensorManager sMan;
+    public static SensorManager sMan;
     
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
@@ -54,7 +56,7 @@ public class Ball extends GameObject
 	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
     {
         super(image);
-        this.sMan = sensMan;
+        Ball.sMan = sensMan;
         
         registerListeners();
         
@@ -72,7 +74,7 @@ public class Ball extends GameObject
     }
 	
 	/** Прослушка акселерометра */
-	final SensorEventListener accelerometerListener = new SensorEventListener() {
+	public static final SensorEventListener accelerometerListener = new SensorEventListener() {
 		
 		public void onSensorChanged(SensorEvent event) {
 			macelleration = event.values;
@@ -82,7 +84,7 @@ public class Ball extends GameObject
 	};
 	
 	/** Прослушка компаса */
-	final SensorEventListener compassListener = new SensorEventListener() {
+	public static final SensorEventListener compassListener = new SensorEventListener() {
 		
 		public void onSensorChanged(SensorEvent event) {
 			compassValues = event.values;
@@ -102,14 +104,14 @@ public class Ball extends GameObject
 		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 	};
 	
-	public void registerListeners() {			//Надо этого метода в OnResume() главной активити
+	public static void registerListeners() {			//Надо этого метода в OnResume() главной активити
 
         sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
         
 	}
 	
-	public void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
+	public static void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
 		sMan.unregisterListener(accelerometerListener);
 		sMan.unregisterListener(compassListener);
 	}
@@ -125,22 +127,17 @@ public class Ball extends GameObject
 		mSpeed[0] = fric_coef * mSpeed[0];
 		mSpeed[1] = fric_coef * mSpeed[1];
 		
-		mSpeed[0] -= 0.01 * macelleration[1];
-        mSpeed[1] -= 0.01 * macelleration[0];
+		//mSpeed[0] += 0.05 * ScreenSettings.ScaleFactorX * macelleration[1];	//изменение скорости в зависимости от разрешения экрана
+        //mSpeed[1] += 0.05 * ScreenSettings.ScaleFactorY * macelleration[0];
+		
+		mSpeed[0] += 0.05 * macelleration[1];
+        mSpeed[1] += 0.05 * macelleration[0];
         
-		//mPoint.x += mSpeed.x*0.02 + (macelleration[0]*0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
-		//mPoint.y += mSpeed.y*0.02 + (macelleration[1]*0.0004)/2;
-		//mSpeed.x += 0.02 * macelleration[0];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
-        //mSpeed.y -= 0.02 * macelleration[1];
+        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
         
-        //mPoint.x += mSpeed.x*0.02 + (9.81 * Math.cos(tiltAngles[2]) * 0.0004)/2;	//S = v0t + (at2)/2. t = 20мс (период между вызовами UpdateObjects())
-		//mPoint.y += mSpeed.y*0.02 + (9.81 * Math.cos(tiltAngles[1]) * 0.0004)/2;
-        
-		//mSpeed.x += 0.02 * tiltAngles[2];	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
-        //mSpeed.y += 0.02 * tiltAngles[1];
-        
-        mPosition[0] += mSpeed[0];
-        mPosition[1] += mSpeed[1];
+        mPosition[0] -= mSpeed[0];
+        mPosition[1] -= mSpeed[1];
         
         mPrevPoint = mPoint;
         

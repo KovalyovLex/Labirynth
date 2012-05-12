@@ -81,7 +81,27 @@ public class GameManager extends Thread
         mField = new Rect();
     }
 
-	/**
+	   
+    public void resize(double ScaleFactorX, double ScaleFactorY)
+    {
+    	int newX;
+    	int newY;
+    	newX=(int)ScaleFactorX*mBackground.getWidth();
+    	newY=(int)ScaleFactorY*mBackground.getHeight();
+    	Bitmap tmp = Bitmap.createScaledBitmap(mBackground, newX, newY, true);
+        mBackground = tmp;
+    }
+    
+    private void AutoSize()
+    {
+        if (ScreenSettings.AutoScale)
+        {
+        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
+        }
+    }
+    
+    
+    /**
      * Задание состояния потока
      * @param running
      */
@@ -107,7 +127,7 @@ public class GameManager extends Thread
                 {
                     updateObjects();     // обновляем объекты
                     refreshCanvas(canvas); // обновляем экран
-                    sleep(20);
+                    sleep(5);
                 }
             }
             catch (Exception e) { }
@@ -126,7 +146,7 @@ public class GameManager extends Thread
     {
     	
     	// вывод фонового изображения
-
+    	AutoSize();
     	canvas.drawBitmap(mBackground, 0, 0, null);
     	canvas.drawRect(mField, mPaint);
     	
