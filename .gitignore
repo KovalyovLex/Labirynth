@@ -9,5 +9,6 @@
 *.apk
 *.psd
 *.jpg
+*.png
 
 ./bin/
