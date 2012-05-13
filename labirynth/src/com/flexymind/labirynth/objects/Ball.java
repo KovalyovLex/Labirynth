@@ -11,7 +11,7 @@ import android.hardware.SensorManager;
 
 /**
  * Класс Шарик
- * @author Kurnikov Sergey
+ * @author Kurnikov Sergey + Soloviev Vyacheslav
  *
  */
 
@@ -23,7 +23,7 @@ public class Ball extends GameObject
     private float[] mSpeed;
     
     /** Коэффициент трения об пол */
-    private float fric_coef = 0.98f;
+    private float fric_coef = 0.95f;
     
     /** Координаты левого верхнего угла шарика (int очень груб) */
     private float[] mPosition;
@@ -130,8 +130,8 @@ public class Ball extends GameObject
 		//mSpeed[0] += 0.05 * ScreenSettings.ScaleFactorX * macelleration[1];	//изменение скорости в зависимости от разрешения экрана
         //mSpeed[1] += 0.05 * ScreenSettings.ScaleFactorY * macelleration[0];
 		
-		mSpeed[0] += 0.05 * macelleration[1];
-        mSpeed[1] += 0.05 * macelleration[0];
+		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
+        mSpeed[1] += 0.045 * ScreenSettings.ScaleFactorY * macelleration[0];
         
         //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
         //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));

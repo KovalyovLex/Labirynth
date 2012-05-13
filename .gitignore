@@ -11,4 +11,4 @@
 *.jpg
 *.png
 
-./bin/
+*/bin/

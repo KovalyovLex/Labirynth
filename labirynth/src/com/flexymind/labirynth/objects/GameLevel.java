@@ -29,7 +29,9 @@ public class GameLevel extends GameObject{
 	private boolean dostup = true;
 	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
     /**Игровое поле */
-	//private Rect mplayField = new Rect(65,30,720,415);
+	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
+    //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
+
     int Number;
     Vector <Wall> Walls;
     
