@@ -2,12 +2,16 @@ package com.flexymind.labirynth.objects;
 
 import java.util.Vector;
 
-
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import com.flexymind.labirynth.screens.ScreenSettings;
 
 /**
  * Класс 
@@ -18,10 +22,24 @@ public class GameLevel extends GameObject{
  
 	private Ball mball;
 	private FINISH mfinish;
+	private int rectHeight = 415;
+	private int rectWidth = 752;
+	private int left = 59;
+	private int top = 24;
+	private boolean dostup = true;
+	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
     /**Игровое поле */
-	private Rect mplayField = new Rect(65,30,720,415);
+	//private Rect mplayField = new Rect(65,30,720,415);
     int Number;
     Vector <Wall> Walls;
+    
+    private void AutoSize()
+    {
+        if (ScreenSettings.AutoScale)
+        {
+        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
+        }
+    }
     
     /**
      * Конструктор 
@@ -40,11 +58,24 @@ public class GameLevel extends GameObject{
 		Walls   = walls;
 		Number  = Walls.size();
 	}
+    
+    public void resize(double ScaleFactorX, double ScaleFactorY)
+    {
+    	rectHeight = (int)(ScaleFactorX*rectHeight);
+        rectWidth = (int)(ScaleFactorY*rectWidth);
+        left = (int)(ScaleFactorX*left);
+        top = (int)(ScaleFactorY*top);
+    }
 
     @Override
     /** Отрисовка объектов на игровом поле */
     public void Draw(Canvas canvas)
     {	
+    	if(dostup)
+        {
+        	rectUpdate();
+        	dostup = false;
+        }
     	this.mImage.setBounds(canvas.getClipBounds());
     	this.mImage.draw(canvas);
     	mfinish.Draw(canvas);
@@ -52,6 +83,14 @@ public class GameLevel extends GameObject{
         for(int i=0;i < Number;i++){
         	Walls.elementAt(i).Draw(canvas);
         }
+
+        Paint mPaint = new Paint();
+        mPaint.setColor(Color.MAGENTA);
+        mPaint.setStrokeWidth(2);
+        mPaint.setStyle(Style.STROKE);
+        rectHeight=rectHeight;
+        rectWidth = rectWidth;
+        canvas.drawRect(mplayField, mPaint);
     }
     
     @Override
@@ -66,6 +105,12 @@ public class GameLevel extends GameObject{
         collisionsCheck();
     	while (collision_With_Field (mball, mplayField));
     	victory();
+    }
+    
+    public void rectUpdate()
+    {
+    	AutoSize();
+        mplayField.set(left, top, rectWidth, rectHeight);
     }
     
     /** Функция, описывающая столкновения объектов шар и станки между собой */

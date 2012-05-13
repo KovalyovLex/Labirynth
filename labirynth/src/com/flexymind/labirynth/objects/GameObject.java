@@ -65,8 +65,8 @@ public abstract class GameObject {
     	int newX;
     	int newY;
     	refreshSize();
-    	newX=(int)ScaleFactorX*mWidth;
-    	newY=(int)ScaleFactorY*mHeight;
+    	newX=(int)(ScaleFactorX*mWidth);
+    	newY=(int)(ScaleFactorY*mHeight);
     	Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
     	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
         bmp = tmp;
