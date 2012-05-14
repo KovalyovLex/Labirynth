@@ -14,9 +14,9 @@ import android.util.Log;
 import com.flexymind.labirynth.screens.ScreenSettings;
 
 /**
- * Класс 
+ * РљР»Р°СЃСЃ 
  * @author Kurnikov Sergey + Kovalyov Alexaner
- * отрисовка всех стенок + соударение от стенок и движение шарика, условие прохождения уровня
+ * РѕС‚СЂРёСЃРѕРІРєР° РІСЃРµС… СЃС‚РµРЅРѕРє + СЃРѕСѓРґР°СЂРµРЅРёРµ РѕС‚ СЃС‚РµРЅРѕРє Рё РґРІРёР¶РµРЅРёРµ С€Р°СЂРёРєР°, СѓСЃР»РѕРІРёРµ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ СѓСЂРѕРІРЅСЏ
  */
 public class GameLevel extends GameObject{
  
@@ -28,7 +28,7 @@ public class GameLevel extends GameObject{
 	private int top = 24;
 	private boolean dostup = true;
 	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
-    /**Игровое поле */
+    /**РРіСЂРѕРІРѕРµ РїРѕР»Рµ */
 	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
     //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
 
@@ -44,16 +44,16 @@ public class GameLevel extends GameObject{
     }
     
     /**
-     * Конструктор 
-     * @param Vector <Wall> walls Все стены данного уровня
-     * @param finish_X, finish_Y  Финишное положение
-     * @param Diam диаметр шарика
-     * @param Ball шарик
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ 
+     * @param Vector <Wall> walls Р’СЃРµ СЃС‚РµРЅС‹ РґР°РЅРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ
+     * @param finish_X, finish_Y  Р¤РёРЅРёС€РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
+     * @param Diam РґРёР°РјРµС‚СЂ С€Р°СЂРёРєР°
+     * @param Ball С€Р°СЂРёРє
      */
     public GameLevel(	Vector <Wall> walls,
 						Ball ball, FINISH finish,
 						Drawable mBackGr){
-		//инициализируем параметры, переданные с помощью конструктора
+		//РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїР°СЂР°РјРµС‚СЂС‹, РїРµСЂРµРґР°РЅРЅС‹Рµ СЃ РїРѕРјРѕС‰СЊСЋ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°
 		super(mBackGr);
 		mball   = ball;
 		mfinish = finish;
@@ -70,7 +70,7 @@ public class GameLevel extends GameObject{
     }
 
     @Override
-    /** Отрисовка объектов на игровом поле */
+    /** РћС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РЅР° РёРіСЂРѕРІРѕРј РїРѕР»Рµ */
     public void Draw(Canvas canvas)
     {	
     	if(dostup)
@@ -94,7 +94,7 @@ public class GameLevel extends GameObject{
     }
     
     @Override
-    /** Перемещение объекта */
+    /** РџРµСЂРµРјРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚Р° */
     public void Update()
     {	
         mball.Update();
@@ -113,87 +113,125 @@ public class GameLevel extends GameObject{
         mplayField.set(left, top, rectWidth, rectHeight);
     }
     
-    /** Функция, описывающая столкновения объектов шар и станки между собой */
+    /** Р¤СѓРЅРєС†РёСЏ, РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ РѕР±СЉРµРєС‚РѕРІ С€Р°СЂ Рё СЃС‚Р°РЅРєРё РјРµР¶РґСѓ СЃРѕР±РѕР№ */
     private void collisionsCheck()
     {
-    	float[] p1, p2, p3, v1, v2;
-    	float[] vec1, vec2, sum;// vec1_prev, vec2_prev;
+    	float[] p1 = {0,0}, p2 = {0,0}, p3 = {0,0}, p4 = {0,0}, speed = {0,0};
+    	float[] v1 = {0,0}, v2 = {0,0}, v3 = {0,0}, v4 = {0,0};
+    	float[] vec1 = {0,0}, vec2 = {0,0}, vec3 = {0,0}, vec4 = {0,0};
+    	float[] vec_v_1 = {0,0}, vec_v_2 = {0,0}, vec_v_3 = {0,0}, vec_v_4 = {0,0}; // vec_v_i РІРµРєС‚РѕСЂ РѕС‚ pi РґРѕ РїРµСЂРµСЃРµС‡РµРЅРёСЏ
+    	float[] intersectP_V1 = {0,0}, intersectP_V2 = {0,0}, intersectP_V3 = {0,0}, intersectP_V4 = {0,0};
     	Wall twall;
-
+    	
         for(int i=0;i<Number;i++){
+        	
         	twall = Walls.elementAt(i);
-        	p1 = new float[] {  twall.getPoint1().x - mball.mWidth / 2,
-        						twall.getPoint1().y -  mball.mHeight / 2};
         	
-        	p2 = new float[] {	twall.getPoint2().x - mball.mWidth / 2,
-								twall.getPoint2().y +  mball.mHeight / 2};
+        	p1[0] = twall.getPoint1().x - mball.mWidth / 2;
+        	p1[1] = twall.getPoint1().y -  mball.mHeight / 2;
+        	
+        	p2[0] = twall.getPoint2().x - mball.mWidth / 2;
+        	p2[1] = twall.getPoint2().y +  mball.mHeight / 2;
 
-        	p3 = new float[] {	twall.getPoint3().x + mball.mWidth / 2,
-								twall.getPoint3().y -  mball.mHeight / 2};
+        	p3[0] = twall.getPoint3().x + mball.mWidth / 2;
+        	p3[1] = twall.getPoint3().y +  mball.mHeight / 2;
         	
-        	v1 = new float[]{ p2[0] - p1[0],
-        					  p2[1] - p1[1]};
+        	p4[0] = p1[0] + p3[0] - p2[0];
+        	p4[1] = p1[1] + p3[1] - p2[1];
         	
-        	v2 = new float[]{ p3[0] - p2[0],
-							  p3[1] - p2[1]};
+        	v1[0] = p2[0] - p1[0];
+        	v1[1] = p2[1] - p1[1];
         	
-        	// расстояние от p1 до центра шара
-        	sum = new float[]{	mball.getCenter().x - p1[0],
-        						mball.getCenter().y - p1[1]};
-        	// проекция sum на v2
-        	vec2 = new float[]{	sum[0] - scal_mul(sum,v1) * v1[0] / scal_mul(v1,v1),
-        						sum[1] - scal_mul(sum,v1) * v1[1] / scal_mul(v1,v1)};
-        	// проекция sum на v1
-        	vec1 = new float[]{	sum[0] - vec2[0],
-        						sum[1] - vec2[1]};
+        	v2[0] = p3[0] - p2[0];
+			v2[1] = p3[1] - p2[1];
         	
-        	/*
-        	// расстояние от p1 до центра шара на предыдущем шаге
-        	sum = new float[]{	mball.getPrevCenter().x - p1[0],
-								mball.getPrevCenter().y - p1[1]};
+			v3[0] = p4[0] - p1[0];
+			v3[1] = p4[1] - p1[1];
+			
+			v4[0] = p3[0] - p4[0];
+			v4[1] = p3[1] - p4[1];
+			
+        	intersectP_V1 = getIntersectionPoint(p1, p2, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V2 = getIntersectionPoint(p2, p3, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V3 = getIntersectionPoint(p1, p4, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V4 = getIntersectionPoint(p4, p3, mball.getPrevCenterf(), mball.getCenterf());
         	
-        	vec2_prev = new float[]{	sum[0] - scal_mul(sum,v1) * v1[0] / scal_mul(v1,v1),
-										sum[1] - scal_mul(sum,v1) * v1[1] / scal_mul(v1,v1)};
-        	// проекция пред. sum на v1
-        	vec1_prev = new float[]{	sum[0] - vec2_prev[0],
-										sum[1] - vec2_prev[1]};
-        	*/
+        	speed[0] = mball.getCenterf()[0] - mball.getPrevCenterf()[0];
+        	speed[1] = mball.getCenterf()[1] - mball.getPrevCenterf()[1];
         	
-        	if (	scal_mul(vec1,v1) >= 0 
-        		 && scal_mul(vec1,vec1) <= scal_mul(v1,v1)
-        		 && scal_mul(vec2,v2) >= 0
-        		 && scal_mul(vec2,vec2) <= scal_mul(v2,v2)){
-        		// удар
-        		float minV1, minV2; 
+        	if (intersectP_V1 != null){
+        		vec1[0] = intersectP_V1[0] - mball.getPrevCenterf()[0];
+        		vec1[1] = intersectP_V1[1] - mball.getPrevCenterf()[1];
+        		vec_v_1[0] = intersectP_V1[0] - p1[0];
+        		vec_v_1[1] = intersectP_V1[1] - p1[1];
+        	}
+        	
+        	if (intersectP_V2 != null){
+        		vec2[0] = intersectP_V2[0] - mball.getPrevCenterf()[0];
+				vec2[1] = intersectP_V2[1] - mball.getPrevCenterf()[1];
+        		vec_v_2[0] = intersectP_V2[0] - p2[0];
+        		vec_v_2[1] = intersectP_V2[1] - p2[1];
+        	}
+        	
+        	if (intersectP_V3 != null){
+        		vec3[0] = intersectP_V3[0] - mball.getPrevCenterf()[0];
+				vec3[1] = intersectP_V3[1] - mball.getPrevCenterf()[1];
+        		vec_v_3[0] = intersectP_V3[0] - p1[0];
+        		vec_v_3[1] = intersectP_V3[1] - p1[1];
+        	}
+        	
+        	if (intersectP_V4 != null){
+        		vec4[0] = intersectP_V4[0] - mball.getPrevCenterf()[0];
+				vec4[1] = intersectP_V4[1] - mball.getPrevCenterf()[1];
+        		vec_v_4[0] = intersectP_V4[0] - p4[0];
+        		vec_v_4[1] = intersectP_V4[1] - p4[1];
+        	}
+        	
+        	if ((scal_mul(vec_v_1,v1) <= scal_mul(v1,v1) && scal_mul(vec_v_1,v1) > 0)){
+        		if (scal_mul(vec1,speed) <= scal_mul(speed,speed) && scal_mul(vec1,speed) > 0){
+        			// СЃРѕСѓРґР°СЂРµРЅРёРµ СЃРѕ СЃС‚РµРЅРѕР№ РІ РЅР°РїСЂ. v1, РѕС‚СЂ. РІ РЅР°РїСЂ. v2
+        			intersectP_V1[0]--;
+        			intersectP_V1[1]--;
+        			mball.reflectWallV2(twall,intersectP_V1);
+        			Log.v("reflect1","v1 dvn");
+        		}
+        		continue;
+        	}
+        	
+        	if ((scal_mul(vec_v_2,v2) <= scal_mul(v2,v2) && scal_mul(vec_v_2,v2) > 0)){
+        		if (scal_mul(vec2,speed) <= scal_mul(speed,speed) && scal_mul(vec2,speed) > 0){
+        			// СЃРѕСѓРґР°СЂРµРЅРёРµ СЃРѕ СЃС‚РµРЅРѕР№ РІ РЅР°РїСЂ. v1, РѕС‚СЂ. РІ РЅР°РїСЂ. v2
+        			intersectP_V2[0]++;
+        			intersectP_V2[1]++;
+        			mball.reflectWallV1(twall,intersectP_V2);
+        			Log.v("reflect1","v2 dvn");
+        		}
+        		continue;
+        	}
+        	
+        	if ((scal_mul(vec_v_3,v3) <= scal_mul(v3,v3) && scal_mul(vec_v_3,v3) > 0)){
         		
-        		if ( scal_mul(vec1,vec1) / scal_mul(v1,v1) > ((scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1)) ){
-        			minV1 = ((scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1));
-        			Log.v("reflect","v1 dvn");
-        		}
-        		else{
-        			minV1 = scal_mul(vec1,vec1) / scal_mul(v1,v1);
-        			Log.v("reflect","v1 up");
-        		}
+        		Log.v("scal_mul vec_3, v3", Integer.toString((int)scal_mul(vec3,speed)));
         		
-        		if ( scal_mul(vec2,vec2) / scal_mul(v2,v2) > ((scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2)) ){
-        			// удар об правую стенку
-        			minV2 = ((scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2));
-        			Log.v("reflect","v2 rigth");
-        		}else{
-        			// удар об левую стенку
-        			minV2 = scal_mul(vec2,vec2) / scal_mul(v2,v2);
-        			Log.v("reflect","v2 left");
+        		if (scal_mul(vec3,speed) <= scal_mul(speed,speed) && scal_mul(vec3,speed) > 0){
+        			// СЃРѕСѓРґР°СЂРµРЅРёРµ СЃРѕ СЃС‚РµРЅРѕР№ РІ РЅР°РїСЂ. v1, РѕС‚СЂ. РІ РЅР°РїСЂ. v2
+        			intersectP_V1[0]--;
+        			intersectP_V1[1]--;
+        			mball.reflectWallV2(twall,intersectP_V1);
+        			Log.v("reflect1","v2 up");
         		}
-        		
-                if ( minV1 > minV2 ){
-        			// удар в направлении v2
-            		mball.reflectWallV2(twall);
-            		Log.v("reflect","v2");
-        		}else{
-        			// удар в направлении v1
-            		mball.reflectWallV1(twall);
-            		Log.v("reflect","v1");
+        		continue;
+        	}
+        	
+        	if ((scal_mul(vec_v_4,v4) <= scal_mul(v4,v4) && scal_mul(vec_v_4,v4) > 0)){
+        		if (scal_mul(vec4,speed) <= scal_mul(speed,speed) && scal_mul(vec4,speed) > 0){
+        			// СЃРѕСѓРґР°СЂРµРЅРёРµ СЃРѕ СЃС‚РµРЅРѕР№ РІ РЅР°РїСЂ. v1, РѕС‚СЂ. РІ РЅР°РїСЂ. v2
+        			intersectP_V1[0]--;
+        			intersectP_V1[1]--;
+        			mball.reflectWallV2(twall,intersectP_V1);
+        			Log.v("reflect1","v1 up");
         		}
+        		continue;
         	}
         }
     	
@@ -203,7 +241,31 @@ public class GameLevel extends GameObject{
     	return p1[0] * p2[0] + p1[1] * p2[1];
     }
 
-    /** Функция, описывающая столкновения шарика с ограничивающими стенками */
+    /**
+     * РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РѕС‡РєСѓ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РґРІСѓС… РїСЂСЏРјС‹С… РїСЂРѕС…РѕРґСЏС€РёС… С‡РµСЂРµР· (p1, p2) Рё 
+     * (cord_p1,cord_p2) 
+     * @param p1 - РїРµСЂРІР°СЏ С‚РѕС‡РєР°
+     * @param p2 - РІС‚РѕСЂР°СЏ С‚РѕС‡РєР°
+     * @param cord_p1 - С‚РѕС‡РєР° РїСЂРµРґ. СЃРѕСЃС‚РѕСЏРЅРёСЏ
+     * @param cord_p2 - С‚РѕС‡РєР° СЃР»РµРґ. СЃРѕСЃС‚РѕСЏРЅРёСЏ
+     * @return <code>float[2] Point</code> - x Рё y РєРѕРѕСЂРґРёРЅР°С‚С‹ С‚РѕС‡РєРё РїРµСЂРµСЃРµС‡РµРЅРёСЏ РёР»Рё <code>null</code> РµСЃР»Рё РЅРµС‚ С‚Р°РєРѕР№ С‚РѕС‡РєРё 
+     */
+    private float[] getIntersectionPoint(float[] p1, float[] p2, float[] cord_p1, float[] cord_p2){
+    	float x1 = p1[0], x2 = p2[0], y1 = p1[1], y2 = p2[1];
+    	float x3 = cord_p1[0], x4 = cord_p2[0], y3 = cord_p1[1], y4 = cord_p2[1];
+
+    	float d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+    	if (d == 0) {
+    		return null;
+    	}
+
+    	float xi = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/d;
+    	float yi = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/d;
+
+    	return new float[]{ xi, yi };
+    }
+    
+    /** Р¤СѓРЅРєС†РёСЏ, РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ С€Р°СЂРёРєР° СЃ РѕРіСЂР°РЅРёС‡РёРІР°СЋС‰РёРјРё СЃС‚РµРЅРєР°РјРё */
     private boolean collision_With_Field (Ball ball, Rect PlayField){
     	
     	if (ball.getLeft() <= PlayField.left)
@@ -234,7 +296,7 @@ public class GameLevel extends GameObject{
 		return false;
     }
     
-    /** условие прохождения уровня */
+    /** СѓСЃР»РѕРІРёРµ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ СѓСЂРѕРІРЅСЏ */
     protected void victory() {
 
     	if(GameObject.intersects_finish(mball, mfinish))
