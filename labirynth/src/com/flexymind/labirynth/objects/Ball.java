@@ -17,7 +17,7 @@ import android.hardware.SensorManager;
 
 public class Ball extends GameObject
 {
-    private static final float[] NULL_SPEED = new float[]{5, 8};
+    private static final float[] NULL_SPEED = new float[]{0, 0};
 	
     /** Скорость шарика */
     private float[] mSpeed;
