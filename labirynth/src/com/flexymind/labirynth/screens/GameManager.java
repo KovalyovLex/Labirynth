@@ -101,11 +101,7 @@ public class GameManager extends Thread
         }
     }
     
-    
-    /**
-=======
 	/**
->>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
      * Задание состояния потока
      * @param running
      */
@@ -124,7 +120,6 @@ public class GameManager extends Thread
         	canvas = null;
             try
             {
-            	//Log.v("Gman","run");
                 // подготовка Canvas-а
                 canvas = mSurfaceHolder.lockCanvas(); 
                 synchronized (mSurfaceHolder)

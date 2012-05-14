@@ -11,10 +11,6 @@ import android.view.Display;
 
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
-    
-	public Display display;
-    public int ScreenHeight;
-    public int ScreenWidth;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
