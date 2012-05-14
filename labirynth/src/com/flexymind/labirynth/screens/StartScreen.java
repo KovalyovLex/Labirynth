@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.screens;
+п»їpackage com.flexymind.labirynth.screens;
 
 
 import com.flexymind.labirynth.R;
@@ -20,20 +20,20 @@ public class StartScreen extends Activity implements OnClickListener
         setContentView(R.layout.start);
         
         
-        // Кнопка "Start"
+        // РљРЅРѕРїРєР° "Start"
         Button startButton = (Button)findViewById(R.id.StartButton);
         startButton.setOnClickListener(this);
 
-        // Кнопка "Exit"
+        // РљРЅРѕРїРєР° "Exit"
         Button exitButton = (Button)findViewById(R.id.ExitButton);
         exitButton.setOnClickListener(this);
 
-        // Кнопка "Settings"
+        // РљРЅРѕРїРєР° "Settings"
         Button settingsButton = (Button)findViewById(R.id.SettingsButton);
         settingsButton.setOnClickListener(this);
     }
 
-    /** Обработка нажатия кнопок */
+    /** РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРѕРє */
     public void onClick(View v)
     {
         switch (v.getId())

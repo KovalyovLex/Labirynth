@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.objects;
+п»їpackage com.flexymind.labirynth.objects;
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
@@ -8,8 +8,8 @@ public class Wall extends GameObject{
 	private Point secPoint, thirdPoint;
 	
 	/**
-	 * Конструктор по умолчанию
-	 * @param mBackG Текстура
+	 * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+	 * @param mBackG РўРµРєСЃС‚СѓСЂР°
 	 * @param first Point 1
 	 * @param second Point 2
 	 * @param third Point 3
@@ -29,7 +29,7 @@ public class Wall extends GameObject{
 	}
 
 	/**
-	 * Возвращает значение 1 точки
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ 1 С‚РѕС‡РєРё
 	 * @return point 1
 	 */
 	public Point getPoint1(){
@@ -37,7 +37,7 @@ public class Wall extends GameObject{
 	}
 	
 	/**
-	 * Возвращает значение 2 точки
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ 2 С‚РѕС‡РєРё
 	 * @return point 2
 	 */
 	public Point getPoint2(){
@@ -45,7 +45,7 @@ public class Wall extends GameObject{
 	}
 	
 	/**
-	 * Возвращает значение 3 точки
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ 3 С‚РѕС‡РєРё
 	 * @return point 3
 	 */
 	public Point getPoint3(){

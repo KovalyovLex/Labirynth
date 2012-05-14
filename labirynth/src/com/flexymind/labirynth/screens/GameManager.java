@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.screens;
+п»їpackage com.flexymind.labirynth.screens;
 
 
 import java.util.Vector;
@@ -21,36 +21,36 @@ public class GameManager extends Thread
     private static final int FIELD_WIDTH  = 800;
     private static final int FIELD_HEIGHT = 410;
 
-    /** Область, на которой будем рисовать */
+    /** РћР±Р»Р°СЃС‚СЊ, РЅР° РєРѕС‚РѕСЂРѕР№ Р±СѓРґРµРј СЂРёСЃРѕРІР°С‚СЊ */
     private SurfaceHolder mSurfaceHolder;
     
-    /** Состояние потока  */
+    /** РЎРѕСЃС‚РѕСЏРЅРёРµ РїРѕС‚РѕРєР°  */
     private boolean mRunning;
     
-    /** Стили рисования */
+    /** РЎС‚РёР»Рё СЂРёСЃРѕРІР°РЅРёСЏ */
     private Paint mPaint;
     
-    /** Прямоугольник игрового поля */
+    /** РџСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє РёРіСЂРѕРІРѕРіРѕ РїРѕР»СЏ */
     private Rect mField;
     
     private GameLevel mlevel = null;
 
-    /** Фон */
+    /** Р¤РѕРЅ */
     private Bitmap mBackground;
     
         
     /**
-     * Конструктор
-     * @param surfaceHolder Область рисования
-     * @param context Контекст приложения
-     * @param level Игровой уровень
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+     * @param surfaceHolder РћР±Р»Р°СЃС‚СЊ СЂРёСЃРѕРІР°РЅРёСЏ
+     * @param context РљРѕРЅС‚РµРєСЃС‚ РїСЂРёР»РѕР¶РµРЅРёСЏ
+     * @param level РРіСЂРѕРІРѕР№ СѓСЂРѕРІРµРЅСЊ
      */
     public GameManager(SurfaceHolder surfaceHolder, GameLevel level)
     {
     	mlevel = level;
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
-        // инициализация стилей рисования
+        // РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЃС‚РёР»РµР№ СЂРёСЃРѕРІР°РЅРёСЏ
         mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
         mPaint.setStrokeWidth(2);
@@ -60,21 +60,21 @@ public class GameManager extends Thread
     }
     
     /**
-     * Конструктор
-     * @param surfaceHolder Область рисования
-     * @param context Контекст приложения
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+     * @param surfaceHolder РћР±Р»Р°СЃС‚СЊ СЂРёСЃРѕРІР°РЅРёСЏ
+     * @param context РљРѕРЅС‚РµРєСЃС‚ РїСЂРёР»РѕР¶РµРЅРёСЏ
      */
     public GameManager(SurfaceHolder surfaceHolder, Context context)
     {
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
-        // инициализация стилей рисования
+        // РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЃС‚РёР»РµР№ СЂРёСЃРѕРІР°РЅРёСЏ
         mPaint = new Paint();
         mPaint.setColor(Color.BLACK);
         mPaint.setStrokeWidth(2);
         mPaint.setStyle(Style.STROKE);
         
-        // загрузка первого уровня из файла
+        // Р·Р°РіСЂСѓР·РєР° РїРµСЂРІРѕРіРѕ СѓСЂРѕРІРЅСЏ РёР· С„Р°Р№Р»Р°
         LevelStorage storage = new LevelStorage(context);
         Vector<String> names = storage.get_level_names();
         mlevel = storage.loadGameLevelbyName(names.elementAt(0));
@@ -106,7 +106,7 @@ public class GameManager extends Thread
 =======
 	/**
 >>>>>>> 1a0496cf887058b13588f9079f632d26f2b8a560
-     * Задание состояния потока
+     * Р—Р°РґР°РЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕС‚РѕРєР°
      * @param running
      */
     public void setRunning(boolean running)
@@ -115,7 +115,7 @@ public class GameManager extends Thread
     }
     
     @Override
-    /** Действия, выполняемые в потоке */
+    /** Р”РµР№СЃС‚РІРёСЏ, РІС‹РїРѕР»РЅСЏРµРјС‹Рµ РІ РїРѕС‚РѕРєРµ */
     public void run()
     {
     	Canvas canvas = null;
@@ -125,12 +125,12 @@ public class GameManager extends Thread
             try
             {
             	//Log.v("Gman","run");
-                // подготовка Canvas-а
+                // РїРѕРґРіРѕС‚РѕРІРєР° Canvas-Р°
                 canvas = mSurfaceHolder.lockCanvas(); 
                 synchronized (mSurfaceHolder)
                 {
-                    updateObjects();     // обновляем объекты
-                    refreshCanvas(canvas); // обновляем экран
+                    updateObjects();     // РѕР±РЅРѕРІР»СЏРµРј РѕР±СЉРµРєС‚С‹
+                    refreshCanvas(canvas); // РѕР±РЅРѕРІР»СЏРµРј СЌРєСЂР°РЅ
                     sleep(5);
                 }
             }
@@ -145,30 +145,30 @@ public class GameManager extends Thread
         }
     }
     
-    /** Обновление объектов на экране */
+    /** РћР±РЅРѕРІР»РµРЅРёРµ РѕР±СЉРµРєС‚РѕРІ РЅР° СЌРєСЂР°РЅРµ */
     private void refreshCanvas(Canvas canvas)
     {
     	
-    	// вывод фонового изображения
+    	// РІС‹РІРѕРґ С„РѕРЅРѕРІРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
     	AutoSize();
     	canvas.drawBitmap(mBackground, 0, 0, null);
     	canvas.drawRect(mField, mPaint);
     	
-    	// рисуем уровень
+    	// СЂРёСЃСѓРµРј СѓСЂРѕРІРµРЅСЊ
     	mlevel.Draw(canvas);
     }
 
         
-    /** Обновление состояния игровых объектов */
+    /** РћР±РЅРѕРІР»РµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РёРіСЂРѕРІС‹С… РѕР±СЉРµРєС‚РѕРІ */
     private void updateObjects()
     {
         mlevel.Update();
     }
    
     /**
-     * Инициализация положения объектов, в соответствии с размерами экрана
-     * @param screenHeight Высота экрана
-     * @param screenWidth Ширина экрана
+     * РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕР»РѕР¶РµРЅРёСЏ РѕР±СЉРµРєС‚РѕРІ, РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ СЂР°Р·РјРµСЂР°РјРё СЌРєСЂР°РЅР°
+     * @param screenHeight Р’С‹СЃРѕС‚Р° СЌРєСЂР°РЅР°
+     * @param screenWidth РЁРёСЂРёРЅР° СЌРєСЂР°РЅР°
      */
     public void initPositions(int screenHeight, int screenWidth)
     {
@@ -185,9 +185,9 @@ public class GameManager extends Thread
     }
     
     /**
-     * Обработка нажатия кнопки
-     * @param keyCode Код нажатой кнопки
-     * @return Было ли обработано нажатие
+     * РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё
+     * @param keyCode РљРѕРґ РЅР°Р¶Р°С‚РѕР№ РєРЅРѕРїРєРё
+     * @return Р‘С‹Р»Рѕ Р»Рё РѕР±СЂР°Р±РѕС‚Р°РЅРѕ РЅР°Р¶Р°С‚РёРµ
      */
     public boolean doKeyDown(int keyCode)
     {
@@ -207,9 +207,9 @@ public class GameManager extends Thread
     }
     
     /**
-     * Обработка отпускания кнопки
-     * @param keyCode Код кнопки
-     * @return Было ли действие обработано
+     * РћР±СЂР°Р±РѕС‚РєР° РѕС‚РїСѓСЃРєР°РЅРёСЏ РєРЅРѕРїРєРё
+     * @param keyCode РљРѕРґ РєРЅРѕРїРєРё
+     * @return Р‘С‹Р»Рѕ Р»Рё РґРµР№СЃС‚РІРёРµ РѕР±СЂР°Р±РѕС‚Р°РЅРѕ
      */
     public boolean doKeyUp(int keyCode)
     {

@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.objects;
+п»їpackage com.flexymind.labirynth.objects;
 
 
 import java.util.Vector;
@@ -13,22 +13,22 @@ import android.graphics.drawable.Drawable;
 
 public abstract class GameObject {
 	
-	// Константы для направлений
+	// РљРѕРЅСЃС‚Р°РЅС‚С‹ РґР»СЏ РЅР°РїСЂР°РІР»РµРЅРёР№
     public final static int DIR_LEFT = -1;
     public final static int DIR_RIGHT = 1;
     public final static int DIR_NONE = 0;
-    public int index = 0; //номер стенки, с которой происходит соударение
+    public int index = 0; //РЅРѕРјРµСЂ СЃС‚РµРЅРєРё, СЃ РєРѕС‚РѕСЂРѕР№ РїСЂРѕРёСЃС…РѕРґРёС‚ СЃРѕСѓРґР°СЂРµРЅРёРµ
  
-    /** Координаты опорной точки */
+    /** РљРѕРѕСЂРґРёРЅР°С‚С‹ РѕРїРѕСЂРЅРѕР№ С‚РѕС‡РєРё */
     protected Point mPoint;
  
-    /** Высота изображения */
+    /** Р’С‹СЃРѕС‚Р° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ */
     protected int mHeight;
  
-    /** Ширина изображения */
+    /** РЁРёСЂРёРЅР° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ */
     protected int mWidth;
  
-    /** Изображение */
+    /** РР·РѕР±СЂР°Р¶РµРЅРёРµ */
     protected Drawable mImage;
  
     public void refreshSize()
@@ -46,8 +46,8 @@ public abstract class GameObject {
     }
 
     /**
-     * Конструктор
-     * @param image Изображение, которое будет обозначать данный объект
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+     * @param image РР·РѕР±СЂР°Р¶РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ Р±СѓРґРµС‚ РѕР±РѕР·РЅР°С‡Р°С‚СЊ РґР°РЅРЅС‹Р№ РѕР±СЉРµРєС‚
      */
     public GameObject(Drawable image)
     {
@@ -56,7 +56,7 @@ public abstract class GameObject {
         refreshSize();
         AutoSize();
     }
-    /** Перемещение опорной точки */
+    /** РџРµСЂРµРјРµС‰РµРЅРёРµ РѕРїРѕСЂРЅРѕР№ С‚РѕС‡РєРё */
     protected void updatePoint() { }
  
     public void resize(double ScaleFactorX, double ScaleFactorY)
@@ -73,70 +73,70 @@ public abstract class GameObject {
         refreshSize();
     }
     
-    /** Перемещение объекта */
+    /** РџРµСЂРµРјРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚Р° */
     public void Update()
     {
         updatePoint();
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
     }
     
-    /** Отрисовка объекта */
+    /** РћС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚Р° */
     public void Draw(Canvas canvas)
     {
         mImage.draw(canvas);
     }
     
     
-    /** Задает левую границу объекта */
+    /** Р—Р°РґР°РµС‚ Р»РµРІСѓСЋ РіСЂР°РЅРёС†Сѓ РѕР±СЉРµРєС‚Р° */
     protected void setLeft(int value) { mPoint.x = value; }
  
-    /** Задает правую границу объекта */
+    /** Р—Р°РґР°РµС‚ РїСЂР°РІСѓСЋ РіСЂР°РЅРёС†Сѓ РѕР±СЉРµРєС‚Р° */
     protected void setRight(int value) { mPoint.x = value - mWidth; }
  
-    /** Задает верхнюю границу объекта */
+    /** Р—Р°РґР°РµС‚ РІРµСЂС…РЅСЋСЋ РіСЂР°РЅРёС†Сѓ РѕР±СЉРµРєС‚Р° */
     protected void setTop(int value) { mPoint.y = value; }
  
-    /** Задает нижнюю границу объекта */
+    /** Р—Р°РґР°РµС‚ РЅРёР¶РЅСЋСЋ РіСЂР°РЅРёС†Сѓ РѕР±СЉРµРєС‚Р° */
     protected void setBottom(int value) { mPoint.y = value - mHeight; }
  
-    /** Задает абсциссу центра объекта */
+    /** Р—Р°РґР°РµС‚ Р°Р±СЃС†РёСЃСЃСѓ С†РµРЅС‚СЂР° РѕР±СЉРµРєС‚Р° */
     protected void setCenterX(int value) { mPoint.x = value - mHeight / 2; }
  
-    /** Задает левую ординату центра объекта */
+    /** Р—Р°РґР°РµС‚ Р»РµРІСѓСЋ РѕСЂРґРёРЅР°С‚Сѓ С†РµРЅС‚СЂР° РѕР±СЉРµРєС‚Р° */
     protected void setCenterY(int value) { mPoint.y = value - mWidth / 2; }
     
     
     
-    /** Верхняя граница объекта */
+    /** Р’РµСЂС…РЅСЏСЏ РіСЂР°РЅРёС†Р° РѕР±СЉРµРєС‚Р° */
     public int getTop() { return mPoint.y; }
 
-    /** Нижняя граница объекта */
+    /** РќРёР¶РЅСЏСЏ РіСЂР°РЅРёС†Р° РѕР±СЉРµРєС‚Р° */
     public int getBottom() { return mPoint.y + mHeight; }
 
-    /** Левая граница объекта */
+    /** Р›РµРІР°СЏ РіСЂР°РЅРёС†Р° РѕР±СЉРµРєС‚Р° */
     public int getLeft() { return mPoint.x; }
 
-    /** Правая граница объекта */
+    /** РџСЂР°РІР°СЏ РіСЂР°РЅРёС†Р° РѕР±СЉРµРєС‚Р° */
     public int getRight() { return mPoint.x + mWidth; }
 
-    /** Центральная точка объекта */
+    /** Р¦РµРЅС‚СЂР°Р»СЊРЅР°СЏ С‚РѕС‡РєР° РѕР±СЉРµРєС‚Р° */
     public Point getCenter() { return new Point(mPoint.x + mWidth / 2, mPoint.y + mHeight / 2); }
 
-    /** Верхняя левая точка объекта */
+    /** Р’РµСЂС…РЅСЏСЏ Р»РµРІР°СЏ С‚РѕС‡РєР° РѕР±СЉРµРєС‚Р° */
     public Point getPoint() { return mPoint; }
     
-    /** Высота объекта */
+    /** Р’С‹СЃРѕС‚Р° РѕР±СЉРµРєС‚Р° */
     public int getHeight() { return mHeight; }
 
-    /** Ширина объекта */
+    /** РЁРёСЂРёРЅР° РѕР±СЉРµРєС‚Р° */
     public int getWidth() { return mWidth; }
 
    
     
-    /** @return Прямоугольник, ограничивающий объект */
+    /** @return РџСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє, РѕРіСЂР°РЅРёС‡РёРІР°СЋС‰РёР№ РѕР±СЉРµРєС‚ */
     public Rect getRect() { return mImage.getBounds(); }
 
-    /** Проверяет, пересекаются ли два игровых объекта */
+    /** РџСЂРѕРІРµСЂСЏРµС‚, РїРµСЂРµСЃРµРєР°СЋС‚СЃСЏ Р»Рё РґРІР° РёРіСЂРѕРІС‹С… РѕР±СЉРµРєС‚Р° */
     public static boolean intersects(GameObject obj1, Vector <Wall> Walls, int index)
     {
     	int Number = Walls.size();

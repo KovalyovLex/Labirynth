@@ -1,10 +1,10 @@
-package com.flexymind.labirynth.objects;
+п»їpackage com.flexymind.labirynth.objects;
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 
 /**
- * Класс Финиш, закатывание шарика в лунку
+ * РљР»Р°СЃСЃ Р¤РёРЅРёС€, Р·Р°РєР°С‚С‹РІР°РЅРёРµ С€Р°СЂРёРєР° РІ Р»СѓРЅРєСѓ
  * @author Kurnikov Sergey
  */
 public class FINISH extends GameObject{

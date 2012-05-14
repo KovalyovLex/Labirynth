@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.storage;
+п»їpackage com.flexymind.labirynth.storage;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -17,7 +17,7 @@ import android.graphics.Point;
 import android.hardware.SensorManager;
 
 /**
- * Класс сохранения состояния уровня, и загрузки уровней из хранилища
+ * РљР»Р°СЃСЃ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃРѕСЃС‚РѕСЏРЅРёСЏ СѓСЂРѕРІРЅСЏ, Рё Р·Р°РіСЂСѓР·РєРё СѓСЂРѕРІРЅРµР№ РёР· С…СЂР°РЅРёР»РёС‰Р°
  * @author Alexander Kovalyov
  */
 public class LevelStorage {
@@ -40,15 +40,15 @@ public class LevelStorage {
 	private Context context;
 	
 	/** 
-	 * Конструктор класса
+	 * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
 	 */
 	public LevelStorage(Context cont){
 		context = cont;
 	}
 	
 	/**
-	 * Возвращает список всех имен уровней из хранилища
-	 * @return <code>Vector<String></code> - список имен уровней
+	 * Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РІСЃРµС… РёРјРµРЅ СѓСЂРѕРІРЅРµР№ РёР· С…СЂР°РЅРёР»РёС‰Р°
+	 * @return <code>Vector<String></code> - СЃРїРёСЃРѕРє РёРјРµРЅ СѓСЂРѕРІРЅРµР№
 	 */
 	public Vector<String> get_level_names(){
 		Vector<String> strs = new Vector<String>();
@@ -76,9 +76,9 @@ public class LevelStorage {
 	}
 
 	/**
-	 * Загружает из xml файла обьект GameLevel
-	 * @param <code>String name<code> - имя уровня
-	 * @return <code>GameLevel</code>, загруженный из базы
+	 * Р—Р°РіСЂСѓР¶Р°РµС‚ РёР· xml С„Р°Р№Р»Р° РѕР±СЊРµРєС‚ GameLevel
+	 * @param <code>String name<code> - РёРјСЏ СѓСЂРѕРІРЅСЏ
+	 * @return <code>GameLevel</code>, Р·Р°РіСЂСѓР¶РµРЅРЅС‹Р№ РёР· Р±Р°Р·С‹
 	 */
 	public GameLevel loadGameLevelbyName(String name){
 		GameLevel game = null;
@@ -107,9 +107,9 @@ public class LevelStorage {
 	}
 	
 	/**
-	 * Загружает из xml файла обьект GameLevel
-	 * @param <code>XmlResourceParser xml<code> - xml файл из базы, указывающий на level
-	 * @return <code>GameLevel</code>, загруженный из базы
+	 * Р—Р°РіСЂСѓР¶Р°РµС‚ РёР· xml С„Р°Р№Р»Р° РѕР±СЊРµРєС‚ GameLevel
+	 * @param <code>XmlResourceParser xml<code> - xml С„Р°Р№Р» РёР· Р±Р°Р·С‹, СѓРєР°Р·С‹РІР°СЋС‰РёР№ РЅР° level
+	 * @return <code>GameLevel</code>, Р·Р°РіСЂСѓР¶РµРЅРЅС‹Р№ РёР· Р±Р°Р·С‹
 	 */
 	private GameLevel loadGameLevelfromxml(XmlResourceParser xml){
 		GameLevel game = null;
@@ -137,7 +137,7 @@ public class LevelStorage {
 						}
 						xml.next();
 					}
-					// загрузка шара с текстурой ball
+					// Р·Р°РіСЂСѓР·РєР° С€Р°СЂР° СЃ С‚РµРєСЃС‚СѓСЂРѕР№ ball
 					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
 										new Point(X1, Y1), 
 										D,
@@ -166,7 +166,7 @@ public class LevelStorage {
 						}
 						xml.next();
 					}
-					// загрузка стены с текстурой stenka
+					// Р·Р°РіСЂСѓР·РєР° СЃС‚РµРЅС‹ СЃ С‚РµРєСЃС‚СѓСЂРѕР№ stenka
 					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka2),
 										new Point(X1, Y1), 
 										new Point(X2, Y2), 
@@ -188,7 +188,7 @@ public class LevelStorage {
 						xml.next();
 					}
 				}
-				// загрузка  Объекта финиш, с текстурой
+				// Р·Р°РіСЂСѓР·РєР°  РћР±СЉРµРєС‚Р° С„РёРЅРёС€, СЃ С‚РµРєСЃС‚СѓСЂРѕР№
 				tfinish = new FINISH (	context.getResources().getDrawable(R.drawable.finish),
 									new Point(finX, finY), 
 									finDiam);

@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.objects;
+п»їpackage com.flexymind.labirynth.objects;
 
 import java.util.Vector;
 
@@ -14,9 +14,9 @@ import android.util.Log;
 import com.flexymind.labirynth.screens.ScreenSettings;
 
 /**
- * Класс 
+ * РљР»Р°СЃСЃ 
  * @author Kurnikov Sergey + Kovalyov Alexaner
- * отрисовка всех стенок + соударение от стенок и движение шарика, условие прохождения уровня
+ * РѕС‚СЂРёСЃРѕРІРєР° РІСЃРµС… СЃС‚РµРЅРѕРє + СЃРѕСѓРґР°СЂРµРЅРёРµ РѕС‚ СЃС‚РµРЅРѕРє Рё РґРІРёР¶РµРЅРёРµ С€Р°СЂРёРєР°, СѓСЃР»РѕРІРёРµ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ СѓСЂРѕРІРЅСЏ
  */
 public class GameLevel extends GameObject{
  
@@ -28,7 +28,7 @@ public class GameLevel extends GameObject{
 	private int top = 24;
 	private boolean dostup = true;
 	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
-    /**Игровое поле */
+    /**РРіСЂРѕРІРѕРµ РїРѕР»Рµ */
 	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
     //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
 
@@ -44,16 +44,16 @@ public class GameLevel extends GameObject{
     }
     
     /**
-     * Конструктор 
-     * @param Vector <Wall> walls Все стены данного уровня
-     * @param finish_X, finish_Y  Финишное положение
-     * @param Diam диаметр шарика
-     * @param Ball шарик
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ 
+     * @param Vector <Wall> walls Р’СЃРµ СЃС‚РµРЅС‹ РґР°РЅРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ
+     * @param finish_X, finish_Y  Р¤РёРЅРёС€РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
+     * @param Diam РґРёР°РјРµС‚СЂ С€Р°СЂРёРєР°
+     * @param Ball С€Р°СЂРёРє
      */
     public GameLevel(	Vector <Wall> walls,
 						Ball ball, FINISH finish,
 						Drawable mBackGr){
-		//инициализируем параметры, переданные с помощью конструктора
+		//РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїР°СЂР°РјРµС‚СЂС‹, РїРµСЂРµРґР°РЅРЅС‹Рµ СЃ РїРѕРјРѕС‰СЊСЋ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°
 		super(mBackGr);
 		mball   = ball;
 		mfinish = finish;
@@ -70,7 +70,7 @@ public class GameLevel extends GameObject{
     }
 
     @Override
-    /** Отрисовка объектов на игровом поле */
+    /** РћС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РЅР° РёРіСЂРѕРІРѕРј РїРѕР»Рµ */
     public void Draw(Canvas canvas)
     {	
     	if(dostup)
@@ -94,7 +94,7 @@ public class GameLevel extends GameObject{
     }
     
     @Override
-    /** Перемещение объекта */
+    /** РџРµСЂРµРјРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚Р° */
     public void Update()
     {	
         mball.Update();
@@ -113,7 +113,7 @@ public class GameLevel extends GameObject{
         mplayField.set(left, top, rectWidth, rectHeight);
     }
     
-    /** Функция, описывающая столкновения объектов шар и станки между собой */
+    /** Р¤СѓРЅРєС†РёСЏ, РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ РѕР±СЉРµРєС‚РѕРІ С€Р°СЂ Рё СЃС‚Р°РЅРєРё РјРµР¶РґСѓ СЃРѕР±РѕР№ */
     private void collisionsCheck()
     {
     	float[] p1, p2, p3, v1, v2;
@@ -137,24 +137,24 @@ public class GameLevel extends GameObject{
         	v2 = new float[]{ p3[0] - p2[0],
 							  p3[1] - p2[1]};
         	
-        	// расстояние от p1 до центра шара
+        	// СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ p1 РґРѕ С†РµРЅС‚СЂР° С€Р°СЂР°
         	sum = new float[]{	mball.getCenter().x - p1[0],
         						mball.getCenter().y - p1[1]};
-        	// проекция sum на v2
+        	// РїСЂРѕРµРєС†РёСЏ sum РЅР° v2
         	vec2 = new float[]{	sum[0] - scal_mul(sum,v1) * v1[0] / scal_mul(v1,v1),
         						sum[1] - scal_mul(sum,v1) * v1[1] / scal_mul(v1,v1)};
-        	// проекция sum на v1
+        	// РїСЂРѕРµРєС†РёСЏ sum РЅР° v1
         	vec1 = new float[]{	sum[0] - vec2[0],
         						sum[1] - vec2[1]};
         	
         	/*
-        	// расстояние от p1 до центра шара на предыдущем шаге
+        	// СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ p1 РґРѕ С†РµРЅС‚СЂР° С€Р°СЂР° РЅР° РїСЂРµРґС‹РґСѓС‰РµРј С€Р°РіРµ
         	sum = new float[]{	mball.getPrevCenter().x - p1[0],
 								mball.getPrevCenter().y - p1[1]};
         	
         	vec2_prev = new float[]{	sum[0] - scal_mul(sum,v1) * v1[0] / scal_mul(v1,v1),
 										sum[1] - scal_mul(sum,v1) * v1[1] / scal_mul(v1,v1)};
-        	// проекция пред. sum на v1
+        	// РїСЂРѕРµРєС†РёСЏ РїСЂРµРґ. sum РЅР° v1
         	vec1_prev = new float[]{	sum[0] - vec2_prev[0],
 										sum[1] - vec2_prev[1]};
         	*/
@@ -163,7 +163,7 @@ public class GameLevel extends GameObject{
         		 && scal_mul(vec1,vec1) <= scal_mul(v1,v1)
         		 && scal_mul(vec2,v2) >= 0
         		 && scal_mul(vec2,vec2) <= scal_mul(v2,v2)){
-        		// удар
+        		// СѓРґР°СЂ
         		float minV1, minV2; 
         		
         		if ( scal_mul(vec1,vec1) / scal_mul(v1,v1) > ((scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1)) ){
@@ -176,21 +176,21 @@ public class GameLevel extends GameObject{
         		}
         		
         		if ( scal_mul(vec2,vec2) / scal_mul(v2,v2) > ((scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2)) ){
-        			// удар об правую стенку
+        			// СѓРґР°СЂ РѕР± РїСЂР°РІСѓСЋ СЃС‚РµРЅРєСѓ
         			minV2 = ((scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2));
         			Log.v("reflect","v2 rigth");
         		}else{
-        			// удар об левую стенку
+        			// СѓРґР°СЂ РѕР± Р»РµРІСѓСЋ СЃС‚РµРЅРєСѓ
         			minV2 = scal_mul(vec2,vec2) / scal_mul(v2,v2);
         			Log.v("reflect","v2 left");
         		}
         		
                 if ( minV1 > minV2 ){
-        			// удар в направлении v2
+        			// СѓРґР°СЂ РІ РЅР°РїСЂР°РІР»РµРЅРёРё v2
             		mball.reflectWallV2(twall);
             		Log.v("reflect","v2");
         		}else{
-        			// удар в направлении v1
+        			// СѓРґР°СЂ РІ РЅР°РїСЂР°РІР»РµРЅРёРё v1
             		mball.reflectWallV1(twall);
             		Log.v("reflect","v1");
         		}
@@ -203,7 +203,7 @@ public class GameLevel extends GameObject{
     	return p1[0] * p2[0] + p1[1] * p2[1];
     }
 
-    /** Функция, описывающая столкновения шарика с ограничивающими стенками */
+    /** Р¤СѓРЅРєС†РёСЏ, РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ С€Р°СЂРёРєР° СЃ РѕРіСЂР°РЅРёС‡РёРІР°СЋС‰РёРјРё СЃС‚РµРЅРєР°РјРё */
     private boolean collision_With_Field (Ball ball, Rect PlayField){
     	
     	if (ball.getLeft() <= PlayField.left)
@@ -234,7 +234,7 @@ public class GameLevel extends GameObject{
 		return false;
     }
     
-    /** условие прохождения уровня */
+    /** СѓСЃР»РѕРІРёРµ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ СѓСЂРѕРІРЅСЏ */
     protected void victory() {
 
     	if(GameObject.intersects_finish(mball, mfinish))

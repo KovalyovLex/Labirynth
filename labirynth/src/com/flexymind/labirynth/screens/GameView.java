@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.screens;
+п»їpackage com.flexymind.labirynth.screens;
 
 
 import com.flexymind.labirynth.storage.LevelStorage;
@@ -9,7 +9,7 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 /**
- * Класс 
+ * РљР»Р°СЃСЃ 
  * @author Kurnikov Sergey
  *
  */
@@ -17,17 +17,17 @@ import android.view.SurfaceView;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
     /**
-     * Область рисования
+     * РћР±Р»Р°СЃС‚СЊ СЂРёСЃРѕРІР°РЅРёСЏ
      */
     private SurfaceHolder mSurfaceHolder;
     
     /**
-     * Поток, рисующий в области
+     * РџРѕС‚РѕРє, СЂРёСЃСѓСЋС‰РёР№ РІ РѕР±Р»Р°СЃС‚Рё
      */
     private GameManager mGameManager;
     
     /**
-     * Конструктор
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
      * @param context
      * @param attrs
      */
@@ -35,23 +35,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         super(context, attrs);
         
-        // подписываемся на события Surface
+        // РїРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РЅР° СЃРѕР±С‹С‚РёСЏ Surface
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         
-        // загрузка уровня
+        // Р·Р°РіСЂСѓР·РєР° СѓСЂРѕРІРЅСЏ
         LevelStorage storage = new LevelStorage(context);
         
-        // Создание менеджера игровых объектов
+        // РЎРѕР·РґР°РЅРёРµ РјРµРЅРµРґР¶РµСЂР° РёРіСЂРѕРІС‹С… РѕР±СЉРµРєС‚РѕРІ
         mGameManager = new GameManager(mSurfaceHolder, storage.loadGameLevelbyName("First level") );
         
-        // Разрешаем форме обрабатывать события клавиатуры
+        // Р Р°Р·СЂРµС€Р°РµРј С„РѕСЂРјРµ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ СЃРѕР±С‹С‚РёСЏ РєР»Р°РІРёР°С‚СѓСЂС‹
         setFocusable(true);
     }
 
     
     /**
-     * Изменение области рисования
+     * РР·РјРµРЅРµРЅРёРµ РѕР±Р»Р°СЃС‚Рё СЂРёСЃРѕРІР°РЅРёСЏ
      */
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
@@ -61,7 +61,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     
     /**
-     * Создание области рисования
+     * РЎРѕР·РґР°РЅРёРµ РѕР±Р»Р°СЃС‚Рё СЂРёСЃРѕРІР°РЅРёСЏ
      */
     public void surfaceCreated(SurfaceHolder holder)
     {	
@@ -71,7 +71,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 
     
     /**
-     * Уничтожение области рисования
+     * РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ РѕР±Р»Р°СЃС‚Рё СЂРёСЃРѕРІР°РЅРёСЏ
      */
     public void surfaceDestroyed(SurfaceHolder holder)
     {
@@ -80,7 +80,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         {
             try 
             {
-                // ожидание завершение потока
+                // РѕР¶РёРґР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРёРµ РїРѕС‚РѕРєР°
                 mGameManager.join();
                 break;
             } 
@@ -90,8 +90,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     }
     
     /**
-     * @return <code>true</code>, если клавиша была обработана<br/>
-     *         <code>false</code> иначе
+     * @return <code>true</code>, РµСЃР»Рё РєР»Р°РІРёС€Р° Р±С‹Р»Р° РѕР±СЂР°Р±РѕС‚Р°РЅР°<br/>
+     *         <code>false</code> РёРЅР°С‡Рµ
      * @see android.view.View#onKeyDown(int, android.view.KeyEvent)
      */
     @Override

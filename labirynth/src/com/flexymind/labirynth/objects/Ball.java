@@ -1,4 +1,4 @@
-package com.flexymind.labirynth.objects;
+п»їpackage com.flexymind.labirynth.objects;
 
 import com.flexymind.labirynth.screens.ScreenSettings;
 
@@ -10,7 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
- * Класс Шарик
+ * РљР»Р°СЃСЃ РЁР°СЂРёРє
  * @author Kurnikov Sergey + Soloviev Vyacheslav
  *
  */
@@ -19,38 +19,38 @@ public class Ball extends GameObject
 {
     private static final float[] NULL_SPEED = new float[]{5, 8};
 	
-    /** Скорость шарика */
+    /** РЎРєРѕСЂРѕСЃС‚СЊ С€Р°СЂРёРєР° */
     private float[] mSpeed;
     
-    /** Коэффициент трения об пол */
+    /** РљРѕСЌС„С„РёС†РёРµРЅС‚ С‚СЂРµРЅРёСЏ РѕР± РїРѕР» */
     private float fric_coef = 0.95f;
     
-    /** Координаты левого верхнего угла шарика (int очень груб) */
+    /** РљРѕРѕСЂРґРёРЅР°С‚С‹ Р»РµРІРѕРіРѕ РІРµСЂС…РЅРµРіРѕ СѓРіР»Р° С€Р°СЂРёРєР° (int РѕС‡РµРЅСЊ РіСЂСѓР±) */
     private float[] mPosition;
     
-    /** Координаты левого верхнего угла шарика на предыдущем шаге */
+    /** РљРѕРѕСЂРґРёРЅР°С‚С‹ Р»РµРІРѕРіРѕ РІРµСЂС…РЅРµРіРѕ СѓРіР»Р° С€Р°СЂРёРєР° РЅР° РїСЂРµРґС‹РґСѓС‰РµРј С€Р°РіРµ */
     private float[] mPrevPoint;
     
-    /** Ускорение шарика */
+    /** РЈСЃРєРѕСЂРµРЅРёРµ С€Р°СЂРёРєР° */
     private static float[] macelleration = new float[3];
     
-    /** Данные компаса */
+    /** Р”Р°РЅРЅС‹Рµ РєРѕРјРїР°СЃР° */
     private static float[] compassValues = new float[3];
     
-    /** Массив для вычисления углов наклона */
+    /** РњР°СЃСЃРёРІ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ СѓРіР»РѕРІ РЅР°РєР»РѕРЅР° */
     private static float[] inR = new float[9];
     
-    /** Углы наклона */
+    /** РЈРіР»С‹ РЅР°РєР»РѕРЅР° */
     private static float[] tiltAngles = new float[3];
     
-    /** Объект для прослушки сенсоров */
+    /** РћР±СЉРµРєС‚ РґР»СЏ РїСЂРѕСЃР»СѓС€РєРё СЃРµРЅСЃРѕСЂРѕРІ */
     public static SensorManager sMan;
     
     /**
-     * Конструктор для инициализации объекта с начальными координатами и диаметром
-     * @input pos - позиция центра шара
-     * @input diam - диаметр шара
-     * @input sensMan - сенсор акселерометра
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґР»СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РѕР±СЉРµРєС‚Р° СЃ РЅР°С‡Р°Р»СЊРЅС‹РјРё РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё Рё РґРёР°РјРµС‚СЂРѕРј
+     * @input pos - РїРѕР·РёС†РёСЏ С†РµРЅС‚СЂР° С€Р°СЂР°
+     * @input diam - РґРёР°РјРµС‚СЂ С€Р°СЂР°
+     * @input sensMan - СЃРµРЅСЃРѕСЂ Р°РєСЃРµР»РµСЂРѕРјРµС‚СЂР°
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
 	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
@@ -75,7 +75,7 @@ public class Ball extends GameObject
         this.mHeight = this.mWidth = diam;
     }
 	
-	/** Прослушка акселерометра */
+	/** РџСЂРѕСЃР»СѓС€РєР° Р°РєСЃРµР»РµСЂРѕРјРµС‚СЂР° */
 	public static final SensorEventListener accelerometerListener = new SensorEventListener() {
 		
 		public void onSensorChanged(SensorEvent event) {
@@ -85,7 +85,7 @@ public class Ball extends GameObject
 		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 	};
 	
-	/** Прослушка компаса */
+	/** РџСЂРѕСЃР»СѓС€РєР° РєРѕРјРїР°СЃР° */
 	public static final SensorEventListener compassListener = new SensorEventListener() {
 		
 		public void onSensorChanged(SensorEvent event) {
@@ -106,30 +106,30 @@ public class Ball extends GameObject
 		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 	};
 	
-	public static void registerListeners() {			//Надо этого метода в OnResume() главной активити
+	public static void registerListeners() {			//РќР°РґРѕ СЌС‚РѕРіРѕ РјРµС‚РѕРґР° РІ OnResume() РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
 
         sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
         
 	}
 	
-	public static void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
+	public static void unregisterListeners() {			//РќР°РґРѕ СЌС‚РѕРіРѕ РјРµС‚РѕРґР° РІ OnPause() РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
 		sMan.unregisterListener(accelerometerListener);
 		sMan.unregisterListener(compassListener);
 	}
     
 	@Override
     /**
-     * Функция, определяющая последующее положение шарика
+     * Р¤СѓРЅРєС†РёСЏ, РѕРїСЂРµРґРµР»СЏСЋС‰Р°СЏ РїРѕСЃР»РµРґСѓСЋС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ С€Р°СЂРёРєР°
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
     protected void updatePoint()
     {
-		// Вязкое трение об пол
+		// Р’СЏР·РєРѕРµ С‚СЂРµРЅРёРµ РѕР± РїРѕР»
 		mSpeed[0] = fric_coef * mSpeed[0];
 		mSpeed[1] = fric_coef * mSpeed[1];
 		
-		//mSpeed[0] += 0.05 * ScreenSettings.ScaleFactorX * macelleration[1];	//изменение скорости в зависимости от разрешения экрана
+		//mSpeed[0] += 0.05 * ScreenSettings.ScaleFactorX * macelleration[1];	//РёР·РјРµРЅРµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ СЌРєСЂР°РЅР°
         //mSpeed[1] += 0.05 * ScreenSettings.ScaleFactorY * macelleration[0];
 		
 		// for asus prime o_0
@@ -140,7 +140,7 @@ public class Ball extends GameObject
         //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
         //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
         
-        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//СѓСЃРєРѕСЂРµРЅРёРµ СЃ СЃРµРЅСЃРѕСЂР° РІ Рј/СЃ^2 РїРµСЂРµРІРѕРґРёРј Рє СѓСЃРєРѕСЂРµРЅРёСЋ Р·Р° РїРµСЂРёРѕРґ 20РјСЃ
         //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
         
         mPrevPoint[0] = mPosition[0];
@@ -153,16 +153,16 @@ public class Ball extends GameObject
         mPoint.y = (int)mPosition[1];
     }
 	
-    /** Возвращает предыдущее положение центра шара*/
+    /** Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРµРґС‹РґСѓС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ С†РµРЅС‚СЂР° С€Р°СЂР°*/
     public float[] getPrevCenter()
     {
     	return new float[]{mPrevPoint[0] + mWidth / 2, mPrevPoint[1] + mHeight / 2};
     }
     
     /**
-	 * отражение от стены в направлении v1 (Point2 - Point1)
-	 * @param wall стена
-	 * @param new_pos новая координата по оси V1
+	 * РѕС‚СЂР°Р¶РµРЅРёРµ РѕС‚ СЃС‚РµРЅС‹ РІ РЅР°РїСЂР°РІР»РµРЅРёРё v1 (Point2 - Point1)
+	 * @param wall СЃС‚РµРЅР°
+	 * @param new_pos РЅРѕРІР°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ РѕСЃРё V1
 	 */
 	public void reflectWallV1(Wall wall){
 		Point vec1;
@@ -182,9 +182,9 @@ public class Ball extends GameObject
 	}
     
 	/**
-	 * отражение от стены в направлении v2 (Point3 - Point2)
-	 * @param wall стена
-	 * @param new_pos новая координата по оси V2
+	 * РѕС‚СЂР°Р¶РµРЅРёРµ РѕС‚ СЃС‚РµРЅС‹ РІ РЅР°РїСЂР°РІР»РµРЅРёРё v2 (Point3 - Point2)
+	 * @param wall СЃС‚РµРЅР°
+	 * @param new_pos РЅРѕРІР°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ РѕСЃРё V2
 	 */
 	public void reflectWallV2(Wall wall){
 		Point vec2;
@@ -203,8 +203,8 @@ public class Ball extends GameObject
 		mSpeed[1] -= 2 * project * vec2.y;
 	}
 	
-    /** Отражение мячика от вертикали 
-     * @param newPoint точка шара после соударения
+    /** РћС‚СЂР°Р¶РµРЅРёРµ РјСЏС‡РёРєР° РѕС‚ РІРµСЂС‚РёРєР°Р»Рё 
+     * @param newPoint С‚РѕС‡РєР° С€Р°СЂР° РїРѕСЃР»Рµ СЃРѕСѓРґР°СЂРµРЅРёСЏ
      * */
     public void reflectVertical(Point newPoint)
     {
@@ -215,8 +215,8 @@ public class Ball extends GameObject
     	mSpeed[0] = -mSpeed[0];
     }
 
-    /** Отражение мячика от горизонтали 
-     * @param newPoint точка шара после соударения
+    /** РћС‚СЂР°Р¶РµРЅРёРµ РјСЏС‡РёРєР° РѕС‚ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё 
+     * @param newPoint С‚РѕС‡РєР° С€Р°СЂР° РїРѕСЃР»Рµ СЃРѕСѓРґР°СЂРµРЅРёСЏ
      * */
     public void reflectHorizontal(Point newPoint)
     {
