@@ -16,6 +16,7 @@ import android.graphics.Paint.Style;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
+//[review] mandrigin: why is it located in 'screens' package?
 public class GameManager extends Thread
 {
     private static final int FIELD_WIDTH  = 800;

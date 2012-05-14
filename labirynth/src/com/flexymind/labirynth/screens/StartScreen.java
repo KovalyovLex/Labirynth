@@ -43,6 +43,7 @@ public class StartScreen extends Activity implements OnClickListener
                 startActivity(intent);
                 break;
             }
+//[review] mandrigin: do not leave the commented-out code!
 /*
             case R.id.SettingsButton:
             {

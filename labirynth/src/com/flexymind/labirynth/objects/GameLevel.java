@@ -14,7 +14,10 @@ import android.graphics.drawable.Drawable;
  */
 public class GameLevel extends GameObject{
  
+//[review] mandrigin: mixed tabs and spaces here!
 	private Ball mball;
+//[review] mandrigin: initialize variables one-by-one 
+//[review] mandrigin: bad variable names -> endX, endY proposed
     int end_x, 
         end_y, 
         diam ,
@@ -30,17 +33,21 @@ public class GameLevel extends GameObject{
      */
     public GameLevel(	Vector <Wall> walls, //как инициализировать этот вектор?
 						Ball ball,
+//[review] mandrigin: bad parameter names -> look onto codestyle
 						int finish_X,
 						int finish_Y,
 						int finish_Diam,
 						Drawable mBackGr){
 		//инициализируем параметры, переданные с помощью конструктора
 		super(mBackGr);
+//[review] mandrigin: mixed tabs and spaces here. 
         end_x = finish_X;
 		end_y = finish_Y;
 		diam  = finish_Diam;
 		mball = ball;
+//[review] mandrigin: bad variable name -> codestyle
 		Walls = walls;
+//[review] mandrigin: bad variable name -> codestyle + meaningless
 		Number = Walls.size();
 	}
 
@@ -51,6 +58,8 @@ public class GameLevel extends GameObject{
     	this.mImage.setBounds(canvas.getClipBounds());
     	this.mImage.draw(canvas);
         mball.Draw(canvas);
+//[review] mandrigin: no spaces after ; -> look at the codestyle
+// maybe use for(Wall wall : walls) { ... cycle?
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Draw(canvas);
         }
@@ -63,6 +72,8 @@ public class GameLevel extends GameObject{
     	collisionsCheck();
     	//collision_With_Field (mball, mplayField);
         mball.Update();
+//[review] mandrigin: no spaces after ; -> look at the codestyle
+// maybe use for(Wall wall : walls) { ... cycle?
         for(int i=0;i<Number;i++){
         	Walls.elementAt(i).Update(); 
         }
@@ -75,6 +86,8 @@ public class GameLevel extends GameObject{
     	Point vec1, vec2, sum;
     	Wall twall;
 
+//[review] mandrigin: no spaces after ; -> look at the codestyle
+// maybe use for(Wall wall : walls) { ... cycle?
         for(int i=0;i<Number;i++){
         	twall = Walls.elementAt(i);
         	p1 = new Point (	twall.getPoint1().x - mball.mWidth / 2,
@@ -118,37 +131,48 @@ public class GameLevel extends GameObject{
     	
     }
 
+//[review]: mandrigin: bad function name here!
     private int scal_mul(Point p1, Point p2){
     	return p1.x * p2.x + p1.y * p2.y;
     }
 
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
+
+//[review]: mandrigin: bad function name here!
+//[review]: mandrigin: bad parameter name -> look to codestyle guide
     private void collision_With_Field (Ball ball, Rect PlayField){
     	
     	if (ball.getLeft() <= PlayField.left)
         {
+            //
+
+//[review]: mandrigin: do not leave the commented-out code!
             //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
             ball.reflectVertical();
         }
         else if (ball.getRight() >= PlayField.right)
         {
+//[review]: mandrigin: do not leave the commented-out code!
         	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
         	ball.reflectVertical();
         }
     	
     	if (ball.getTop() <= PlayField.top)
 	    {
+//[review]: mandrigin: do not leave the commented-out code!
 	        //ball.setLeft(PlayField.left + Math.abs(PlayField.left - ball.getLeft()));
 	        ball.reflectHorizontal();
 	    }
 	    else if (ball.getBottom() >= PlayField.bottom)
 	    {
+//[review]: mandrigin: do not leave the commented-out code!
 	    	//ball.setRight(PlayField.right - Math.abs(PlayField.right - ball.getRight()));
 	    	ball.reflectHorizontal();
 	    }
     }
     
     /** условие прохождения уровня */
+//[review]: mandrigin: bad parameter names! -> look at the codestyle guide
     protected boolean victory(int end_x, int end_y) {
     	boolean ween = false;
     	Point bCenter = mball.getCenter();
