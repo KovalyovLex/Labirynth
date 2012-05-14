@@ -1,10 +1,12 @@
 ﻿package com.flexymind.labirynth.screens;
 
 
+import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -41,9 +43,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         
         // загрузка уровня
         LevelStorage storage = new LevelStorage(context);
+        GameLevel lvl = storage.loadGameLevelbyName("First level");
+        
+        if (lvl == null){
+        	Log.e("ERROR","can't load level from xml");
+        	return;
+        }
         
         // Создание менеджера игровых объектов
-        mGameManager = new GameManager(mSurfaceHolder, storage.loadGameLevelbyName("First level") );
+        mGameManager = new GameManager(mSurfaceHolder,  lvl);
         
         // Разрешаем форме обрабатывать события клавиатуры
         setFocusable(true);

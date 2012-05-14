@@ -5,7 +5,8 @@ import android.graphics.drawable.Drawable;
 
 public class Wall extends GameObject{
 
-	private Point secPoint, thirdPoint;
+	private Point 	secPoint = new Point(),
+					thirdPoint = new Point();
 	
 	/**
 	 * Конструктор по умолчанию

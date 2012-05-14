@@ -70,6 +70,8 @@ public class LevelStorage {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			xml.close();
 		}
 		
 		return strs;
@@ -102,7 +104,10 @@ public class LevelStorage {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			xml.close();
 		}
+		
 		return game;
 	}
 	
@@ -203,6 +208,8 @@ public class LevelStorage {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			xml.close();
 		}
 		
 		game = new GameLevel(	walls,

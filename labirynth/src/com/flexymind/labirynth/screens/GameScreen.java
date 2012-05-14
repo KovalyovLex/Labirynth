@@ -7,7 +7,6 @@ import com.flexymind.labirynth.objects.Ball;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.Display;
 
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
@@ -16,11 +15,6 @@ public class GameScreen extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        Display display = getWindowManager().getDefaultDisplay();
-        final int ScreenHeight = display.getHeight();
-    	final int ScreenWidth = display.getWidth();
-    	ScreenSettings.GenerateSettings(ScreenWidth, ScreenHeight);
     }
 	
 	@Override

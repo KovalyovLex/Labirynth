@@ -42,9 +42,9 @@ public abstract class GameObject {
     
     private void AutoSize()
     {
-        if (ScreenSettings.AutoScale)
+        if (ScreenSettings.AutoScale())
         {
-        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
+        	this.resize(ScreenSettings.ScaleFactorX(), ScreenSettings.ScaleFactorY());
         }
     }
 
@@ -57,7 +57,6 @@ public abstract class GameObject {
         mImage = image;
         mPoint = new Point(0, 0);
         refreshSize();
-        AutoSize();
     }
     /** Перемещение опорной точки */
     protected void updatePoint() { }

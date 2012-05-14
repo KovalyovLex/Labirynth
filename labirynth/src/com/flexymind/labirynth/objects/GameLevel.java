@@ -9,9 +9,6 @@ import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.widget.Button;
-
-import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.ScreenSettings;
 
 /**
@@ -34,14 +31,13 @@ public class GameLevel extends GameObject{
 	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
     //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
 
-    int Number;
     Vector <Wall> Walls;
     
     private void AutoSize()
     {
-        if (ScreenSettings.AutoScale)
+        if (ScreenSettings.AutoScale())
         {
-        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
+        	this.resize(ScreenSettings.ScaleFactorX(), ScreenSettings.ScaleFactorY());
         }
     }
     
@@ -60,7 +56,6 @@ public class GameLevel extends GameObject{
 		mball   = ball;
 		mfinish = finish;
 		Walls   = walls;
-		Number  = Walls.size();
 	}
     
     public void resize(double ScaleFactorX, double ScaleFactorY)
@@ -84,7 +79,7 @@ public class GameLevel extends GameObject{
     	this.mImage.draw(canvas);
     	mfinish.Draw(canvas);
     	mball.Draw(canvas);
-        for(int i=0;i < Number;i++){
+        for(int i=0;i < Walls.size();i++){
         	Walls.elementAt(i).Draw(canvas);
         }
 
@@ -102,7 +97,7 @@ public class GameLevel extends GameObject{
     {	
         mball.Update();
         mfinish.Update();
-        for(int i=0;i<Number;i++){
+        for(int i = 0; i < Walls.size();i++){
         	Walls.elementAt(i).Update(); 
         }
         collisionsCheck();
@@ -143,7 +138,7 @@ public class GameLevel extends GameObject{
     	
     	Wall 	twall;
     	
-        for(int i=0;i<Number;i++){
+        for(int i = 0; i < Walls.size();i++){
         	
         	twall = Walls.elementAt(i);
         	

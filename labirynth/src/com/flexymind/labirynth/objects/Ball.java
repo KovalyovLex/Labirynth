@@ -44,7 +44,7 @@ public class Ball extends GameObject
     private static float[] tiltAngles = new float[3];
     
     /** Объект для прослушки сенсоров */
-    public static SensorManager sMan;
+    public static SensorManager sMan = null;
     
     /**
      * Конструктор для инициализации объекта с начальными координатами и диаметром
@@ -107,14 +107,17 @@ public class Ball extends GameObject
 	};
 	
 	public static void registerListeners() {			//Надо этого метода в OnResume() главной активити
-
-        sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-        //sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+		if (sMan != null){
+			sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+			//sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+		}
 	}
 	
 	public static void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
-		sMan.unregisterListener(accelerometerListener);
-		//sMan.unregisterListener(compassListener);
+		if (sMan != null){
+			sMan.unregisterListener(accelerometerListener);
+			//sMan.unregisterListener(compassListener);
+		}
 	}
     
 	@Override
@@ -130,8 +133,8 @@ public class Ball extends GameObject
 
 		//изменение скорости в зависимости от разрешения экрана
 		// for asus prime o_0
-		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
-        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY * macelleration[1];
+		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX() * macelleration[0];
+        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
         
         // for other normal devices
         //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];

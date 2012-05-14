@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -17,10 +19,10 @@ public class StartScreen extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.start);
 
-		// Display display = getWindowManager().getDefaultDisplay();
+		Display display = getWindowManager().getDefaultDisplay();
 
-		// ScreenSettings.GenerateSettings(display.getHeight(), display.getWidth());
-
+		ScreenSettings.GenerateSettings(display.getHeight(), display.getWidth());
+		
 		// Кнопка "Start"
 		Button startButton = (Button) findViewById(R.id.StartButton);
 		startButton.setOnClickListener(this);
@@ -34,8 +36,7 @@ public class StartScreen extends Activity implements OnClickListener {
 		// Кнопка "Settings"
 		Button settingsButton = (Button) findViewById(R.id.SettingsButton);
 		settingsButton.setOnClickListener(this);
-
-		// this.AutoSize(settingsButton);
+		this.AutoSize(settingsButton);
 	}
 
 	/** Обработка нажатия кнопок */
@@ -68,19 +69,19 @@ public class StartScreen extends Activity implements OnClickListener {
 
 	public void resize(double ScaleFactorX, double ScaleFactorY, Button button) {
 		int height = button.getHeight();
-		int width = button.getWidth();
+		int width  = button.getWidth();
 
 		height = (int) (ScaleFactorX * height);
-		width = (int) (ScaleFactorY * width);
+		width  = (int) (ScaleFactorY * width);
 
 		button.setHeight(height);
 		button.setWidth(width);
 	}
 
 	private void AutoSize(Button button) {
-		if (ScreenSettings.AutoScale) {
-			this.resize(ScreenSettings.ScaleFactorX,
-						ScreenSettings.ScaleFactorY, button);
+		if (ScreenSettings.AutoScale()) {
+			this.resize(ScreenSettings.ScaleFactorX(),
+						ScreenSettings.ScaleFactorY(), button);
 		}
 
 	}

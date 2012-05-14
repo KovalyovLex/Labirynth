@@ -81,25 +81,6 @@ public class GameManager extends Thread
         
         mField = new Rect();
     }
-
-    public void resize(double ScaleFactorX, double ScaleFactorY)
-    {
-    	int newX;
-    	int newY;
-    	newX=(int)ScaleFactorX*mBackground.getWidth();
-    	newY=(int)ScaleFactorY*mBackground.getHeight();
-    	Bitmap tmp = Bitmap.createScaledBitmap(mBackground, newX, newY, true);
-        mBackground = tmp;
-    }
-    
-
-    private void AutoSize()
-    {
-        if (ScreenSettings.AutoScale)
-        {
-        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
-        }
-    }
     
 	/**
      * Задание состояния потока
@@ -118,15 +99,15 @@ public class GameManager extends Thread
         while (mRunning)
         {	
         	canvas = null;
-            try
+            updateObjects();     // обновляем объекты
+        	try
             {
-                // подготовка Canvas-а
-                canvas = mSurfaceHolder.lockCanvas(); 
                 synchronized (mSurfaceHolder)
                 {
-                    updateObjects();     // обновляем объекты
+                    // подготовка Canvas-а
+                    canvas = mSurfaceHolder.lockCanvas(); 
                     refreshCanvas(canvas); // обновляем экран
-                    sleep(5);
+                    sleep(2);
                 }
             }
             catch (Exception e) { }
@@ -145,8 +126,9 @@ public class GameManager extends Thread
     {
     	
     	// вывод фонового изображения
-    	AutoSize();
     	canvas.drawBitmap(mBackground, 0, 0, null);
+    	
+    	// debug отрисовка краёв рамки
     	canvas.drawRect(mField, mPaint);
     	
     	// рисуем уровень
@@ -168,14 +150,12 @@ public class GameManager extends Thread
     public void initPositions(int screenHeight, int screenWidth)
     {
     	
-        int left = (int) ((screenWidth - ScreenSettings.ScaleFactorX * FIELD_WIDTH) / 2);
-        int top = (int) ((screenHeight - ScreenSettings.ScaleFactorY * FIELD_HEIGHT) / 2);
+        int left = (int) ((screenWidth - ScreenSettings.ScaleFactorX() * FIELD_WIDTH) / 2);
+        int top = (int) ((screenHeight - ScreenSettings.ScaleFactorY() * FIELD_HEIGHT) / 2);
         
         mField.set(left, top, left + FIELD_WIDTH, top + FIELD_HEIGHT);
         
         mBackground = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
-        
-        this.AutoSize();
         
     }
     
@@ -190,11 +170,9 @@ public class GameManager extends Thread
         {
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_A:
-                //stenka2.setDirection(GameObject.DIR_LEFT);
                 return true;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
             case KeyEvent.KEYCODE_D:
-                //stenka2.setDirection(GameObject.DIR_RIGHT);
                 return true;
             default:
                 return false;
