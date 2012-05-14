@@ -109,13 +109,13 @@ public class Ball extends GameObject
 	public static void registerListeners() {			//Надо этого метода в OnResume() главной активити
 
         sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-        sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        //sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
         
 	}
 	
 	public static void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
 		sMan.unregisterListener(accelerometerListener);
-		sMan.unregisterListener(compassListener);
+		//sMan.unregisterListener(compassListener);
 	}
     
 	@Override
@@ -128,13 +128,11 @@ public class Ball extends GameObject
 		// Вязкое трение об пол
 		mSpeed[0] = fric_coef * mSpeed[0];
 		mSpeed[1] = fric_coef * mSpeed[1];
-		
-		//mSpeed[0] += 0.05 * ScreenSettings.ScaleFactorX * macelleration[1];	//изменение скорости в зависимости от разрешения экрана
-        //mSpeed[1] += 0.05 * ScreenSettings.ScaleFactorY * macelleration[0];
-		
+
+		//изменение скорости в зависимости от разрешения экрана
 		// for asus prime o_0
 		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
-        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
+        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY * macelleration[1];
         
         // for other normal devices
         //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
@@ -153,18 +151,23 @@ public class Ball extends GameObject
         mPoint.y = (int)mPosition[1];
     }
 	
-    /** Возвращает предыдущее положение центра шара*/
-    public float[] getPrevCenter()
+
+	public float[] getCenterf(){
+		return new float[]{mPosition[0] + mWidth / 2, mPosition[1] + mHeight / 2};
+	}
+	
+    /** Возвращает предыдущее положение центра шара */
+    public float[] getPrevCenterf()
     {
     	return new float[]{mPrevPoint[0] + mWidth / 2, mPrevPoint[1] + mHeight / 2};
     }
-    
+
     /**
 	 * отражение от стены в направлении v1 (Point2 - Point1)
 	 * @param wall стена
 	 * @param new_pos новая координата по оси V1
 	 */
-	public void reflectWallV1(Wall wall){
+    public void reflectWallV1(Wall wall, float[] newpnt){
 		Point vec1;
 		float project;
 		
@@ -179,6 +182,12 @@ public class Ball extends GameObject
 		project = vec1.x * mSpeed[0] + vec1.y * mSpeed[1];
 		mSpeed[0] -= 2 * project * vec1.x;
 		mSpeed[1] -= 2 * project * vec1.y;
+		
+		mPosition[0] = newpnt[0] - mWidth / 2;
+		mPosition[1] = newpnt[1] - mHeight / 2;
+		
+		mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
 	}
     
 	/**
@@ -186,7 +195,7 @@ public class Ball extends GameObject
 	 * @param wall стена
 	 * @param new_pos новая координата по оси V2
 	 */
-	public void reflectWallV2(Wall wall){
+	public void reflectWallV2(Wall wall, float[] newpnt){
 		Point vec2;
 		float project;
 		
@@ -201,6 +210,12 @@ public class Ball extends GameObject
 		project = vec2.x * mSpeed[0] + vec2.y * mSpeed[1];
 		mSpeed[0] -= 2 * project * vec2.x;
 		mSpeed[1] -= 2 * project * vec2.y;
+		
+		mPosition[0] = newpnt[0] - mWidth / 2;
+		mPosition[1] = newpnt[1] - mHeight / 2;
+		
+		mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
 	}
 	
     /** Отражение мячика от вертикали 

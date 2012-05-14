@@ -9,7 +9,6 @@ import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.flexymind.labirynth.screens.ScreenSettings;
 
@@ -86,6 +85,7 @@ public class GameLevel extends GameObject{
         	Walls.elementAt(i).Draw(canvas);
         }
 
+        // debug отрисовка краев рамки
         Paint mPaint = new Paint();
         mPaint.setColor(Color.MAGENTA);
         mPaint.setStrokeWidth(2);
@@ -116,84 +116,211 @@ public class GameLevel extends GameObject{
     /** Функция, описывающая столкновения объектов шар и станки между собой */
     private void collisionsCheck()
     {
-    	float[] p1, p2, p3, v1, v2;
-    	float[] vec1, vec2, sum;// vec1_prev, vec2_prev;
-    	Wall twall;
-
+    	float[] p1 = {0,0}, 
+    			p2 = {0,0}, 
+    			p3 = {0,0}, 
+    			p4 = {0,0}, // точки положения углов 4 стенок
+    			v1 = {0,0}, 
+    			v2 = {0,0}, 
+    			v3 = {0,0}, 
+    			v4 = {0,0}, // вектора положения 4 стенок
+    			speed = {0,0}, // скорость
+    			vec1 = {0,0}, 
+    			vec2 = {0,0}, 
+    			vec3 = {0,0}, 
+    			vec4 = {0,0}, // вектора пересечения скорости со стенкой
+    			vec_v_1 = {0,0}, 
+    			vec_v_2 = {0,0}, 
+    			vec_v_3 = {0,0}, 
+    			vec_v_4 = {0,0}, // vec_v_i вектор от pi до пересечения c вектором скорости
+    			intersectP_V1 = {0,0}, 
+    			intersectP_V2 = {0,0}, 
+    			intersectP_V3 = {0,0}, 
+    			intersectP_V4 = {0,0}; // точки пересечения со стенками
+    	
+    	Wall 	twall;
+    	
         for(int i=0;i<Number;i++){
+        	
         	twall = Walls.elementAt(i);
-        	p1 = new float[] {  twall.getPoint1().x - mball.mWidth / 2,
-        						twall.getPoint1().y -  mball.mHeight / 2};
         	
-        	p2 = new float[] {	twall.getPoint2().x - mball.mWidth / 2,
-								twall.getPoint2().y +  mball.mHeight / 2};
+        	p1[0] = twall.getPoint1().x - mball.mWidth / 2;
+        	p1[1] = twall.getPoint1().y -  mball.mHeight / 2;
+        	
+        	p2[0] = twall.getPoint2().x - mball.mWidth / 2;
+        	p2[1] = twall.getPoint2().y +  mball.mHeight / 2;
 
-        	p3 = new float[] {	twall.getPoint3().x + mball.mWidth / 2,
-								twall.getPoint3().y -  mball.mHeight / 2};
+        	p3[0] = twall.getPoint3().x + mball.mWidth / 2;
+        	p3[1] = twall.getPoint3().y +  mball.mHeight / 2;
         	
-        	v1 = new float[]{ p2[0] - p1[0],
-        					  p2[1] - p1[1]};
+        	p4[0] = p1[0] + p3[0] - p2[0];
+        	p4[1] = p1[1] + p3[1] - p2[1];
         	
-        	v2 = new float[]{ p3[0] - p2[0],
-							  p3[1] - p2[1]};
+        	v1[0] = p2[0] - p1[0];
+        	v1[1] = p2[1] - p1[1];
         	
-        	// расстояние от p1 до центра шара
-        	sum = new float[]{	mball.getCenter().x - p1[0],
-        						mball.getCenter().y - p1[1]};
-        	// проекция sum на v2
-        	vec2 = new float[]{	sum[0] - scal_mul(sum,v1) * v1[0] / scal_mul(v1,v1),
-        						sum[1] - scal_mul(sum,v1) * v1[1] / scal_mul(v1,v1)};
-        	// проекция sum на v1
-        	vec1 = new float[]{	sum[0] - vec2[0],
-        						sum[1] - vec2[1]};
+        	v2[0] = p3[0] - p2[0];
+			v2[1] = p3[1] - p2[1];
         	
-        	/*
-        	// расстояние от p1 до центра шара на предыдущем шаге
-        	sum = new float[]{	mball.getPrevCenter().x - p1[0],
-								mball.getPrevCenter().y - p1[1]};
+			v3[0] = p4[0] - p1[0];
+			v3[1] = p4[1] - p1[1];
+			
+			v4[0] = p3[0] - p4[0];
+			v4[1] = p3[1] - p4[1];
+			
+        	intersectP_V1 = getIntersectionPoint(p1, p2, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V2 = getIntersectionPoint(p2, p3, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V3 = getIntersectionPoint(p1, p4, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V4 = getIntersectionPoint(p4, p3, mball.getPrevCenterf(), mball.getCenterf());
         	
-        	vec2_prev = new float[]{	sum[0] - scal_mul(sum,v1) * v1[0] / scal_mul(v1,v1),
-										sum[1] - scal_mul(sum,v1) * v1[1] / scal_mul(v1,v1)};
-        	// проекция пред. sum на v1
-        	vec1_prev = new float[]{	sum[0] - vec2_prev[0],
-										sum[1] - vec2_prev[1]};
-        	*/
+        	speed[0] = mball.getCenterf()[0] - mball.getPrevCenterf()[0];
+        	speed[1] = mball.getCenterf()[1] - mball.getPrevCenterf()[1];
         	
-        	if (	scal_mul(vec1,v1) >= 0 
-        		 && scal_mul(vec1,vec1) <= scal_mul(v1,v1)
-        		 && scal_mul(vec2,v2) >= 0
-        		 && scal_mul(vec2,vec2) <= scal_mul(v2,v2)){
-        		// удар
-        		float minV1, minV2; 
+        	if (intersectP_V1 != null){
+        		vec1[0] = intersectP_V1[0] - mball.getPrevCenterf()[0];
+        		vec1[1] = intersectP_V1[1] - mball.getPrevCenterf()[1];
+        		vec_v_1[0] = intersectP_V1[0] - p1[0];
+        		vec_v_1[1] = intersectP_V1[1] - p1[1];
+        	}
+        	
+        	if (intersectP_V2 != null){
+        		vec2[0] = intersectP_V2[0] - mball.getPrevCenterf()[0];
+				vec2[1] = intersectP_V2[1] - mball.getPrevCenterf()[1];
+        		vec_v_2[0] = intersectP_V2[0] - p2[0];
+        		vec_v_2[1] = intersectP_V2[1] - p2[1];
+        	}
+        	
+        	if (intersectP_V3 != null){
+        		vec3[0] = intersectP_V3[0] - mball.getPrevCenterf()[0];
+				vec3[1] = intersectP_V3[1] - mball.getPrevCenterf()[1];
+        		vec_v_3[0] = intersectP_V3[0] - p1[0];
+        		vec_v_3[1] = intersectP_V3[1] - p1[1];
+        	}
+        	
+        	if (intersectP_V4 != null){
+        		vec4[0] = intersectP_V4[0] - mball.getPrevCenterf()[0];
+				vec4[1] = intersectP_V4[1] - mball.getPrevCenterf()[1];
+        		vec_v_4[0] = intersectP_V4[0] - p4[0];
+        		vec_v_4[1] = intersectP_V4[1] - p4[1];
+        	}
+        	
+        	// проверка удара об левую стенку
+        	if (check_intersect(vec_v_1, vec1, v1, speed)){
+        		// проверка двойных ударов
+        		if (check_intersect(vec_v_2, vec2, v2, speed)){
+        			if (scal_mul(vec1,vec1) > scal_mul(vec2,vec2)){
+        				// удар об стенку v2
+        				intersectP_V2[1]++;
+            			mball.reflectWallV1(twall,intersectP_V2);
+            			continue;
+        			}else{
+        				// удар об стенку v1
+        				intersectP_V1[0]--;
+            			mball.reflectWallV2(twall,intersectP_V1);
+            			continue;
+        			}
+        		}
         		
-        		if ( scal_mul(vec1,vec1) / scal_mul(v1,v1) > ((scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1)) ){
-        			minV1 = ((scal_mul(v1,v1) - scal_mul(vec1,vec1)) / scal_mul(v1,v1));
-        			Log.v("reflect","v1 dvn");
-        		}
-        		else{
-        			minV1 = scal_mul(vec1,vec1) / scal_mul(v1,v1);
-        			Log.v("reflect","v1 up");
-        		}
-        		
-        		if ( scal_mul(vec2,vec2) / scal_mul(v2,v2) > ((scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2)) ){
-        			// удар об правую стенку
-        			minV2 = ((scal_mul(v2,v2) - scal_mul(vec2,vec2)) / scal_mul(v2,v2));
-        			Log.v("reflect","v2 rigth");
-        		}else{
-        			// удар об левую стенку
-        			minV2 = scal_mul(vec2,vec2) / scal_mul(v2,v2);
-        			Log.v("reflect","v2 left");
+        		if (check_intersect(vec_v_3, vec3, v3, speed)){
+        			if (scal_mul(vec1,vec1) > scal_mul(vec3,vec3)){
+        				// удар об стенку v3
+        				intersectP_V3[1]--;
+            			mball.reflectWallV1(twall,intersectP_V3);
+            			continue;
+        			}else{
+        				// удар об стенку v1
+        				intersectP_V1[0]--;
+            			mball.reflectWallV2(twall,intersectP_V1);
+            			continue;
+        			}
         		}
         		
-                if ( minV1 > minV2 ){
-        			// удар в направлении v2
-            		mball.reflectWallV2(twall);
-            		Log.v("reflect","v2");
-        		}else{
-        			// удар в направлении v1
-            		mball.reflectWallV1(twall);
-            		Log.v("reflect","v1");
+        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        			if (scal_mul(vec1,vec1) > scal_mul(vec4,vec4)){
+        				// удар об стенку v4
+        				intersectP_V4[0]++;
+            			mball.reflectWallV2(twall,intersectP_V4);
+            			continue;
+        			}else{
+        				// удар об стенку v1
+        				intersectP_V1[0]--;
+            			mball.reflectWallV2(twall,intersectP_V1);
+            			continue;
+        			}
         		}
+        		
+        		// двойных ударов нет
+        		intersectP_V1[0]--;
+    			mball.reflectWallV2(twall,intersectP_V1);
+    			continue;
+        	}
+        	
+        	// проверка удара об нижнюю стенку
+        	if (check_intersect(vec_v_2, vec2, v2, speed)){
+        		// проверка двойных ударов     		
+        		if (check_intersect(vec_v_3, vec3, v3, speed)){
+        			if (scal_mul(vec2,vec2) > scal_mul(vec3,vec3)){
+        				// удар об стенку v3
+        				intersectP_V3[1]--;
+            			mball.reflectWallV1(twall,intersectP_V3);
+            			continue;
+        			}else{
+        				// удар об стенку v2
+        				intersectP_V2[1]++;
+            			mball.reflectWallV1(twall,intersectP_V2);
+            			continue;
+        			}
+        		}
+        		
+        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        			if (scal_mul(vec2,vec2) > scal_mul(vec4,vec4)){
+        				// удар об стенку v4
+        				intersectP_V4[0]++;
+            			mball.reflectWallV2(twall,intersectP_V4);
+            			continue;
+        			}else{
+        				// удар об стенку v2
+        				intersectP_V2[1]++;
+            			mball.reflectWallV1(twall,intersectP_V2);
+            			continue;
+        			}
+        		}
+        		
+        		// двойных ударов нет
+        		intersectP_V2[1]++;
+    			mball.reflectWallV1(twall,intersectP_V2);
+    			continue;
+        	}
+        	
+        	// проверка удара об верхнюю стенку
+        	if (check_intersect(vec_v_3, vec3, v3, speed)){
+        		// проверка двойных ударов
+        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        			if (scal_mul(vec3,vec3) > scal_mul(vec4,vec4)){
+        				// удар об стенку v4
+        				intersectP_V4[0]++;
+            			mball.reflectWallV2(twall,intersectP_V4);
+            			continue;
+        			}else{
+        				// удар об стенку v3
+        				intersectP_V3[1]--;
+            			mball.reflectWallV1(twall,intersectP_V3);
+            			continue;
+        			}
+        		}
+        		
+        		// двойных ударов нет
+        		intersectP_V3[1]--;
+    			mball.reflectWallV1(twall,intersectP_V3);
+    			continue;
+        	}
+        	
+        	// проверка удара об правую стенку
+        	if (check_intersect(vec_v_4, vec4, v4, speed)){
+        		// двойных ударов нет
+        		intersectP_V4[0]++;
+    			mball.reflectWallV2(twall,intersectP_V4);
+    			continue;
         	}
         }
     	
@@ -203,6 +330,45 @@ public class GameLevel extends GameObject{
     	return p1[0] * p2[0] + p1[1] * p2[1];
     }
 
+    /**
+     * проверка на соударение с левой стеной
+     * @param vec_v_1 - вектор пересечения со стенкой
+     * @param vec1 - вектор пересечения скорости со стенкой (от предыдущего положения шара до точки пересечения со стенкой)
+     * @param v1 - вектор, задаюший стенку
+     * @param speed - вектор скорости (перемещения) шара в данный момент времени
+     * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
+     */
+    private boolean check_intersect(float[] vec_v_1, float[] vec1, float[] v1, float[] speed){
+    	return ( scal_mul(vec_v_1,v1) <= scal_mul(v1,v1) 
+    		  && scal_mul(vec_v_1,v1) > 0
+    		  && scal_mul(vec1,speed) <= scal_mul(speed,speed)
+    		  && scal_mul(vec1,speed) > 0 );
+    }
+    
+    /**
+     * возвращает точку пересечения двух прямых проходяших через (p1, p2) и 
+     * (cord_p1,cord_p2) 
+     * @param p1 - первая точка
+     * @param p2 - вторая точка
+     * @param cord_p1 - точка пред. состояния
+     * @param cord_p2 - точка след. состояния
+     * @return <code>float[2] Point</code> - x и y координаты точки пересечения или <code>null</code> если нет такой точки 
+     */
+    private float[] getIntersectionPoint(float[] p1, float[] p2, float[] cord_p1, float[] cord_p2){
+    	float x1 = p1[0], x2 = p2[0], y1 = p1[1], y2 = p2[1];
+    	float x3 = cord_p1[0], x4 = cord_p2[0], y3 = cord_p1[1], y4 = cord_p2[1];
+
+    	float d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+    	if (d == 0) {
+    		return null;
+    	}
+
+    	float xi = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/d;
+    	float yi = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/d;
+
+    	return new float[]{ xi, yi };
+    }
+    
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
     private boolean collision_With_Field (Ball ball, Rect PlayField){
     	
