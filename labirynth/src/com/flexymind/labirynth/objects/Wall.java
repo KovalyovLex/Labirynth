@@ -51,10 +51,4 @@ public class Wall extends GameObject{
 	public Point getPoint3(){
 		return thirdPoint;
 	}
-	
-	@Override
-	protected void updatePoint() {
-		// TODO Auto-generated method stub
-		
-	}
 }

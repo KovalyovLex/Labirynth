@@ -31,6 +31,9 @@ public abstract class GameObject {
     /** Изображение */
     protected Drawable mImage;
  
+    /** Пременная для autoScale */
+    private boolean dostup = true;
+    
     public void refreshSize()
     {
     	mWidth = mImage.getIntrinsicWidth();
@@ -59,6 +62,7 @@ public abstract class GameObject {
     /** Перемещение опорной точки */
     protected void updatePoint() { }
  
+    /** изменение размеров объекта */
     public void resize(double ScaleFactorX, double ScaleFactorY)
     {
     	int newX;
@@ -83,6 +87,11 @@ public abstract class GameObject {
     /** Отрисовка объекта */
     public void Draw(Canvas canvas)
     {
+    	if(dostup)
+        {
+    		AutoSize();
+        	dostup = false;
+        }
         mImage.draw(canvas);
     }
     
