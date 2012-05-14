@@ -117,12 +117,29 @@ public class GameLevel extends GameObject{
     /** Функция, описывающая столкновения объектов шар и станки между собой */
     private void collisionsCheck()
     {
-    	float[] p1 = {0,0}, p2 = {0,0}, p3 = {0,0}, p4 = {0,0}, speed = {0,0};
-    	float[] v1 = {0,0}, v2 = {0,0}, v3 = {0,0}, v4 = {0,0};
-    	float[] vec1 = {0,0}, vec2 = {0,0}, vec3 = {0,0}, vec4 = {0,0};
-    	float[] vec_v_1 = {0,0}, vec_v_2 = {0,0}, vec_v_3 = {0,0}, vec_v_4 = {0,0}; // vec_v_i вектор от pi до пересечения
-    	float[] intersectP_V1 = {0,0}, intersectP_V2 = {0,0}, intersectP_V3 = {0,0}, intersectP_V4 = {0,0};
-    	Wall twall;
+    	float[] p1 = {0,0}, 
+    			p2 = {0,0}, 
+    			p3 = {0,0}, 
+    			p4 = {0,0}, // точки положения углов 4 стенок
+    			v1 = {0,0}, 
+    			v2 = {0,0}, 
+    			v3 = {0,0}, 
+    			v4 = {0,0}, // вектора положения 4 стенок
+    			speed = {0,0}, // скорость
+    			vec1 = {0,0}, 
+    			vec2 = {0,0}, 
+    			vec3 = {0,0}, 
+    			vec4 = {0,0}, // вектора пересечения скорости со стенкой
+    			vec_v_1 = {0,0}, 
+    			vec_v_2 = {0,0}, 
+    			vec_v_3 = {0,0}, 
+    			vec_v_4 = {0,0}, // vec_v_i вектор от pi до пересечения c вектором скорости
+    			intersectP_V1 = {0,0}, 
+    			intersectP_V2 = {0,0}, 
+    			intersectP_V3 = {0,0}, 
+    			intersectP_V4 = {0,0}; // точки пересечения со стенками
+    	
+    	Wall 	twall;
     	
         for(int i=0;i<Number;i++){
         	
@@ -188,48 +205,123 @@ public class GameLevel extends GameObject{
         		vec_v_4[1] = intersectP_V4[1] - p4[1];
         	}
         	
-        	if ((scal_mul(vec_v_1,v1) <= scal_mul(v1,v1) && scal_mul(vec_v_1,v1) > 0)){
-        		// удар об левую стенку
-        		if (scal_mul(vec1,speed) <= scal_mul(speed,speed) && scal_mul(vec1,speed) > 0){
-        			// соударение со стеной отражение в напр. v2
-        			intersectP_V1[0]--;
-        			mball.reflectWallV2(twall,intersectP_V1);
-        			Log.e("reflect1","v1 dvn");
-        			continue;
+        	// проверка удара об левую стенку
+        	if (check_intersect(vec_v_1, vec1, v1, speed)){
+        		// проверка двойных ударов
+        		if (check_intersect(vec_v_2, vec2, v2, speed)){
+        			if (scal_mul(vec1,vec1) > scal_mul(vec2,vec2)){
+        				// удар об стенку v2
+        				intersectP_V2[1]++;
+            			mball.reflectWallV1(twall,intersectP_V2);
+            			continue;
+        			}else{
+        				// удар об стенку v1
+        				intersectP_V1[0]--;
+            			mball.reflectWallV2(twall,intersectP_V1);
+            			continue;
+        			}
         		}
+        		
+        		if (check_intersect(vec_v_3, vec3, v3, speed)){
+        			if (scal_mul(vec1,vec1) > scal_mul(vec3,vec3)){
+        				// удар об стенку v3
+        				intersectP_V3[1]--;
+            			mball.reflectWallV1(twall,intersectP_V3);
+            			continue;
+        			}else{
+        				// удар об стенку v1
+        				intersectP_V1[0]--;
+            			mball.reflectWallV2(twall,intersectP_V1);
+            			continue;
+        			}
+        		}
+        		
+        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        			if (scal_mul(vec1,vec1) > scal_mul(vec4,vec4)){
+        				// удар об стенку v4
+        				intersectP_V4[0]++;
+            			mball.reflectWallV2(twall,intersectP_V4);
+            			continue;
+        			}else{
+        				// удар об стенку v1
+        				intersectP_V1[0]--;
+            			mball.reflectWallV2(twall,intersectP_V1);
+            			continue;
+        			}
+        		}
+        		
+        		// двойных ударов нет
+        		intersectP_V1[0]--;
+    			mball.reflectWallV2(twall,intersectP_V1);
+    			continue;
         	}
         	
-        	if ((scal_mul(vec_v_2,v2) <= scal_mul(v2,v2) && scal_mul(vec_v_2,v2) > 0)){
-        		// удар об нижнюю стенку
-        		if (scal_mul(vec2,speed) <= scal_mul(speed,speed) && scal_mul(vec2,speed) > 0){
-        			// соударение со стеной отражение в напр. v1
-        			intersectP_V2[1]++;
-        			mball.reflectWallV1(twall,intersectP_V2);
-        			Log.e("reflect1","v2 dvn");
-        			continue;
+        	// проверка удара об нижнюю стенку
+        	if (check_intersect(vec_v_2, vec2, v2, speed)){
+        		// проверка двойных ударов     		
+        		if (check_intersect(vec_v_3, vec3, v3, speed)){
+        			if (scal_mul(vec2,vec2) > scal_mul(vec3,vec3)){
+        				// удар об стенку v3
+        				intersectP_V3[1]--;
+            			mball.reflectWallV1(twall,intersectP_V3);
+            			continue;
+        			}else{
+        				// удар об стенку v2
+        				intersectP_V2[1]++;
+            			mball.reflectWallV1(twall,intersectP_V2);
+            			continue;
+        			}
         		}
+        		
+        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        			if (scal_mul(vec2,vec2) > scal_mul(vec4,vec4)){
+        				// удар об стенку v4
+        				intersectP_V4[0]++;
+            			mball.reflectWallV2(twall,intersectP_V4);
+            			continue;
+        			}else{
+        				// удар об стенку v2
+        				intersectP_V2[1]++;
+            			mball.reflectWallV1(twall,intersectP_V2);
+            			continue;
+        			}
+        		}
+        		
+        		// двойных ударов нет
+        		intersectP_V2[1]++;
+    			mball.reflectWallV1(twall,intersectP_V2);
+    			continue;
         	}
         	
-        	if ((scal_mul(vec_v_3,v3) <= scal_mul(v3,v3) && scal_mul(vec_v_3,v3) > 0)){
-        		// удар об верхнюю стенку
-        		if (scal_mul(vec3,speed) <= scal_mul(speed,speed) && scal_mul(vec3,speed) > 0){
-        			// соударение со стеной отражение в напр. v1
-        			intersectP_V3[1]--;
-        			mball.reflectWallV1(twall,intersectP_V3);
-        			Log.e("reflect1","v2 up");
-        			continue;
+        	// проверка удара об верхнюю стенку
+        	if (check_intersect(vec_v_3, vec3, v3, speed)){
+        		// проверка двойных ударов
+        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        			if (scal_mul(vec3,vec3) > scal_mul(vec4,vec4)){
+        				// удар об стенку v4
+        				intersectP_V4[0]++;
+            			mball.reflectWallV2(twall,intersectP_V4);
+            			continue;
+        			}else{
+        				// удар об стенку v3
+        				intersectP_V3[1]--;
+            			mball.reflectWallV1(twall,intersectP_V3);
+            			continue;
+        			}
         		}
+        		
+        		// двойных ударов нет
+        		intersectP_V3[1]--;
+    			mball.reflectWallV1(twall,intersectP_V3);
+    			continue;
         	}
         	
-        	if ((scal_mul(vec_v_4,v4) <= scal_mul(v4,v4) && scal_mul(vec_v_4,v4) > 0)){
-        		// удар об правую стенку
-        		if (scal_mul(vec4,speed) <= scal_mul(speed,speed) && scal_mul(vec4,speed) > 0){
-        			// соударение со стеной отражение в напр. v2
-        			intersectP_V4[0]++;
-        			mball.reflectWallV2(twall,intersectP_V4);
-        			Log.e("reflect1","v1 up");
-        			continue;
-        		}
+        	// проверка удара об правую стенку
+        	if (check_intersect(vec_v_4, vec4, v4, speed)){
+        		// двойных ударов нет
+        		intersectP_V4[0]++;
+    			mball.reflectWallV2(twall,intersectP_V4);
+    			continue;
         	}
         }
     	
@@ -239,6 +331,21 @@ public class GameLevel extends GameObject{
     	return p1[0] * p2[0] + p1[1] * p2[1];
     }
 
+    /**
+     * проверка на соударение с левой стеной
+     * @param vec_v_1 - вектор пересечения со стенкой
+     * @param vec1 - вектор пересечения скорости со стенкой (от предыдущего положения шара до точки пересечения со стенкой)
+     * @param v1 - вектор, задаюший стенку
+     * @param speed - вектор скорости (перемещения) шара в данный момент времени
+     * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
+     */
+    private boolean check_intersect(float[] vec_v_1, float[] vec1, float[] v1, float[] speed){
+    	return ( scal_mul(vec_v_1,v1) <= scal_mul(v1,v1) 
+    		  && scal_mul(vec_v_1,v1) > 0
+    		  && scal_mul(vec1,speed) <= scal_mul(speed,speed)
+    		  && scal_mul(vec1,speed) > 0 );
+    }
+    
     /**
      * возвращает точку пересечения двух прямых проходяших через (p1, p2) и 
      * (cord_p1,cord_p2) 
