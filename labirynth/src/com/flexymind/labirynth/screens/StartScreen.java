@@ -45,7 +45,7 @@ public class StartScreen extends Activity implements OnClickListener
                 startActivity(intent);
                 break;
             }
-/*
+            
             case R.id.SettingsButton:
             {
                 break;
@@ -56,7 +56,7 @@ public class StartScreen extends Activity implements OnClickListener
                 break;
 
             default:
-                break; */
+                break;
         }
     }
 

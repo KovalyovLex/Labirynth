@@ -110,7 +110,6 @@ public class Ball extends GameObject
 
         sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         //sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
-        
 	}
 	
 	public static void unregisterListeners() {			//Надо этого метода в OnPause() главной активити
