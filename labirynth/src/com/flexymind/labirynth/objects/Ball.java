@@ -29,7 +29,7 @@ public class Ball extends GameObject
     private float[] mPosition;
     
     /** Координаты левого верхнего угла шарика на предыдущем шаге */
-    private Point mPrevPoint = new Point();
+    private float[] mPrevPoint;
     
     /** Ускорение шарика */
     private static float[] macelleration = new float[3];
@@ -60,15 +60,17 @@ public class Ball extends GameObject
         
         registerListeners();
         
-        mSpeed = NULL_SPEED;
+        mSpeed = new float[] {NULL_SPEED[0], NULL_SPEED[1]};
+        
         mPoint = pos;
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
-        mPrevPoint = mPoint;
         
         mPosition = new float[2];
         mPosition[0] = mPoint.x;
         mPosition[1] = mPoint.y;
+        
+        mPrevPoint = new float[]{mPosition[0], mPosition[1]};
         
         this.mHeight = this.mWidth = diam;
     }
@@ -141,19 +143,20 @@ public class Ball extends GameObject
         //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
         //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
         
+        mPrevPoint[0] = mPosition[0];
+        mPrevPoint[1] = mPosition[1];
+        
         mPosition[0] += mSpeed[0];
         mPosition[1] += mSpeed[1];
-        
-        mPrevPoint = mPoint;
         
         mPoint.x = (int)mPosition[0];
         mPoint.y = (int)mPosition[1];
     }
 	
     /** Возвращает предыдущее положение центра шара*/
-    public Point getPrevCenter()
+    public float[] getPrevCenter()
     {
-    	return new Point(mPrevPoint.x + mWidth / 2, mPrevPoint.y + mHeight / 2);
+    	return new float[]{mPrevPoint[0] + mWidth / 2, mPrevPoint[1] + mHeight / 2};
     }
     
     /**
@@ -206,7 +209,10 @@ public class Ball extends GameObject
     public void reflectVertical(Point newPoint)
     {
     	mPoint = newPoint;
-        mSpeed[0] = -mSpeed[0];
+    	mPosition[0] = mPoint.x;
+    	mPosition[1] = mPoint.y;
+    	
+    	mSpeed[0] = -mSpeed[0];
     }
 
     /** Отражение мячика от горизонтали 
@@ -215,6 +221,9 @@ public class Ball extends GameObject
     public void reflectHorizontal(Point newPoint)
     {
     	mPoint = newPoint;
+    	mPosition[0] = mPoint.x;
+    	mPosition[1] = mPoint.y;
+    	
     	mSpeed[1] = -mSpeed[1];
     }
 

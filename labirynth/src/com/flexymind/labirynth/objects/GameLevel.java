@@ -90,8 +90,6 @@ public class GameLevel extends GameObject{
         mPaint.setColor(Color.MAGENTA);
         mPaint.setStrokeWidth(2);
         mPaint.setStyle(Style.STROKE);
-        rectHeight=rectHeight;
-        rectWidth = rectWidth;
         canvas.drawRect(mplayField, mPaint);
     }
     
