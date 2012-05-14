@@ -19,13 +19,14 @@ public class Wall extends GameObject{
 					Point second,
 					Point third){
 		super(mBackG);
-		mImage.setBounds(first.x, first.y, third.x, third.y);
-		mWidth = mImage.getBounds().width();
-        mHeight = mImage.getBounds().height();
 		
-		this.mPoint = first;
+		mPoint = first;
 		thirdPoint = third;
 		secPoint = second;
+		
+		mImage.setBounds(mPoint.x, mPoint.y, thirdPoint.x, thirdPoint.y);
+		mWidth = mImage.getBounds().width();
+        mHeight = mImage.getBounds().height();
 	}
 
 	/**
@@ -51,4 +52,24 @@ public class Wall extends GameObject{
 	public Point getPoint3(){
 		return thirdPoint;
 	}
+	
+	@Override
+	/**
+	 * Изменяем положение точек на нашем дисплее и делаем scale текстуры
+	 * @param ScaleFactorX - множитель размера экрана по оси X
+	 * @param ScaleFactorY - множитель размера экрана по оси Y
+	 */
+	public void resize(double ScaleFactorX, double ScaleFactorY){
+		mPoint.x = (int)(mPoint.x * ScaleFactorX);
+		mPoint.y = (int)(mPoint.y * ScaleFactorY);
+		secPoint.x = (int)(secPoint.x * ScaleFactorX);
+		secPoint.y = (int)(secPoint.y * ScaleFactorY);
+		thirdPoint.x = (int)(thirdPoint.x * ScaleFactorX);
+		thirdPoint.y = (int)(thirdPoint.y * ScaleFactorY);
+		
+		mImage.setBounds(mPoint.x, mPoint.y, thirdPoint.x, thirdPoint.y);
+		mWidth = mImage.getBounds().width();
+        mHeight = mImage.getBounds().height();
+	}
+	
 }
