@@ -36,7 +36,7 @@ public class GameScreen extends Activity {
 	@Override
     protected void onResume() {
 		Ball.registerListeners();
-		super.onStop();
+		super.onResume();
 	}
         
     @Override
