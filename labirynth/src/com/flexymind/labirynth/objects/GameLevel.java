@@ -86,6 +86,7 @@ public class GameLevel extends GameObject{
         	Walls.elementAt(i).Draw(canvas);
         }
 
+        // debug отрисовка краев рамки
         Paint mPaint = new Paint();
         mPaint.setColor(Color.MAGENTA);
         mPaint.setStrokeWidth(2);
@@ -188,50 +189,47 @@ public class GameLevel extends GameObject{
         	}
         	
         	if ((scal_mul(vec_v_1,v1) <= scal_mul(v1,v1) && scal_mul(vec_v_1,v1) > 0)){
+        		// удар об левую стенку
         		if (scal_mul(vec1,speed) <= scal_mul(speed,speed) && scal_mul(vec1,speed) > 0){
-        			// соударение со стеной в напр. v1, отр. в напр. v2
+        			// соударение со стеной отражение в напр. v2
         			intersectP_V1[0]--;
-        			intersectP_V1[1]--;
         			mball.reflectWallV2(twall,intersectP_V1);
-        			Log.v("reflect1","v1 dvn");
+        			Log.e("reflect1","v1 dvn");
+        			continue;
         		}
-        		continue;
         	}
         	
         	if ((scal_mul(vec_v_2,v2) <= scal_mul(v2,v2) && scal_mul(vec_v_2,v2) > 0)){
+        		// удар об нижнюю стенку
         		if (scal_mul(vec2,speed) <= scal_mul(speed,speed) && scal_mul(vec2,speed) > 0){
-        			// соударение со стеной в напр. v1, отр. в напр. v2
-        			intersectP_V2[0]++;
+        			// соударение со стеной отражение в напр. v1
         			intersectP_V2[1]++;
         			mball.reflectWallV1(twall,intersectP_V2);
-        			Log.v("reflect1","v2 dvn");
+        			Log.e("reflect1","v2 dvn");
+        			continue;
         		}
-        		continue;
         	}
         	
         	if ((scal_mul(vec_v_3,v3) <= scal_mul(v3,v3) && scal_mul(vec_v_3,v3) > 0)){
-        		
-        		Log.v("scal_mul vec_3, v3", Integer.toString((int)scal_mul(vec3,speed)));
-        		
+        		// удар об верхнюю стенку
         		if (scal_mul(vec3,speed) <= scal_mul(speed,speed) && scal_mul(vec3,speed) > 0){
-        			// соударение со стеной в напр. v1, отр. в напр. v2
-        			intersectP_V1[0]--;
-        			intersectP_V1[1]--;
-        			mball.reflectWallV2(twall,intersectP_V1);
-        			Log.v("reflect1","v2 up");
+        			// соударение со стеной отражение в напр. v1
+        			intersectP_V3[1]--;
+        			mball.reflectWallV1(twall,intersectP_V3);
+        			Log.e("reflect1","v2 up");
+        			continue;
         		}
-        		continue;
         	}
         	
         	if ((scal_mul(vec_v_4,v4) <= scal_mul(v4,v4) && scal_mul(vec_v_4,v4) > 0)){
+        		// удар об правую стенку
         		if (scal_mul(vec4,speed) <= scal_mul(speed,speed) && scal_mul(vec4,speed) > 0){
-        			// соударение со стеной в напр. v1, отр. в напр. v2
-        			intersectP_V1[0]--;
-        			intersectP_V1[1]--;
-        			mball.reflectWallV2(twall,intersectP_V1);
-        			Log.v("reflect1","v1 up");
+        			// соударение со стеной отражение в напр. v2
+        			intersectP_V4[0]++;
+        			mball.reflectWallV2(twall,intersectP_V4);
+        			Log.e("reflect1","v1 up");
+        			continue;
         		}
-        		continue;
         	}
         }
     	

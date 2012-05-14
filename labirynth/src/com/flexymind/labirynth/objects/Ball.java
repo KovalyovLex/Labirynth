@@ -109,13 +109,13 @@ public class Ball extends GameObject
 	public static void registerListeners() {			//Ќадо этого метода в OnResume() главной активити
 
         sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-        sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        //sMan.registerListener(compassListener, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
         
 	}
 	
 	public static void unregisterListeners() {			//Ќадо этого метода в OnPause() главной активити
 		sMan.unregisterListener(accelerometerListener);
-		sMan.unregisterListener(compassListener);
+		//sMan.unregisterListener(compassListener);
 	}
     
 	@Override
@@ -129,12 +129,10 @@ public class Ball extends GameObject
 		mSpeed[0] = fric_coef * mSpeed[0];
 		mSpeed[1] = fric_coef * mSpeed[1];
 		
-		//mSpeed[0] += 0.05 * ScreenSettings.ScaleFactorX * macelleration[1];	//изменение скорости в зависимости от разрешени€ экрана
-        //mSpeed[1] += 0.05 * ScreenSettings.ScaleFactorY * macelleration[0];
-		
+		//изменение скорости в зависимости от разрешени€ экрана
 		// for asus prime o_0
 		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
-        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
+        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY * macelleration[1];
         
         // for other normal devices
         //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
