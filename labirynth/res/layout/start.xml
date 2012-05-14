@@ -1,40 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/flexy3big"
     android:gravity="bottom"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="8dip" >
 
-    <Button
+   <Button
         android:id="@+id/StartButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="110dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="160dp"
         android:layout_marginLeft="65dp"
         android:background="@drawable/button1" />
-
-    <Button
+   <Button
+        android:id="@+id/SettingsButton"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="65dp"
+        android:background="@drawable/button2" />   <Button
         android:id="@+id/ExitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="40dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="100dp"
         android:layout_marginLeft="65dp"
         android:background="@drawable/button3" />
-
-    <Button
-        android:id="@+id/SettingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="70dp"
-        android:layout_marginLeft="65dp"
-        android:background="@drawable/button2" />
 
 </RelativeLayout>

@@ -1,133 +1,175 @@
-package com.flexymind.labirynth.objects;
+п»їpackage com.flexymind.labirynth.objects;
+
+import com.flexymind.labirynth.screens.ScreenSettings;
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-//import android.hardware.Sensor;
-//import android.hardware.SensorEvent;
-//import android.hardware.SensorEventListener;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import org.openintents.sensorsimulator.hardware.Sensor;
-import org.openintents.sensorsimulator.hardware.SensorEvent;
-import org.openintents.sensorsimulator.hardware.SensorEventListener;
-import org.openintents.sensorsimulator.hardware.SensorManagerSimulator;
 
 /**
- * Класс Шарик
- * @author Kurnikov Sergey
+ * РљР»Р°СЃСЃ РЁР°СЂРёРє
+ * @author Kurnikov Sergey + Soloviev Vyacheslav + Kovalyov Alexander
  *
  */
 
 public class Ball extends GameObject
 {
-    private static final Point NULL_SPEED = new Point(2, 5);
+    private static final float[] NULL_SPEED = new float[]{0, 0};
 	
-    /**Скорость шарика */
-    private Point mSpeed;
+    /** РЎРєРѕСЂРѕСЃС‚СЊ С€Р°СЂРёРєР° */
+    private float[] mSpeed;
     
-    /** Ускорение шарика */
-    private float[] macelleration = new float[3];
+    /** РљРѕСЌС„С„РёС†РёРµРЅС‚ С‚СЂРµРЅРёСЏ РѕР± РїРѕР» */
+    private float fric_coef = 0.95f;
     
-    /** Данные компаса */
-    private float[] compassValues = new float[3];
+    /** РљРѕРѕСЂРґРёРЅР°С‚С‹ Р»РµРІРѕРіРѕ РІРµСЂС…РЅРµРіРѕ СѓРіР»Р° С€Р°СЂРёРєР° (int РѕС‡РµРЅСЊ РіСЂСѓР±) */
+    private float[] mPosition;
     
-    /** Массив для вычисления углов наклона */
-    private float[] inR = new float[9];
+    /** РљРѕРѕСЂРґРёРЅР°С‚С‹ Р»РµРІРѕРіРѕ РІРµСЂС…РЅРµРіРѕ СѓРіР»Р° С€Р°СЂРёРєР° РЅР° РїСЂРµРґС‹РґСѓС‰РµРј С€Р°РіРµ */
+    private float[] mPrevPoint;
     
-    /** Углы наклона */
-    private float[] tiltAngles = new float[3];
+    /** РЈСЃРєРѕСЂРµРЅРёРµ С€Р°СЂРёРєР° */
+    private static float[] macelleration = new float[3];
     
-    /** Сенсор для акселерометра */
-    //private SensorManager sMan;
-    public SensorManagerSimulator sMan;
+    /** Р”Р°РЅРЅС‹Рµ РєРѕРјРїР°СЃР° */
+    private static float[] compassValues = new float[3];
     
-               
+    /** РњР°СЃСЃРёРІ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ СѓРіР»РѕРІ РЅР°РєР»РѕРЅР° */
+    private static float[] inR = new float[9];
+    
+    /** РЈРіР»С‹ РЅР°РєР»РѕРЅР° */
+    private static float[] tiltAngles = new float[3];
+
+    
+    /** РћР±СЉРµРєС‚ РґР»СЏ РїСЂРѕСЃР»СѓС€РєРё СЃРµРЅСЃРѕСЂРѕРІ */
+    public static SensorManager sMan;
     
     /**
-     * Конструктор для инициализации объекта с начальными координатами и диаметром
-     * @input pos - позиция центра шара
-     * @input diam - диаметр шара
-     * @input sensMan - сенсор акселерометра
+     * РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РґР»СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РѕР±СЉРµРєС‚Р° СЃ РЅР°С‡Р°Р»СЊРЅС‹РјРё РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё Рё РґРёР°РјРµС‚СЂРѕРј
+     * @input pos - РїРѕР·РёС†РёСЏ С†РµРЅС‚СЂР° С€Р°СЂР°
+     * @input diam - РґРёР°РјРµС‚СЂ С€Р°СЂР°
+     * @input sensMan - СЃРµРЅСЃРѕСЂ Р°РєСЃРµР»РµСЂРѕРјРµС‚СЂР°
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
-	public Ball(Drawable image, Point pos, int diam, SensorManagerSimulator sensMan)
+	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
     {
         super(image);
-        this.sMan = sensMan;
-        sMan.connectSimulator();
-        		
-        sMan.registerListener(new SensorEventListener(){
-
-			public void onAccuracyChanged(Sensor sensor, int accuracy) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			public void onSensorChanged(SensorEvent event) {
-				// TODO Auto-generated method stub
-				macelleration = event.values;
-			}
-			}, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
         
-        sMan.registerListener(new SensorEventListener(){
-
-			public void onAccuracyChanged(Sensor sensor, int accuracy) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			public void onSensorChanged(SensorEvent event) {
-				// TODO Auto-generated method stub
-				compassValues = event.values;
-				if (SensorManager.getRotationMatrix(inR, null, macelleration, compassValues)) {
-					SensorManager.getOrientation(inR, tiltAngles);
-				}
-				
-				for (int i=0; i<3; i++) {
-					tiltAngles[i] = (float) Math.toDegrees(tiltAngles[i]);
-					if(tiltAngles[i] < 0) {
-						tiltAngles[i] += 360.0f;
-					}
-				}
-				
-			}
-			}, sMan.getDefaultSensor(SensorManager.SENSOR_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        sMan = sensMan;
         
-        mSpeed = NULL_SPEED;
+        registerListeners();
+        
+        mSpeed = new float[] {NULL_SPEED[0], NULL_SPEED[1]};
+        
         mPoint = pos;
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
+        
+        mPosition = new float[2];
+        mPosition[0] = mPoint.x;
+        mPosition[1] = mPoint.y;
+        
+        mPrevPoint = new float[]{mPosition[0], mPosition[1]};
+        
         this.mHeight = this.mWidth = diam;
     }
+	
+	/** РџСЂРѕСЃР»СѓС€РєР° Р°РєСЃРµР»РµСЂРѕРјРµС‚СЂР° */
+	public static final SensorEventListener accelerometerListener = new SensorEventListener() {
+		
+		public void onSensorChanged(SensorEvent event) {
+			macelleration = event.values;
+		}
+		
+		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+	};
+	
+	/** РџСЂРѕСЃР»СѓС€РєР° РєРѕРјРїР°СЃР° */
+	public static final SensorEventListener compassListener = new SensorEventListener() {
+		
+		public void onSensorChanged(SensorEvent event) {
+			compassValues = event.values;
+			if (SensorManager.getRotationMatrix(inR, null, macelleration, compassValues)) {
+				SensorManager.getOrientation(inR, tiltAngles);
+			}
+			
+			for (int i=0; i<3; i++) {
+				tiltAngles[i] = (float) Math.toDegrees(tiltAngles[i]);
+				if(tiltAngles[i] < 0) {
+					tiltAngles[i] += 360.0f;
+				}
+			}
+			
+		}
+		
+		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+	};
+	
+	public static void registerListeners() {			//РќР°РґРѕ СЌС‚РѕРіРѕ РјРµС‚РѕРґР° РІ OnResume() РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
+
+        sMan.registerListener(accelerometerListener, sMan.getDefaultSensor(SensorManager.SENSOR_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+	}
+	
+	public static void unregisterListeners() {			//РќР°РґРѕ СЌС‚РѕРіРѕ РјРµС‚РѕРґР° РІ OnPause() РіР»Р°РІРЅРѕР№ Р°РєС‚РёРІРёС‚Рё
+		sMan.unregisterListener(accelerometerListener);
+	}
     
 	@Override
     /**
-     * Функция, определяющая последующее положение шарика
+     * Р¤СѓРЅРєС†РёСЏ, РѕРїСЂРµРґРµР»СЏСЋС‰Р°СЏ РїРѕСЃР»РµРґСѓСЋС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ С€Р°СЂРёРєР°
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
     protected void updatePoint()
     {
-		mSpeed.x += 0.1 * macelleration[0];
-        mSpeed.y -= 0.1 * macelleration[1];
+		// Р’СЏР·РєРѕРµ С‚СЂРµРЅРёРµ РѕР± РїРѕР»
+		mSpeed[0] = fric_coef * mSpeed[0];
+		mSpeed[1] = fric_coef * mSpeed[1];
+
+		//РёР·РјРµРЅРµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ СЌРєСЂР°РЅР°
+		// for asus prime o_0
+		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
+        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY * macelleration[1];
         
-        mPoint.x += mSpeed.x;
-        mPoint.y += mSpeed.y;
-    }
-    
-    /**функция, возвращающая скорость с датчиков устройства
-     * в зависимости от наклона телефона*/
-    private Point getSpeed()
-    {
-		return mSpeed;
+        // for other normal devices
+        //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
+        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
+        
+        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//СѓСЃРєРѕСЂРµРЅРёРµ СЃ СЃРµРЅСЃРѕСЂР° РІ Рј/СЃ^2 РїРµСЂРµРІРѕРґРёРј Рє СѓСЃРєРѕСЂРµРЅРёСЋ Р·Р° РїРµСЂРёРѕРґ 20РјСЃ
+        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
+        
+        mPrevPoint[0] = mPosition[0];
+        mPrevPoint[1] = mPosition[1];
+        
+        mPosition[0] += mSpeed[0];
+        mPosition[1] += mSpeed[1];
+        
+        mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
     }
 	
+
+	public float[] getCenterf(){
+		return new float[]{mPosition[0] + mWidth / 2, mPosition[1] + mHeight / 2};
+	}
+	
+    /** Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРµРґС‹РґСѓС‰РµРµ РїРѕР»РѕР¶РµРЅРёРµ С†РµРЅС‚СЂР° С€Р°СЂР° */
+    public float[] getPrevCenterf()
+    {
+    	return new float[]{mPrevPoint[0] + mWidth / 2, mPrevPoint[1] + mHeight / 2};
+    }
+
     /**
-	 * отражение от стены в направлении v1 (Point2 - Point1)
-	 * @param wall стена
+	 * РѕС‚СЂР°Р¶РµРЅРёРµ РѕС‚ СЃС‚РµРЅС‹ РІ РЅР°РїСЂР°РІР»РµРЅРёРё v1 (Point2 - Point1)
+	 * @param wall СЃС‚РµРЅР°
+	 * @param new_pos РЅРѕРІР°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ РѕСЃРё V1
 	 */
-	public void reflectWallV1(Wall wall){
+    public void reflectWallV1(Wall wall, float[] newpnt){
 		Point vec1;
-		int project;
+		float project;
 		
 		vec1 = new Point (	wall.getPoint2().x - wall.getPoint1().x,
 							wall.getPoint2().y - wall.getPoint1().y);
@@ -137,19 +179,25 @@ public class Ball extends GameObject
 		vec1.x /= length;
 		vec1.y /= length;
 		
-		project = vec1.x * mSpeed.x + vec1.y * mSpeed.y;
-		mSpeed.x -= 2 * project * vec1.x;
-		mSpeed.y -= 2 * project * vec1.y;
+		project = vec1.x * mSpeed[0] + vec1.y * mSpeed[1];
+		mSpeed[0] -= 2 * project * vec1.x;
+		mSpeed[1] -= 2 * project * vec1.y;
 		
+		mPosition[0] = newpnt[0] - mWidth / 2;
+		mPosition[1] = newpnt[1] - mHeight / 2;
+		
+		mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
 	}
     
 	/**
-	 * отражение от стены в направлении v2 (Point3 - Point2)
-	 * @param wall стена
+	 * РѕС‚СЂР°Р¶РµРЅРёРµ РѕС‚ СЃС‚РµРЅС‹ РІ РЅР°РїСЂР°РІР»РµРЅРёРё v2 (Point3 - Point2)
+	 * @param wall СЃС‚РµРЅР°
+	 * @param new_pos РЅРѕРІР°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ РѕСЃРё V2
 	 */
-	public void reflectWallV2(Wall wall){
+	public void reflectWallV2(Wall wall, float[] newpnt){
 		Point vec2;
-		int project;
+		float project;
 		
 		vec2 = new Point (	wall.getPoint3().x - wall.getPoint2().x,
 							wall.getPoint3().y - wall.getPoint2().y);
@@ -159,22 +207,39 @@ public class Ball extends GameObject
 		vec2.x /= length;
 		vec2.y /= length;
 		
-		project = vec2.x * mSpeed.x + vec2.y * mSpeed.y;
-		mSpeed.x -= 2 * project * vec2.x;
-		mSpeed.y -= 2 * project * vec2.y;
+		project = vec2.x * mSpeed[0] + vec2.y * mSpeed[1];
+		mSpeed[0] -= 2 * project * vec2.x;
+		mSpeed[1] -= 2 * project * vec2.y;
 		
+		mPosition[0] = newpnt[0] - mWidth / 2;
+		mPosition[1] = newpnt[1] - mHeight / 2;
+		
+		mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
 	}
 	
-    /** Отражение мячика от вертикали */
-    public void reflectVertical()
+    /** РћС‚СЂР°Р¶РµРЅРёРµ РјСЏС‡РёРєР° РѕС‚ РІРµСЂС‚РёРєР°Р»Рё 
+     * @param newPoint С‚РѕС‡РєР° С€Р°СЂР° РїРѕСЃР»Рµ СЃРѕСѓРґР°СЂРµРЅРёСЏ
+     * */
+    public void reflectVertical(Point newPoint)
     {
-        mSpeed.x = -mSpeed.x;
+    	mPoint = newPoint;
+    	mPosition[0] = mPoint.x;
+    	mPosition[1] = mPoint.y;
+    	
+    	mSpeed[0] = -mSpeed[0];
     }
 
-    /** Отражение мячика от горизонтали */
-    public void reflectHorizontal()
+    /** РћС‚СЂР°Р¶РµРЅРёРµ РјСЏС‡РёРєР° РѕС‚ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё 
+     * @param newPoint С‚РѕС‡РєР° С€Р°СЂР° РїРѕСЃР»Рµ СЃРѕСѓРґР°СЂРµРЅРёСЏ
+     * */
+    public void reflectHorizontal(Point newPoint)
     {
-    	mSpeed.y = -mSpeed.y;
+    	mPoint = newPoint;
+    	mPosition[0] = mPoint.x;
+    	mPosition[1] = mPoint.y;
+    	
+    	mSpeed[1] = -mSpeed[1];
     }
 
 }

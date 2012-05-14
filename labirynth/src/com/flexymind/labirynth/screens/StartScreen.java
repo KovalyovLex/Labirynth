@@ -1,9 +1,11 @@
-package com.flexymind.labirynth.screens;
+п»їpackage com.flexymind.labirynth.screens;
 
-import com.android.pingpong.R;
+
+import com.flexymind.labirynth.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,20 +20,20 @@ public class StartScreen extends Activity implements OnClickListener
         setContentView(R.layout.start);
         
         
-        // Кнопка "Start"
+        // РљРЅРѕРїРєР° "Start"
         Button startButton = (Button)findViewById(R.id.StartButton);
         startButton.setOnClickListener(this);
 
-        // Кнопка "Exit"
+        // РљРЅРѕРїРєР° "Exit"
         Button exitButton = (Button)findViewById(R.id.ExitButton);
         exitButton.setOnClickListener(this);
 
-        // Кнопка "Settings"
+        // РљРЅРѕРїРєР° "Settings"
         Button settingsButton = (Button)findViewById(R.id.SettingsButton);
         settingsButton.setOnClickListener(this);
     }
 
-    /** Обработка нажатия кнопок */
+    /** РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРѕРє */
     public void onClick(View v)
     {
         switch (v.getId())
@@ -43,8 +45,7 @@ public class StartScreen extends Activity implements OnClickListener
                 startActivity(intent);
                 break;
             }
-//[review] mandrigin: do not leave the commented-out code!
-/*
+
             case R.id.SettingsButton:
             {
                 break;
@@ -55,9 +56,12 @@ public class StartScreen extends Activity implements OnClickListener
                 break;
 
             default:
-                break; */
+                break;
         }
     }
 
-
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) { 
+    	super.onConfigurationChanged(newConfig);
+    }
 }
