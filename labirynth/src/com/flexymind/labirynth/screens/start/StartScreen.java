@@ -26,6 +26,18 @@ public class StartScreen extends Activity implements OnClickListener {
 
 		ScreenSettings.GenerateSettings(display.getWidth(), display.getHeight());
 		
+		// Кнопка "Start"
+		Button startButton = (Button) findViewById(R.id.StartButton);
+		startButton.setOnClickListener(this);
+			
+		// Кнопка "Exit"
+		Button exitButton = (Button) findViewById(R.id.ExitButton);
+		exitButton.setOnClickListener(this);
+			
+		// Кнопка "Settings"
+		Button settingsButton = (Button) findViewById(R.id.SettingsButton);
+		settingsButton.setOnClickListener(this);
+		
 		AutoSize();
 	}
 
@@ -76,15 +88,12 @@ public class StartScreen extends Activity implements OnClickListener {
 			
 			// Кнопка "Start"
 			Button startButton = (Button) findViewById(R.id.StartButton);
-			startButton.setOnClickListener(this);
 	
 			// Кнопка "Exit"
 			Button exitButton = (Button) findViewById(R.id.ExitButton);
-			exitButton.setOnClickListener(this);
 	
 			// Кнопка "Settings"
 			Button settingsButton = (Button) findViewById(R.id.SettingsButton);
-			settingsButton.setOnClickListener(this);
 			
 			// удаляем все кнопки
 			llayout.removeAllViews();	
