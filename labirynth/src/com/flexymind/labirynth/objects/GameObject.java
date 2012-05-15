@@ -13,11 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 public abstract class GameObject {
-	
-	// Константы для направлений
-    public final static int DIR_LEFT = -1;
-    public final static int DIR_RIGHT = 1;
-    public final static int DIR_NONE = 0;
+
     public int index = 0; //номер стенки, с которой происходит соударение
  
     /** Координаты опорной точки */
