@@ -204,9 +204,9 @@ public class GameLevel extends GameObject{
         	}
         	
         	// проверка удара об левую стенку
-        	if (check_intersect(vec_v_1, vec1, v1, speed)){
+        	if (intersectP_V1 != null && check_intersect(vec_v_1, vec1, v1, speed)){
         		// проверка двойных ударов
-        		if (check_intersect(vec_v_2, vec2, v2, speed)){
+        		if (intersectP_V2 != null && check_intersect(vec_v_2, vec2, v2, speed)){
         			if (scal_mul(vec1,vec1) > scal_mul(vec2,vec2)){
         				// удар об стенку v2
         				intersectP_V2[1]++;
@@ -220,7 +220,7 @@ public class GameLevel extends GameObject{
         			}
         		}
         		
-        		if (check_intersect(vec_v_3, vec3, v3, speed)){
+        		if (intersectP_V3 != null && check_intersect(vec_v_3, vec3, v3, speed)){
         			if (scal_mul(vec1,vec1) > scal_mul(vec3,vec3)){
         				// удар об стенку v3
         				intersectP_V3[1]--;
@@ -234,7 +234,7 @@ public class GameLevel extends GameObject{
         			}
         		}
         		
-        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        		if (intersectP_V4 != null && check_intersect(vec_v_4, vec4, v4, speed)){
         			if (scal_mul(vec1,vec1) > scal_mul(vec4,vec4)){
         				// удар об стенку v4
         				intersectP_V4[0]++;
@@ -255,9 +255,9 @@ public class GameLevel extends GameObject{
         	}
         	
         	// проверка удара об нижнюю стенку
-        	if (check_intersect(vec_v_2, vec2, v2, speed)){
+        	if (intersectP_V2 != null && check_intersect(vec_v_2, vec2, v2, speed)){
         		// проверка двойных ударов     		
-        		if (check_intersect(vec_v_3, vec3, v3, speed)){
+        		if (intersectP_V3 != null && check_intersect(vec_v_3, vec3, v3, speed)){
         			if (scal_mul(vec2,vec2) > scal_mul(vec3,vec3)){
         				// удар об стенку v3
         				intersectP_V3[1]--;
@@ -271,7 +271,7 @@ public class GameLevel extends GameObject{
         			}
         		}
         		
-        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        		if (intersectP_V4 != null && check_intersect(vec_v_4, vec4, v4, speed)){
         			if (scal_mul(vec2,vec2) > scal_mul(vec4,vec4)){
         				// удар об стенку v4
         				intersectP_V4[0]++;
@@ -292,9 +292,9 @@ public class GameLevel extends GameObject{
         	}
         	
         	// проверка удара об верхнюю стенку
-        	if (check_intersect(vec_v_3, vec3, v3, speed)){
+        	if (intersectP_V3 != null && check_intersect(vec_v_3, vec3, v3, speed)){
         		// проверка двойных ударов
-        		if (check_intersect(vec_v_4, vec4, v4, speed)){
+        		if (intersectP_V4 != null && check_intersect(vec_v_4, vec4, v4, speed)){
         			if (scal_mul(vec3,vec3) > scal_mul(vec4,vec4)){
         				// удар об стенку v4
         				intersectP_V4[0]++;
@@ -315,7 +315,7 @@ public class GameLevel extends GameObject{
         	}
         	
         	// проверка удара об правую стенку
-        	if (check_intersect(vec_v_4, vec4, v4, speed)){
+        	if (intersectP_V4 != null && check_intersect(vec_v_4, vec4, v4, speed)){
         		// двойных ударов нет
         		intersectP_V4[0]++;
     			mball.reflectWallV2(twall,intersectP_V4);
