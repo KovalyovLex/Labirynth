@@ -21,16 +21,14 @@ public class GameLevel extends GameObject{
  
 	private Ball mball;
 	private FINISH mfinish;
-	/**Эталонные значения, относительно которых происходит масшатабирование*/
-	private int rectHeight = 415;
-	private int rectWidth = 752;
-	private int left = 59;
-	private int top = 24; 
-	private boolean dostup  = true;
-	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
-    /**Игровое поле */
-	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
-    //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
+	
+	/**Эталонные значения рамки, относительно которых происходит масшатабирование*/
+	private int rectHeight	= 415;
+	private int rectWidth	= 752;
+	private int left		= 59;
+	private int top			= 24;
+	private boolean dostup	= true;
+	private Rect mplayField	= new Rect(left,top,rectWidth,rectHeight);
 
     Vector <Wall> Walls;
     
@@ -61,10 +59,10 @@ public class GameLevel extends GameObject{
     
     public void resize(double ScaleFactorX, double ScaleFactorY)
     {
-    	rectHeight      =  (int)(ScaleFactorX*rectHeight);
-        rectWidth       =  (int)(ScaleFactorY*rectWidth);
-        left            =  (int)(ScaleFactorX*left);
-        top             =  (int)(ScaleFactorY*top);
+    	rectHeight      =  (int)(ScaleFactorX * rectHeight);
+        rectWidth       =  (int)(ScaleFactorY * rectWidth);
+        left            =  (int)(ScaleFactorX * left);
+        top             =  (int)(ScaleFactorY * top);
     }
 
     @Override
@@ -101,8 +99,7 @@ public class GameLevel extends GameObject{
         for(int i = 0; i < Walls.size();i++){
         	Walls.elementAt(i).Update(); 
         }
-        collisionsCheck();
-    	while (collision_With_Field (mball, mplayField));
+    	while (collision_With_Field (mball, mplayField) & collisionsCheck() & collision_With_Field (mball, mplayField));
     	victory();
     }
     
@@ -113,7 +110,7 @@ public class GameLevel extends GameObject{
     }
     
     /** Функция, описывающая столкновения объектов шар и станки между собой */
-    private void collisionsCheck()
+    private boolean collisionsCheck()
     {
     	float[] p1 = {0,0}, 
     			p2 = {0,0}, 
@@ -138,6 +135,8 @@ public class GameLevel extends GameObject{
     			intersectP_V4 = {0,0}; // точки пересечения со стенками
     	
     	Wall 	twall;
+    	
+    	boolean collision = false;
     	
         for(int i = 0; i < Walls.size();i++){
         	
@@ -211,11 +210,13 @@ public class GameLevel extends GameObject{
         				// удар об стенку v2
         				intersectP_V2[1]++;
             			mball.reflectWallV1(twall,intersectP_V2);
+            			collision = true;
             			continue;
         			}else{
         				// удар об стенку v1
         				intersectP_V1[0]--;
             			mball.reflectWallV2(twall,intersectP_V1);
+            			collision = true;
             			continue;
         			}
         		}
@@ -225,11 +226,13 @@ public class GameLevel extends GameObject{
         				// удар об стенку v3
         				intersectP_V3[1]--;
             			mball.reflectWallV1(twall,intersectP_V3);
+            			collision = true;
             			continue;
         			}else{
         				// удар об стенку v1
         				intersectP_V1[0]--;
             			mball.reflectWallV2(twall,intersectP_V1);
+            			collision = true;
             			continue;
         			}
         		}
@@ -239,11 +242,13 @@ public class GameLevel extends GameObject{
         				// удар об стенку v4
         				intersectP_V4[0]++;
             			mball.reflectWallV2(twall,intersectP_V4);
+            			collision = true;
             			continue;
         			}else{
         				// удар об стенку v1
         				intersectP_V1[0]--;
             			mball.reflectWallV2(twall,intersectP_V1);
+            			collision = true;
             			continue;
         			}
         		}
@@ -251,6 +256,7 @@ public class GameLevel extends GameObject{
         		// двойных ударов нет
         		intersectP_V1[0]--;
     			mball.reflectWallV2(twall,intersectP_V1);
+    			collision = true;
     			continue;
         	}
         	
@@ -262,11 +268,13 @@ public class GameLevel extends GameObject{
         				// удар об стенку v3
         				intersectP_V3[1]--;
             			mball.reflectWallV1(twall,intersectP_V3);
+            			collision = true;
             			continue;
         			}else{
         				// удар об стенку v2
         				intersectP_V2[1]++;
             			mball.reflectWallV1(twall,intersectP_V2);
+            			collision = true;
             			continue;
         			}
         		}
@@ -276,11 +284,13 @@ public class GameLevel extends GameObject{
         				// удар об стенку v4
         				intersectP_V4[0]++;
             			mball.reflectWallV2(twall,intersectP_V4);
+            			collision = true;
             			continue;
         			}else{
         				// удар об стенку v2
         				intersectP_V2[1]++;
             			mball.reflectWallV1(twall,intersectP_V2);
+            			collision = true;
             			continue;
         			}
         		}
@@ -288,6 +298,7 @@ public class GameLevel extends GameObject{
         		// двойных ударов нет
         		intersectP_V2[1]++;
     			mball.reflectWallV1(twall,intersectP_V2);
+    			collision = true;
     			continue;
         	}
         	
@@ -299,11 +310,13 @@ public class GameLevel extends GameObject{
         				// удар об стенку v4
         				intersectP_V4[0]++;
             			mball.reflectWallV2(twall,intersectP_V4);
+            			collision = true;
             			continue;
         			}else{
         				// удар об стенку v3
         				intersectP_V3[1]--;
             			mball.reflectWallV1(twall,intersectP_V3);
+            			collision = true;
             			continue;
         			}
         		}
@@ -311,6 +324,7 @@ public class GameLevel extends GameObject{
         		// двойных ударов нет
         		intersectP_V3[1]--;
     			mball.reflectWallV1(twall,intersectP_V3);
+    			collision = true;
     			continue;
         	}
         	
@@ -319,10 +333,11 @@ public class GameLevel extends GameObject{
         		// двойных ударов нет
         		intersectP_V4[0]++;
     			mball.reflectWallV2(twall,intersectP_V4);
+    			collision = true;
     			continue;
         	}
         }
-    	
+    	return collision;
     }
 
     private float scalMul(float[] p1, float[] p2){
