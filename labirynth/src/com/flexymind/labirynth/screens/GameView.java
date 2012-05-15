@@ -2,6 +2,7 @@
 
 
 import com.flexymind.labirynth.objects.GameLevel;
+import com.flexymind.labirynth.screens.settings.ScreenSettings;
 import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;

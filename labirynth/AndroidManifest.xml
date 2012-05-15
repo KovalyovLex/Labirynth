@@ -23,7 +23,7 @@
         </activity>
         
         <activity 
-            android:name="com.flexymind.labirynth.screens.StartScreen"
+            android:name=".screens.start.StartScreen"
             android:screenOrientation="landscape" 
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:configChanges="orientation" >

@@ -1,6 +1,6 @@
 ﻿package com.flexymind.labirynth.objects;
 
-import com.flexymind.labirynth.screens.ScreenSettings;
+import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;

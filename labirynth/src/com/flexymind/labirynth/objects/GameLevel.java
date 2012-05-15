@@ -9,7 +9,8 @@ import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import com.flexymind.labirynth.screens.ScreenSettings;
+
+import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 /**
  * Класс 

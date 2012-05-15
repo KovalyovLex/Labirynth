@@ -3,7 +3,8 @@
 
 import java.util.Vector;
 
-import com.flexymind.labirynth.screens.ScreenSettings;
+import com.flexymind.labirynth.screens.settings.ScreenSettings;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
