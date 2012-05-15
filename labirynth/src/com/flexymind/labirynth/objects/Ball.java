@@ -28,8 +28,8 @@ public class Ball extends GameObject
     /** Координаты левого верхнего угла шарика (int очень груб) */
     private float[] mPosition;
     
-    /** Координаты левого верхнего угла шарика на предыдущем шаге */
-    private float[] mPrevPoint;
+    /** Координаты левого верхнего угла шарика на следующем шаге */
+    private float[] mNextPoint;
     
     /** Ускорение шарика */
     private static float[] macelleration = new float[3];
@@ -70,7 +70,9 @@ public class Ball extends GameObject
         mPosition[0] = mPoint.x;
         mPosition[1] = mPoint.y;
         
-        mPrevPoint = new float[]{mPosition[0], mPosition[1]};
+        mNextPoint = new float[]{mPosition[0], mPosition[1]};
+        mNextPoint[0] += mSpeed[0];
+        mNextPoint[1] += mSpeed[1];
         
         this.mHeight = this.mWidth = diam;
     }
@@ -143,25 +145,42 @@ public class Ball extends GameObject
         //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
         //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
         
-        mPrevPoint[0] = mPosition[0];
-        mPrevPoint[1] = mPosition[1];
-        
-        mPosition[0] += mSpeed[0];
-        mPosition[1] += mSpeed[1];
+        mPosition[0] = mNextPoint[0];
+        mPosition[1] = mNextPoint[1];
         
         mPoint.x = (int)mPosition[0];
         mPoint.y = (int)mPosition[1];
+        
+        mNextPoint[0] += mSpeed[0];
+        mNextPoint[1] += mSpeed[1];
     }
 	
+    /** Верхняя граница объекта на следующем шаге */
+    public int getNextTop() { return (int)mNextPoint[1]; }
 
+    /** Нижняя граница объекта на следующем шаге */
+    public int getNextBottom() { return (int)mNextPoint[1] + mHeight; }
+
+    /** Левая граница объекта на следующем шаге */
+    public int getNextLeft() { return (int)mNextPoint[0]; }
+
+    /** Правая граница объекта на следующем шаге */
+    public int getNextRight() { return (int)mNextPoint[0] + mWidth; }
+
+    /** Центральная точка объекта на следующем шаге */
+    public Point getNextCenter() { return new Point((int)mNextPoint[0] + mWidth / 2, (int)mNextPoint[1] + mHeight / 2); }
+
+    /** Верхняя левая точка объекта на следующем шаге */
+    public Point getNextPoint() { return new Point((int)mNextPoint[0], (int)mNextPoint[1]); }
+	
 	public float[] getCenterf(){
-		return new float[]{mPosition[0] + mWidth / 2, mPosition[1] + mHeight / 2};
+		return new float[]{mPosition[0] + mWidth / 2f, mPosition[1] + mHeight / 2f};
 	}
 	
-    /** Возвращает предыдущее положение центра шара */
-    public float[] getPrevCenterf()
+    /** Возвращает следующее положение центра шара */
+    public float[] getNextCenterf()
     {
-    	return new float[]{mPrevPoint[0] + mWidth / 2, mPrevPoint[1] + mHeight / 2};
+    	return new float[]{mNextPoint[0] + mWidth / 2f, mNextPoint[1] + mHeight / 2f};
     }
 
     /**
@@ -185,11 +204,8 @@ public class Ball extends GameObject
 		mSpeed[0] -= 2 * project * vec1.x;
 		mSpeed[1] -= 2 * project * vec1.y;
 		
-		mPosition[0] = newpnt[0] - mWidth / 2;
-		mPosition[1] = newpnt[1] - mHeight / 2;
-		
-		mPoint.x = (int)mPosition[0];
-        mPoint.y = (int)mPosition[1];
+		mNextPoint[0] = newpnt[0] - mWidth / 2f;
+		mNextPoint[1] = newpnt[1] - mHeight / 2f;
 	}
     
 	/**
@@ -213,11 +229,8 @@ public class Ball extends GameObject
 		mSpeed[0] -= 2 * project * vec2.x;
 		mSpeed[1] -= 2 * project * vec2.y;
 		
-		mPosition[0] = newpnt[0] - mWidth / 2;
-		mPosition[1] = newpnt[1] - mHeight / 2;
-		
-		mPoint.x = (int)mPosition[0];
-        mPoint.y = (int)mPosition[1];
+		mNextPoint[0] = newpnt[0] - mWidth / 2f;
+		mNextPoint[1] = newpnt[1] - mHeight / 2f;
 	}
 	
     /** Отражение мячика от вертикали 
@@ -226,10 +239,13 @@ public class Ball extends GameObject
     public void reflectVertical(Point newPoint)
     {
     	mPoint = newPoint;
-    	mPosition[0] = mPoint.x;
-    	mPosition[1] = mPoint.y;
+    	mNextPoint[0] = newPoint.x;
+    	mNextPoint[1] = newPoint.y;
     	
     	mSpeed[0] = -mSpeed[0];
+    	
+    	mNextPoint[0] += mSpeed[0];
+        mNextPoint[1] += mSpeed[1];
     }
 
     /** Отражение мячика от горизонтали 
@@ -238,10 +254,13 @@ public class Ball extends GameObject
     public void reflectHorizontal(Point newPoint)
     {
     	mPoint = newPoint;
-    	mPosition[0] = mPoint.x;
-    	mPosition[1] = mPoint.y;
+    	mNextPoint[0] = newPoint.x;
+    	mNextPoint[1] = newPoint.y;
     	
     	mSpeed[1] = -mSpeed[1];
+    	
+    	mNextPoint[0] += mSpeed[0];
+        mNextPoint[1] += mSpeed[1];
     }
 
 }

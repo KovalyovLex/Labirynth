@@ -99,7 +99,8 @@ public class GameLevel extends GameObject{
         for(int i = 0; i < Walls.size();i++){
         	Walls.elementAt(i).Update(); 
         }
-    	while (collision_With_Field (mball, mplayField) & collisionsCheck() & collision_With_Field (mball, mplayField));
+        collisionsCheck();
+    	while (collision_With_Field (mball, mplayField));
     	victory();
     }
     
@@ -166,38 +167,38 @@ public class GameLevel extends GameObject{
 			v4[0] = p3[0] - p4[0];
 			v4[1] = p3[1] - p4[1];
 			
-        	intersectP_V1 = getIntersectionPoint(p1, p2, mball.getPrevCenterf(), mball.getCenterf());
-        	intersectP_V2 = getIntersectionPoint(p2, p3, mball.getPrevCenterf(), mball.getCenterf());
-        	intersectP_V3 = getIntersectionPoint(p1, p4, mball.getPrevCenterf(), mball.getCenterf());
-        	intersectP_V4 = getIntersectionPoint(p4, p3, mball.getPrevCenterf(), mball.getCenterf());
+        	intersectP_V1 = getIntersectionPoint(p1, p2, mball.getCenterf(), mball.getNextCenterf());
+        	intersectP_V2 = getIntersectionPoint(p2, p3, mball.getCenterf(), mball.getNextCenterf());
+        	intersectP_V3 = getIntersectionPoint(p1, p4, mball.getCenterf(), mball.getNextCenterf());
+        	intersectP_V4 = getIntersectionPoint(p4, p3, mball.getCenterf(), mball.getNextCenterf());
         	
-        	speed[0] = mball.getCenterf()[0] - mball.getPrevCenterf()[0];
-        	speed[1] = mball.getCenterf()[1] - mball.getPrevCenterf()[1];
+        	speed[0] = mball.getNextCenterf()[0] - mball.getCenterf()[0];
+        	speed[1] = mball.getNextCenterf()[1] - mball.getCenterf()[1];
         	
         	if (intersectP_V1 != null){
-        		vec1[0] = intersectP_V1[0] - mball.getPrevCenterf()[0];
-        		vec1[1] = intersectP_V1[1] - mball.getPrevCenterf()[1];
+        		vec1[0] = intersectP_V1[0] - mball.getCenterf()[0];
+        		vec1[1] = intersectP_V1[1] - mball.getCenterf()[1];
         		vec_v_1[0] = intersectP_V1[0] - p1[0];
         		vec_v_1[1] = intersectP_V1[1] - p1[1];
         	}
         	
         	if (intersectP_V2 != null){
-        		vec2[0] = intersectP_V2[0] - mball.getPrevCenterf()[0];
-				vec2[1] = intersectP_V2[1] - mball.getPrevCenterf()[1];
+        		vec2[0] = intersectP_V2[0] - mball.getCenterf()[0];
+				vec2[1] = intersectP_V2[1] - mball.getCenterf()[1];
         		vec_v_2[0] = intersectP_V2[0] - p2[0];
         		vec_v_2[1] = intersectP_V2[1] - p2[1];
         	}
         	
         	if (intersectP_V3 != null){
-        		vec3[0] = intersectP_V3[0] - mball.getPrevCenterf()[0];
-				vec3[1] = intersectP_V3[1] - mball.getPrevCenterf()[1];
+        		vec3[0] = intersectP_V3[0] - mball.getCenterf()[0];
+				vec3[1] = intersectP_V3[1] - mball.getCenterf()[1];
         		vec_v_3[0] = intersectP_V3[0] - p1[0];
         		vec_v_3[1] = intersectP_V3[1] - p1[1];
         	}
         	
         	if (intersectP_V4 != null){
-        		vec4[0] = intersectP_V4[0] - mball.getPrevCenterf()[0];
-				vec4[1] = intersectP_V4[1] - mball.getPrevCenterf()[1];
+        		vec4[0] = intersectP_V4[0] - mball.getCenterf()[0];
+				vec4[1] = intersectP_V4[1] - mball.getCenterf()[1];
         		vec_v_4[0] = intersectP_V4[0] - p4[0];
         		vec_v_4[1] = intersectP_V4[1] - p4[1];
         	}
@@ -353,9 +354,9 @@ public class GameLevel extends GameObject{
      * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
      */
     private boolean check_intersect(float[] vec_v_1, float[] vec1, float[] v1, float[] speed){
-    	return ( scalMul(vec_v_1,v1) <= scalMul(v1,v1) 
+    	return ( scalMul(vec_v_1,v1) < scalMul(v1,v1) 
     		  && scalMul(vec_v_1,v1) > 0
-    		  && scalMul(vec1,speed) <= scalMul(speed,speed)
+    		  && scalMul(vec1,speed) < scalMul(speed,speed)
     		  && scalMul(vec1,speed) > 0 );
     }
     
@@ -386,23 +387,23 @@ public class GameLevel extends GameObject{
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
     private boolean collision_With_Field (Ball ball, Rect PlayField){
     	
-    	if (ball.getLeft() <= PlayField.left)
+    	if (ball.getNextLeft() <= PlayField.left)
         {
             ball.reflectVertical(new Point(PlayField.left + 1, ball.getPoint().y));
             return true;
         }
-        else if (ball.getRight() >= PlayField.right)
+        else if (ball.getNextRight() >= PlayField.right)
         {
         	ball.reflectVertical(new Point(PlayField.right - ball.getWidth() - 1, ball.getPoint().y));
         	return true;
         }
     	
-    	if (ball.getTop() <= PlayField.top)
+    	if (ball.getNextTop() <= PlayField.top)
 	    {
 	        ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.top + 1));
 	        return true;
 	    }
-	    else if (ball.getBottom() >= PlayField.bottom)
+	    else if (ball.getNextBottom() >= PlayField.bottom)
 	    {
 	    	ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.bottom - ball.getHeight() - 1));
 	    	return true;
