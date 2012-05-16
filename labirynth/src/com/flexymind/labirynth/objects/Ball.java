@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 /**
  * Класс Шарик
@@ -17,10 +18,22 @@ import android.hardware.SensorManager;
 
 public class Ball extends GameObject
 {
-    private static final float[] NULL_SPEED = new float[]{0, 0};
+    private static final float[] NULL_SPEED = new float[]{16, 5};
 	
     /** Скорость шарика */
     private float[] mSpeed;
+    
+    /**Вращение шарика в лунке */
+    private boolean spin = false;
+    
+    /**Центр лунки */
+    private Point   center;
+    /**Направление закручавания шарика в лунке, true - увеличивается угол*/
+    private boolean directionSpin = true;
+    private double  dt = 0.1;
+    private double  numberSpin = 4;
+    private double  angle;
+    private int     diam;
     
     /** Коэффициент трения об пол */
     private float fric_coef = 0.95f;
@@ -127,34 +140,74 @@ public class Ball extends GameObject
      * Функция, определяющая последующее положение шарика
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
-    protected void updatePoint()
-    {
-		// Вязкое трение об пол
-		mSpeed[0] = fric_coef * mSpeed[0];
-		mSpeed[1] = fric_coef * mSpeed[1];
+	protected void updatePoint()
+    {	
+		if(spin){
+			if(directionSpin){
+				angle += dt;
+			}else{
+				angle -= dt;
+			}
+			if (numberSpin * Math.PI * 2 > Math.abs(angle)){
+				//Log.v("Angle","OK");
+				mPoint.x = center.x - mWidth / 2 + (int)(diam / 2 / angle * Math.cos(angle) );
+				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / angle * Math.sin(angle) );
+			}else{
+				// шарик в лунке!
+			}
+		}
+		else{
+			// Вязкое трение об пол
+			mSpeed[0] = fric_coef * mSpeed[0];
+			mSpeed[1] = fric_coef * mSpeed[1];
 
-		//изменение скорости в зависимости от разрешения экрана
-		// for asus prime o_0
-		mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX() * macelleration[0];
-        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
-        
-        // for other normal devices
-        //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
-        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
-        
-        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
-        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
-        
-        mPosition[0] = mNextPoint[0];
-        mPosition[1] = mNextPoint[1];
-        
-        mPoint.x = (int)mPosition[0];
-        mPoint.y = (int)mPosition[1];
-        
-        mNextPoint[0] += mSpeed[0];
-        mNextPoint[1] += mSpeed[1];
+			//изменение скорости в зависимости от разрешения экрана
+			// for asus prime o_0
+			mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX() * macelleration[0];
+	        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
+	        
+	        // for other normal devices
+	        //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
+	        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
+	        
+	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
+	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
+	        
+	        mPosition[0] = mNextPoint[0];
+	        mPosition[1] = mNextPoint[1];
+	        
+	        mPoint.x = (int)mPosition[0];
+	        mPoint.y = (int)mPosition[1];
+	        
+	        mNextPoint[0] += mSpeed[0];
+	        mNextPoint[1] += mSpeed[1];
+		}
     }
 	
+	/**
+	 * Начало вращения в лунке
+	 * @param center - центр лунки
+	 * @param diam - диаметр лунки
+	 */
+    public void startSpin(Point center, int diam){ 
+    	spin  = true;
+    	this.diam = diam;
+    	Point vecBalToCent = new Point(	center.x - this.getCenter().x,
+    									center.y - this.getCenter().y);
+    	//if (vecBalToCent)
+    	angle = 1;
+    	this.center = center;
+    }
+	
+    public boolean isSpinning(){
+    	return spin;
+    }
+    
+    /**Скалярнорное произведение*/
+    private float scalMul(Point p1, Point p2){
+    	return p1.x * p2.x + p1.y * p2.y;
+    }
+    
     /** Верхняя граница объекта на следующем шаге */
     public int getNextTop() { return (int)mNextPoint[1]; }
 
@@ -182,6 +235,23 @@ public class Ball extends GameObject
     {
     	return new float[]{mNextPoint[0] + mWidth / 2f, mNextPoint[1] + mHeight / 2f};
     }
+    
+    public float[] getSpeedCenterf()
+    {
+    	return new float[]{mSpeed[0],mSpeed[1]};
+    }
+    
+    @Override
+	protected void setCenterY(int value){
+		super.setCenterY(value);
+		mPosition[1] = value - mHeight / 2;
+	}
+	
+	@Override
+	protected void setCenterX(int value){
+		super.setCenterX(value);
+		mPosition[0] = value - mHeight / 2;
+	}
 
     /**
 	 * отражение от стены в направлении v1 (Point2 - Point1)
