@@ -161,6 +161,14 @@ public class GameManager extends Thread
     }
     
     /**
+     * Возвращает игровой уровень
+     * @return уровень
+     */
+    public GameLevel getGameLevel(){
+    	return mlevel;
+    }
+    
+    /**
      * Обработка нажатия кнопки
      * @param keyCode Код нажатой кнопки
      * @return Было ли обработано нажатие

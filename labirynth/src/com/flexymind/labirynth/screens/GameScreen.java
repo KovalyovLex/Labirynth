@@ -2,30 +2,37 @@
 
 
 import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.objects.Ball;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
 	
+	GameView gameView;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.main);
+        
+        FrameLayout rlay = (FrameLayout)findViewById(R.id.gameLayout);
+        
+        gameView = (GameView)rlay.getChildAt(0);
     }
 	
 	@Override
-    protected void onStop() {
-		Ball.unregisterListeners();
-		super.onStop();
+    protected void onPause() {
+		gameView.onPause();
+		super.onPause();
 	}
 	
 	@Override
     protected void onResume() {
-		Ball.registerListeners();
+		gameView.onResume();
 		super.onResume();
 	}
         

@@ -1,13 +1,13 @@
 ﻿package com.flexymind.labirynth.screens;
 
 
+import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -23,6 +23,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
      * Область рисования
      */
     private SurfaceHolder mSurfaceHolder;
+    
+    private boolean surfWasCreated = false;
     
     /**
      * Поток, рисующий в области
@@ -46,11 +48,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         LevelStorage storage = new LevelStorage(context);
         GameLevel lvl = storage.loadGameLevelbyName("First level");
         
-        if (lvl == null){
-        	Log.e("ERROR","can't load level from xml");
-        	return;
-        }
-        
         // Создание менеджера игровых объектов
         mGameManager = new GameManager(mSurfaceHolder,  lvl);
         
@@ -73,9 +70,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
      * Создание области рисования
      */
     public void surfaceCreated(SurfaceHolder holder)
-    {	
-        mGameManager.setRunning(true);
-        mGameManager.start();
+    {
+		surfWasCreated = true;
+		if (Thread.State.NEW.equals(mGameManager.getState())){
+			mGameManager.setRunning(true);
+			mGameManager.start();
+		}else{
+			onResume();
+		}
     }
 
     
@@ -84,6 +86,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
      */
     public void surfaceDestroyed(SurfaceHolder holder)
     {
+    	surfWasCreated = false;
         mGameManager.setRunning(false);
         while (true) 
         {
@@ -96,6 +99,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             catch (InterruptedException e) { }
         }
         
+    }
+    
+    public void onPause(){
+    	Ball.unregisterListeners();
+    }
+    
+    public void onResume(){
+    	if (surfWasCreated){
+    		Ball.registerListeners();
+    		if (Thread.State.TERMINATED.equals(mGameManager.getState())){
+    			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel());
+    			mGameManager.initPositions(ScreenSettings.CurrentYRes(), ScreenSettings.CurrentXRes());
+    			mGameManager.setRunning(true);
+    			mGameManager.start();
+    		}
+    	}
     }
     
     /**
