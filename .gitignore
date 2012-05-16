@@ -8,4 +8,4 @@
 *.apk
 *.ap_
 
-*/bin/*
+./labirynth/bin/*
