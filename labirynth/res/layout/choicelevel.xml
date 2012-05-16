@@ -12,9 +12,9 @@
         android:id="@+id/buttonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="95dp"
-        android:layout_marginLeft="90dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="300dp"
+        android:layout_marginLeft="300dp"
         android:orientation="vertical" >
 
         <Button
@@ -25,5 +25,40 @@
 
     </LinearLayout>
     
+         <LinearLayout
+        android:id="@+id/levelsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal" >
+
+        <ImageButton
+             android:id="@+id/imageLevel1"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/buttonLayout"
+             android:src="@drawable/level1mini" />
+        
+        <ImageButton
+             android:id="@+id/imageLevel2"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/buttonLayout"
+             android:src="@drawable/level2mini" />
+        
+        <ImageButton
+             android:id="@+id/imageLevel3"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentLeft="true"
+             android:layout_below="@+id/buttonLayout"
+             android:src="@drawable/level3mini" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

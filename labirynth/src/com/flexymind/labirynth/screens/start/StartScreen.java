@@ -2,7 +2,6 @@
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screen.choicelevel.ChoiceLevelScreen;
-import com.flexymind.labirynth.screens.GameScreen;
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.app.Activity;

@@ -19,21 +19,28 @@ public final class R {
         public static final int flexy3=0x7f020005;
         public static final int flexy3big=0x7f020006;
         public static final int ic_launcher=0x7f020007;
-        public static final int pause=0x7f020008;
-        public static final int stenka=0x7f020009;
-        public static final int stenka2=0x7f02000a;
+        public static final int level1mini=0x7f020008;
+        public static final int level2mini=0x7f020009;
+        public static final int level3mini=0x7f02000a;
+        public static final int pause=0x7f02000b;
+        public static final int stenka=0x7f02000c;
+        public static final int stenka2=0x7f02000d;
     }
     public static final class id {
-        public static final int ExitButton=0x7f060009;
-        public static final int SettingsButton=0x7f060008;
-        public static final int StartButton=0x7f060007;
+        public static final int ExitButton=0x7f06000d;
+        public static final int SettingsButton=0x7f06000c;
+        public static final int StartButton=0x7f06000b;
         public static final int StartChosenButton=0x7f060002;
-        public static final int buttLayout=0x7f060006;
+        public static final int buttLayout=0x7f06000a;
         public static final int buttonLayout=0x7f060001;
         public static final int choicemainlayout=0x7f060000;
-        public static final int game=0x7f060004;
-        public static final int gameLayout=0x7f060003;
-        public static final int startmainlayout=0x7f060005;
+        public static final int game=0x7f060008;
+        public static final int gameLayout=0x7f060007;
+        public static final int imageLevel1=0x7f060004;
+        public static final int imageLevel2=0x7f060005;
+        public static final int imageLevel3=0x7f060006;
+        public static final int levelsLayout=0x7f060003;
+        public static final int startmainlayout=0x7f060009;
     }
     public static final class layout {
         public static final int choicelevel=0x7f030000;
