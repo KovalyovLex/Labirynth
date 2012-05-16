@@ -8,9 +8,4 @@
 *.apk
 *.ap_
 
-# Pictures #
-*.psd
-*.jpg
-*.png
-
-*/bin/*
+./labirynth/bin/*
