@@ -1,7 +1,6 @@
 ﻿package com.flexymind.labirynth.objects;
 
 import java.util.Vector;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,8 +8,8 @@ import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
+
 
 /**
  * Класс 
@@ -21,16 +20,21 @@ public class GameLevel extends GameObject{
  
 	private Ball mball;
 	private FINISH mfinish;
-	
-	/**Эталонные значения рамки, относительно которых происходит масшатабирование*/
-	private int rectHeight	= 415;
-	private int rectWidth	= 752;
-	private int left		= 59;
-	private int top			= 24;
-	private boolean dostup	= true;
-	private Rect mplayField	= new Rect(left,top,rectWidth,rectHeight);
+
+	/**Эталонные значения, относительно которых происходит масшатабирование*/
+	private int rectHeight = 460;
+	private int rectWidth = 805;
+	private int left = 9;
+	private int top  = 9; 
+	private boolean dostup  = true;
+	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
+
+    /**Игровое поле */
+	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
+    //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
 
     Vector <Wall> Walls;
+
     
     private void AutoSize()
     {
@@ -416,9 +420,9 @@ public class GameLevel extends GameObject{
 
     	if(GameObject.intersects_finish(mball, mfinish))
     	{
-    		mball.setCenterY(mfinish.getCenter().y);
-			mball.setCenterX(mfinish.getCenter().x);
-    		
+    		if (!mball.isSpinning()){
+    			mball.startSpin(mfinish.getCenter(), mfinish.finDiam());
+    		}
     	}
     }
 }
