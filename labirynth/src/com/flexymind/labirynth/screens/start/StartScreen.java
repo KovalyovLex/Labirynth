@@ -1,6 +1,7 @@
 ﻿package com.flexymind.labirynth.screens.start;
 
 import com.flexymind.labirynth.R;
+import com.flexymind.labirynth.screen.choicelevel.ChoiceLevelScreen;
 import com.flexymind.labirynth.screens.GameScreen;
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
@@ -46,7 +47,7 @@ public class StartScreen extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.StartButton: {
 			Intent intent = new Intent();
-			intent.setClass(this, GameScreen.class);
+			intent.setClass(this, ChoiceLevelScreen.class);
 			startActivity(intent);
 			break;
 		}
