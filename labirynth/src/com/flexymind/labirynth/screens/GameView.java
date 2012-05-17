@@ -4,7 +4,6 @@
 import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
-import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -22,14 +21,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     /**
      * Область рисования
      */
-    private SurfaceHolder mSurfaceHolder;
+    private SurfaceHolder mSurfaceHolder = null;
+    
+    private GameLevel level = null;
     
     private boolean surfWasCreated = false;
     
     /**
      * Поток, рисующий в области
      */
-    private GameManager mGameManager;
+    private GameManager mGameManager = null;
     
     /**
      * Конструктор
@@ -45,11 +46,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         mSurfaceHolder.addCallback(this);
         
         // загрузка уровня
-        LevelStorage storage = new LevelStorage(context);
-        GameLevel lvl = storage.loadGameLevelbyName("Test level");
+        //LevelStorage storage = new LevelStorage(context);
+        //GameLevel lvl = storage.loadGameLevelbyName("Test level");
         
-        // Создание менеджера игровых объектов
-        mGameManager = new GameManager(mSurfaceHolder,  lvl);
+        if (level != null){
+        	// Создание менеджера игровых объектов
+        	mGameManager = new GameManager(mSurfaceHolder,  level);
+        }
         
         // Разрешаем форме обрабатывать события клавиатуры
         setFocusable(true);
@@ -65,6 +68,40 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         ScreenSettings.GenerateSettings(width, height);
     }
 
+    /**
+     * Запускает gameManager с новым уровнем игры
+     * @param lvl - уровень игры
+     */
+    protected void setGameLevel(GameLevel lvl){
+    	level = lvl;
+    	if (mSurfaceHolder == null){
+    		return;
+    	}
+    	if (mGameManager == null){
+    		mGameManager = new GameManager(mSurfaceHolder,  lvl);
+    	}else{
+    		mGameManager.setRunning(false);
+            while (true) 
+            {
+                try 
+                {
+                    // ожидание завершение потока
+                    mGameManager.join();
+                    break;
+                } 
+                catch (InterruptedException e) { }
+            }
+            mGameManager = new GameManager(mSurfaceHolder,  lvl);
+    	}
+    	if (surfWasCreated){
+    		if (Thread.State.NEW.equals(mGameManager.getState()) && mGameManager != null){
+    			mGameManager.setRunning(true);
+    			mGameManager.start();
+    		}else{
+    			onResume();
+    		}
+    	}
+    }
     
     /**
      * Создание области рисования
@@ -72,7 +109,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated(SurfaceHolder holder)
     {
 		surfWasCreated = true;
-		if (Thread.State.NEW.equals(mGameManager.getState())){
+		if (Thread.State.NEW.equals(mGameManager.getState()) && mGameManager != null){
 			mGameManager.setRunning(true);
 			mGameManager.start();
 		}else{

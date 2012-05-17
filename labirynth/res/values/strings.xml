@@ -4,6 +4,7 @@
     <string name="app_name">Labirynth_2D</string>
     <string name="start_title">Start Game</string>
     <string name="settings_title">Settings</string>
-    <string name="exit_title">Exit</string>
+    <string name="exit_title">Exit</string>
+    <string name="levelname">Name of Level</string>
 
 </resources>

@@ -1,6 +1,8 @@
 ﻿package com.flexymind.labirynth.storage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -29,20 +31,26 @@ import android.hardware.SensorManager;
  */
 public class LevelStorage {
 
-	private static final String LEVEL = "level";
-	private static final String BALL = "ball";
-	private static final String WALL = "wall";
-	private static final String FINISH = "finish";
-	private static final String PROP_DIAM = "D";
-	private static final String PROP_X1 = "X1";
-	private static final String PROP_X2 = "X2";
-	private static final String PROP_X3 = "X3";
-	private static final String PROP_Y1 = "Y1";
-	private static final String PROP_Y2 = "Y2";
-	private static final String PROP_Y3 = "Y3";
-	private static final String PROP_X = "X";
-	private static final String PROP_Y = "Y";
-	private static final String ATTR_NAME = "name";
+	private static final String LEVEL		= "level";
+	private static final String BALL		= "ball";
+	private static final String WALL		= "wall";
+	private static final String FINISH		= "finish";
+	private static final String FREE		= "isFree";
+	private static final String DRAWABLE	= "drawable";
+	private static final String PROP_DIAM 	= "D";
+	private static final String PROP_X1		= "X1";
+	private static final String PROP_X2		= "X2";
+	private static final String PROP_X3		= "X3";
+	private static final String PROP_Y1		= "Y1";
+	private static final String PROP_Y2		= "Y2";
+	private static final String PROP_Y3		= "Y3";
+	private static final String PROP_X		= "X";
+	private static final String PROP_Y		= "Y";
+	private static final String ATTR_NAME	= "name";
+	
+	private Map<String,String> drawablenames = new HashMap<String,String>();
+	private Map<String,Boolean> frees = new HashMap<String,Boolean>();
+	private Vector<String> names = new Vector<String>();
 	
 	private Context context;
 	
@@ -51,22 +59,34 @@ public class LevelStorage {
 	 */
 	public LevelStorage(Context cont){
 		context = cont;
+		parseXML();
 	}
 	
-	/**
-	 * Возвращает список всех имен уровней из хранилища
-	 * @return <code>Vector<String></code> - список имен уровней
-	 */
-	public Vector<String> get_level_names(){
-		Vector<String> strs = new Vector<String>();
+	private void parseXML(){
+		names = new Vector<String>();
+		int deep = 0;
+		String name = null;
+		
 		XmlResourceParser xml = context.getResources().getXml(R.xml.levels);
 		try {
 			while (xml.next() != XmlPullParser.END_DOCUMENT){
 				if ( LEVEL.equals(xml.getName()) ){
+					deep = xml.getDepth();
 					for (int i = 0; i < xml.getAttributeCount(); i++){
 						if ( ATTR_NAME.equals(xml.getAttributeName(i)) ){
-							strs.addElement(xml.getAttributeValue(i));
+							name = xml.getAttributeValue(i);
+							names.addElement(xml.getAttributeValue(i));
 						}
+					}
+					xml.next();
+					while(xml.getDepth() > deep){
+						if (FREE.equals(xml.getName())){
+							frees.put(name, new Boolean(xml.nextText()));
+						}
+						if (DRAWABLE.equals(xml.getName())){
+							drawablenames.put(name, xml.nextText());
+						}
+						xml.next();
 					}
 				}
 			}
@@ -81,9 +101,46 @@ public class LevelStorage {
 			xml.close();
 		}
 		
-		return strs;
+	}
+	
+	/**
+	 * Возвращает список всех имен уровней из хранилища
+	 * @return <code>Vector<String></code> - список имен уровней
+	 */
+	public Vector<String> get_level_names(){
+		return names;
 	}
 
+	/**
+	 * возвращает картинку превью уровня
+	 * @param name - название уровня
+	 * @return
+	 */
+	public Drawable getPrevPictireByName(String name){
+		Drawable pic = null;
+		String uri = "@drawable/";
+
+		if (drawablenames.containsKey(name)){
+			uri = uri.concat(drawablenames.get(name));		
+			int imageResource = context.getResources().getIdentifier(uri, null, context.getPackageName());
+		    pic = context.getResources().getDrawable(imageResource);
+		}
+
+		return pic;
+	}
+	
+	/**
+	 * возвращает доступность уровня
+	 * @param name - название уровня
+	 * @return true если уровень доступен, false в другом случае
+	 */
+	public boolean isFree(String name){
+		if (frees.containsKey(name)){
+			return frees.get(name);
+		}
+		return false;
+	}
+	
 	/**
 	 * Загружает из xml файла обьект GameLevel
 	 * @param <code>String name<code> - имя уровня

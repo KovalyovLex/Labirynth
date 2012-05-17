@@ -30,16 +30,16 @@ public final class R {
         public static final int ExitButton=0x7f06000d;
         public static final int SettingsButton=0x7f06000c;
         public static final int StartButton=0x7f06000b;
-        public static final int StartChosenButton=0x7f060002;
         public static final int buttLayout=0x7f06000a;
         public static final int buttonLayout=0x7f060001;
         public static final int choicemainlayout=0x7f060000;
+        public static final int chosebuttonlayout=0x7f060004;
         public static final int game=0x7f060008;
         public static final int gameLayout=0x7f060007;
-        public static final int imageLevel1=0x7f060004;
-        public static final int imageLevel2=0x7f060005;
-        public static final int imageLevel3=0x7f060006;
+        public static final int horizontalScrollView1=0x7f060002;
+        public static final int imageLevel1=0x7f060006;
         public static final int levelsLayout=0x7f060003;
+        public static final int nameleveltext=0x7f060005;
         public static final int startmainlayout=0x7f060009;
     }
     public static final class layout {
@@ -50,6 +50,7 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f050000;
         public static final int exit_title=0x7f050003;
+        public static final int levelname=0x7f050004;
         public static final int settings_title=0x7f050002;
         public static final int start_title=0x7f050001;
     }
