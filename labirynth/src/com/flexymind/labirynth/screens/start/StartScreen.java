@@ -79,10 +79,10 @@ public class StartScreen extends Activity implements OnClickListener {
 			LinearLayout llayout = (LinearLayout)findViewById(R.id.buttLayout);
 			
 			RelativeLayout.LayoutParams llparams = (RelativeLayout.LayoutParams)llayout.getLayoutParams();
-			llparams.topMargin = (int)(ScreenSettings.ScaleFactorY() * llparams.topMargin);
-			llparams.bottomMargin = (int)(ScreenSettings.ScaleFactorY() * llparams.bottomMargin);
-			llparams.leftMargin = (int)(ScreenSettings.ScaleFactorX() * llparams.leftMargin);
-			llparams.rightMargin = (int)(ScreenSettings.ScaleFactorX() * llparams.rightMargin);
+			llparams.topMargin		= (int)(ScreenSettings.ScaleFactorY() * llparams.topMargin);
+			llparams.bottomMargin	= (int)(ScreenSettings.ScaleFactorY() * llparams.bottomMargin);
+			llparams.leftMargin		= (int)(ScreenSettings.ScaleFactorX() * llparams.leftMargin);
+			llparams.rightMargin	= (int)(ScreenSettings.ScaleFactorX() * llparams.rightMargin);
 			
 			RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.startmainlayout);
 			
@@ -96,7 +96,7 @@ public class StartScreen extends Activity implements OnClickListener {
 			Button settingsButton = (Button) findViewById(R.id.SettingsButton);
 			
 			// удаляем все кнопки
-			llayout.removeAllViews();	
+			llayout.removeAllViews();
 			
 			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( 	(int)(ScreenSettings.ScaleFactorX() * width), 
 																					(int)(ScreenSettings.ScaleFactorY() * height) );
