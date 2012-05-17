@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -58,7 +59,10 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			
 			newbulllay.setOrientation(LinearLayout.VERTICAL);
 			
-			newbutton.setClickable(lvlstor.isFree(names.get(i)));
+			Boolean free = new Boolean (lvlstor.isFree(names.get(i)));
+			Log.v("Free", names.get(i) + " " + free.toString() );
+			
+			newbutton.setEnabled(lvlstor.isFree(names.get(i)));
 			newbutton.setId(id + i);
 			newbutton.setOnClickListener(this);
 			newbutton.setBackgroundDrawable(lvlstor.getPrevPictireByName(names.get(i)));
