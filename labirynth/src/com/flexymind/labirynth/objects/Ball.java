@@ -174,8 +174,8 @@ public class Ball extends GameObject
 	        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
 	        
 	        // for other normal devices
-	        //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[1];
-	        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorX * macelleration[0];
+	        //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX() * macelleration[1];
+	        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[0];
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
 	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
@@ -263,51 +263,57 @@ public class Ball extends GameObject
     /**
 	 * отражение от стены в направлении v1 (Point2 - Point1)
 	 * @param wall стена
-	 * @param new_pos новая координата по оси V1
+	 * @param softness мягкость стены (0..1)
+	 * @param newpos новая позиция центра шара
 	 */
-    public void reflectWallV1(Wall wall, float[] newpnt){
-		Point vec1;
+    public void reflectWallV1(Wall wall, float softness, float[] newpos){
 		float project;
+		float[] vec1 = new float[]{	wall.getPoint2().x - wall.getPoint1().x,
+									wall.getPoint2().y - wall.getPoint1().y};
 		
-		vec1 = new Point (	wall.getPoint2().x - wall.getPoint1().x,
-							wall.getPoint2().y - wall.getPoint1().y);
+		float length = (float)Math.sqrt(vec1[0]*vec1[0]+vec1[1]*vec1[1]);
 		
-		float length = (float)Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
+		vec1[0] /= length;
+		vec1[1] /= length;
 		
-		vec1.x /= length;
-		vec1.y /= length;
+		project = vec1[0] * mSpeed[0] + vec1[1] * mSpeed[1];
+		mSpeed[0] -= (1 + softness) * project * vec1[0];
+		mSpeed[1] -= (1 + softness) * project * vec1[1];
 		
-		project = vec1.x * mSpeed[0] + vec1.y * mSpeed[1];
-		mSpeed[0] -= 2 * project * vec1.x;
-		mSpeed[1] -= 2 * project * vec1.y;
-		
-		mNextPoint[0] = newpnt[0] - mWidth / 2f;
-		mNextPoint[1] = newpnt[1] - mHeight / 2f;
+		mPoint.x = (int)(newpos[0] - mWidth / 2f);
+        mPoint.y = (int)(newpos[1] - mHeight / 2f);
+        mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
+        
+		mNextPoint[0] = mPosition[0] + mSpeed[0];
+		mNextPoint[1] = mPosition[1] + mSpeed[1];
 	}
     
 	/**
 	 * отражение от стены в направлении v2 (Point3 - Point2)
 	 * @param wall стена
-	 * @param new_pos новая координата по оси V2
+	 * @param softness мягкость стены (0..1)
+	 * @param newpos новая позиция центра шара
 	 */
-	public void reflectWallV2(Wall wall, float[] newpnt){
-		Point vec2;
+	public void reflectWallV2(Wall wall, float softness, float[] newpos){
 		float project;
+		float[] vec2 = new float[]{	wall.getPoint3().x - wall.getPoint2().x,
+									wall.getPoint3().y - wall.getPoint2().y};
 		
-		vec2 = new Point (	wall.getPoint3().x - wall.getPoint2().x,
-							wall.getPoint3().y - wall.getPoint2().y);
+		float length = (float)Math.sqrt(vec2[0]*vec2[0]+vec2[1]*vec2[1]);
 		
-		float length = (float)Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
+		vec2[0] /= length;
+		vec2[1] /= length;
 		
-		vec2.x /= length;
-		vec2.y /= length;
+		project = vec2[0] * mSpeed[0] + vec2[1] * mSpeed[1];
+		mSpeed[0] -= (1 + softness) * project * vec2[0];
+		mSpeed[1] -= (1 + softness) * project * vec2[1];
 		
-		project = vec2.x * mSpeed[0] + vec2.y * mSpeed[1];
-		mSpeed[0] -= 2 * project * vec2.x;
-		mSpeed[1] -= 2 * project * vec2.y;
+		mPoint.x = (int)(newpos[0] - mWidth / 2f);
+        mPoint.y = (int)(newpos[1] - mHeight / 2f);
+        mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
 		
-		mNextPoint[0] = newpnt[0] - mWidth / 2f;
-		mNextPoint[1] = newpnt[1] - mHeight / 2f;
+		mNextPoint[0] = mPosition[0] + mSpeed[0];
+		mNextPoint[1] = mPosition[1] + mSpeed[1];
 	}
 	
     /** Отражение мячика от вертикали 

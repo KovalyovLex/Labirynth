@@ -46,7 +46,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         
         // загрузка уровня
         LevelStorage storage = new LevelStorage(context);
-        GameLevel lvl = storage.loadGameLevelbyName("First level");
+        GameLevel lvl = storage.loadGameLevelbyName("Test level");
         
         // Создание менеджера игровых объектов
         mGameManager = new GameManager(mSurfaceHolder,  lvl);

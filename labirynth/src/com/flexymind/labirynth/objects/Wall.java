@@ -1,12 +1,17 @@
 ﻿package com.flexymind.labirynth.objects;
 
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 public class Wall extends GameObject{
 
-	private Point 	secPoint = new Point(),
-					thirdPoint = new Point();
+	private Point 	secPoint	= new Point(),
+					thirdPoint	= new Point(),
+					leftUp		= new Point();
+	
+	private float softness = 1;
 	
 	/**
 	 * Конструктор по умолчанию
@@ -14,22 +19,59 @@ public class Wall extends GameObject{
 	 * @param first Point 1
 	 * @param second Point 2
 	 * @param third Point 3
+	 * @param softness мягкость стены
 	 */
 	public Wall(	Drawable mBackG,
 					Point first,
 					Point second,
-					Point third){
+					Point third,
+					float softness){
 		super(mBackG);
+		
+		this.softness = softness;
 		
 		mPoint = first;
 		thirdPoint = third;
 		secPoint = second;
 		
 		mImage.setBounds(mPoint.x, mPoint.y, thirdPoint.x, thirdPoint.y);
+		
 		mWidth = mImage.getBounds().width();
         mHeight = mImage.getBounds().height();
 	}
 
+	/**
+	 * Конструктор для текстур которые можно поворачивать
+	 * @param mBackG Текстура
+	 * @param first Point 1
+	 * @param second Point 2
+	 * @param third Point 3
+	 * @param shift расстояние от верхнего левого угла до Point1
+	 * @param softness мягкость стены
+	 */
+	public Wall(	Bitmap mBackG,
+					Point first,
+					Point second,
+					Point third,
+					Point shift,
+					float softness){
+		super(new BitmapDrawable(mBackG));
+		
+		this.softness = softness;
+		
+		mPoint		= first;
+		thirdPoint	= third;
+		secPoint	= second;
+		
+		mWidth = mBackG.getWidth();
+		mHeight = mBackG.getHeight();
+		
+		leftUp.x = mPoint.x - shift.x;
+		leftUp.y = mPoint.y - shift.y;
+		
+		mImage.setBounds(leftUp.x, leftUp.y, leftUp.x + mWidth, leftUp.y + mHeight);
+	}
+	
 	/**
 	 * Возвращает значение 1 точки
 	 * @return point 1
@@ -54,6 +96,18 @@ public class Wall extends GameObject{
 		return thirdPoint;
 	}
 	
+	/**
+	 * возвращает коэффициент мягкости стены
+	 * @return мягкость стены
+	 */
+	public float getSoftness(){
+		return softness;
+	}
+	
+	@Override
+    /** Перемещение объекта */
+    public void Update(){ }
+	
 	@Override
 	/**
 	 * Изменяем положение точек на нашем дисплее и делаем scale текстуры
@@ -67,10 +121,13 @@ public class Wall extends GameObject{
 		secPoint.y = (int)(secPoint.y * ScaleFactorY);
 		thirdPoint.x = (int)(thirdPoint.x * ScaleFactorX);
 		thirdPoint.y = (int)(thirdPoint.y * ScaleFactorY);
-		
-		mImage.setBounds(mPoint.x, mPoint.y, thirdPoint.x, thirdPoint.y);
-		mWidth = mImage.getBounds().width();
-        mHeight = mImage.getBounds().height();
+		leftUp.x = (int)(leftUp.x * ScaleFactorX);
+		leftUp.y = (int)(leftUp.y * ScaleFactorY);
+
+		mWidth	= (int)(mWidth * ScaleFactorX);
+        mHeight	= (int)(mHeight * ScaleFactorY);
+
+		mImage.setBounds(leftUp.x, leftUp.y, leftUp.x + mWidth, leftUp.y + mHeight);
 	}
 	
 }

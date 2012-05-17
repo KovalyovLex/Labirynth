@@ -11,9 +11,16 @@ import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.objects.Wall;
 import com.flexymind.labirynth.objects.FINISH;
+
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 
 /**
@@ -122,8 +129,17 @@ public class LevelStorage {
 		Wall twall     = null;
 		Ball tball     = null;
 		FINISH tfinish = null;
-		int X1 = 0, X2 = 0, Y1 = 0, Y2 = 0, D = 0, deep = 0, X3 = 0, Y3 = 0;
-		int finX = 0, finY = 0, finDiam = 0;
+		int x1		= 0,
+			x2		= 0,
+			y1		= 0,
+			y2		= 0,
+			d		= 0,
+			deep	= 0,
+			x3		= 0,
+			y3		= 0,
+			finX	= 0,
+			finY	= 0,
+			finDiam = 0;
 		
 		try {
 			while (xml.next() != XmlPullParser.END_DOCUMENT){
@@ -132,50 +148,109 @@ public class LevelStorage {
 					xml.next();
 					while(xml.getDepth() > deep){
 						if (PROP_X.equals(xml.getName())){
-							X1 = new Integer(xml.nextText());
+							x1 = new Integer(xml.nextText());
 						}
 						if (PROP_Y.equals(xml.getName())){
-							Y1 = new Integer(xml.nextText());
+							y1 = new Integer(xml.nextText());
 						}
 						if (PROP_DIAM.equals(xml.getName())){
-							D = new Integer(xml.nextText());
+							d = new Integer(xml.nextText());
 						}
 						xml.next();
 					}
 					// загрузка шара с текстурой ball
 					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
-										new Point(X1, Y1), 
-										D,
+										new Point(x1, y1), 
+										d,
 										(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
 				}else if (WALL.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();
 					while(xml.getDepth() > deep){
 						if (PROP_X1.equals(xml.getName())){
-							X1 = new Integer(xml.nextText());
+							x1 = new Integer(xml.nextText());
 						}
 						if (PROP_Y1.equals(xml.getName())){
-							Y1 = new Integer(xml.nextText());
+							y1 = new Integer(xml.nextText());
 						}
 						if (PROP_X2.equals(xml.getName())){
-							X2 = new Integer(xml.nextText());
+							x2 = new Integer(xml.nextText());
 						}
 						if (PROP_Y2.equals(xml.getName())){
-							Y2 = new Integer(xml.nextText());
+							y2 = new Integer(xml.nextText());
 						}
 						if (PROP_X3.equals(xml.getName())){
-							X3 = new Integer(xml.nextText());
+							x3 = new Integer(xml.nextText());
 						}
 						if (PROP_Y3.equals(xml.getName())){
-							Y3 = new Integer(xml.nextText());
+							y3 = new Integer(xml.nextText());
 						}
 						xml.next();
 					}
+					Drawable texture = context.getResources().getDrawable(R.drawable.stenka2);
+					
+					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
+					bmp = Bitmap.createScaledBitmap(bmp, (int)(Math.sqrt((x2-x3)*(x2-x3)+(y2-y3)*(y2-y3))), (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)), true);
+					
+					int max = bmp.getHeight() > bmp.getWidth() ? bmp.getHeight() : bmp.getWidth();
+					
+					Bitmap textbmp = Bitmap.createBitmap(max, max, Bitmap.Config.ARGB_8888);
+					Canvas canv = new Canvas(textbmp);
+					
+					Paint p = new Paint();
+					
+					// угол поворота текстуры
+					float angle, centang;
+					int x = - y1 + y2;
+					int y = x1 - x2;
+					
+					Point	shift	= new Point((max - bmp.getWidth() ) / 2, (max - bmp.getHeight()) / 2);
+					float shiftleng;
+					Point cent = new Point(max / 2, max / 2);
+					
+					shift.x -= cent.x;
+					shift.y -= cent.y;
+					shiftleng = (float)Math.sqrt((shift.x)*(shift.x)+(shift.y)*(shift.y));
+					
+					// угол поворота вектора от центра до point1
+					centang = (float)Math.acos( shift.x / shiftleng);
+					if (shift.y < 0){
+						centang = 2 * (float)Math.PI - centang;
+					}
+					// угол поворота текстуры
+					angle = (float)Math.acos( x / Math.sqrt(x * x + y * y));
+					if (y < 0){
+						angle = 2 * (float)Math.PI - angle;
+					}
+					centang += angle;
+					angle *= 360f / 2 / (float)Math.PI;
+					
+					shift.x = (int)(shiftleng * Math.cos(centang));
+					shift.y = (int)(shiftleng * Math.sin(centang));
+					
+					// расстояние до точки p1
+					shift.x += cent.x;
+					shift.y += cent.y;
+					
+					Matrix 	matrix	= new Matrix();
+
+					matrix.setTranslate( (max - bmp.getWidth()) / 2, (max - bmp.getHeight()) / 2);
+					matrix.postRotate(angle, max / 2, max / 2);
+
+					p = new Paint();
+					p.setFilterBitmap(true);
+					
+					canv.drawBitmap(bmp, matrix, p);
+
+					bmp.recycle();
+					
 					// загрузка стены с текстурой stenka
-					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka2),
-										new Point(X1, Y1), 
-										new Point(X2, Y2), 
-										new Point(X3, Y3));
+					twall = new Wall(	textbmp,
+										new Point(x1, y1), 
+										new Point(x2, y2), 
+										new Point(x3, y3),
+										shift,
+										0.70f);
 					walls.add(twall);
 				}else if (FINISH.equals(xml.getName())){
 					deep = xml.getDepth();
