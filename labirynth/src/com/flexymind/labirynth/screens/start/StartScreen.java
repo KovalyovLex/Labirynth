@@ -5,6 +5,9 @@ import com.flexymind.labirynth.screen.choicelevel.ChoiceLevelScreen;
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,7 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class StartScreen extends Activity implements OnClickListener {
-
+	
+	private final int ID_EXIT = 0;
+	private final CharSequence MESSAGE= "Вы действительно хотите выйти?";
+	private final CharSequence YES_ANSWER= "Да";
+	private final CharSequence NO_ANSWER= "Нет";
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,7 +67,7 @@ public class StartScreen extends Activity implements OnClickListener {
 		}
 
 		case R.id.ExitButton:
-			finish();
+			showDialog(ID_EXIT);
 			break;
 
 		default:
@@ -72,6 +80,32 @@ public class StartScreen extends Activity implements OnClickListener {
 		super.onConfigurationChanged(newConfig);
 	}
 
+	
+	protected Dialog onCreateDialog(int id){
+		switch(id) {
+		case ID_EXIT:{
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(MESSAGE);
+			builder.setPositiveButton(YES_ANSWER, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();			
+				}
+			});
+		
+			builder.setNegativeButton(NO_ANSWER, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();			
+				}
+			});
+			builder.setCancelable(false);
+			return builder.create();
+		}
+			
+		default:
+			return null;
+		}
+	
+	}
 	public void AutoSize() {
 		if (ScreenSettings.AutoScale()) {
 			
