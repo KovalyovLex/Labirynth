@@ -29,19 +29,22 @@ public class Ball extends GameObject
     private Point   center;
     
     /**Направление закручавания шарика в лунке, true - увеличивается угол*/
-    private boolean directionSpin = true;
+    private boolean rigthSpin = true;
     
     /**шаг по времени с каждым обновлением экрана*/
-    private double  dt = 0.1;
+    private float  dt = 0.1f;
     
     /**Число оборотов шара, перед тем как он попадет в лунку*/
-    private double  numberSpin = 4;
+    private float  numberSpin = 2.5f;
     
     /** угол вращения в лунке */
-    private double  angle;
+    private float  angle;
     
     /** Диаметр лунки */
     private int     diam;
+    
+    /** время в формуле вращения */
+    private float t = 1;
     
     /** Коэффициент трения об пол */
     private float fricCoef = 0.95f;
@@ -151,14 +154,15 @@ public class Ball extends GameObject
 	protected void updatePoint()
     {	
 		if(spin){
-			if(directionSpin){
+			t += dt;
+			if(rigthSpin){
 				angle += dt;
 			}else{
 				angle -= dt;
 			}
 			if (numberSpin * Math.PI * 2 > Math.abs(angle)){
-				mPoint.x = center.x - mWidth / 2 + (int)(diam / 2 / angle * Math.cos(angle) );
-				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / angle * Math.sin(angle) );
+				mPoint.x = center.x - mWidth / 2 + (int)(diam / 2 / t * Math.cos(angle) );
+				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / t * Math.sin(angle) );
 			}else{
 				// шарик в лунке!
 			}
@@ -194,16 +198,25 @@ public class Ball extends GameObject
 	/**
 	 * Начало вращения в лунке
 	 * @param center - центр лунки
-	 * @param diam - диаметр лунки
 	 */
-    public void startSpin(Point center, int diam){ 
+    public void startSpin(Point center){ 
     	spin  = true;
-    	this.diam = diam;
-    	//Point vecBalToCent = new Point(	center.x - this.getCenter().x,
-    	//								center.y - this.getCenter().y);
-    	//if (vecBalToCent)
-    	angle = 1;
     	this.center = center;
+    	float[] r = new float[] {	mPosition[0] - center.x,
+    								mPosition[1] - center.y};
+    	float length = (float)Math.sqrt(scalMul(r,r));
+    	float lenV = (float)Math.sqrt(scalMul(mSpeed,mSpeed));
+    	diam = (int)length;
+    	r[0] /= length;
+    	r[1] /= length;
+    	
+    	angle = (float)Math.acos(r[0]);
+    	if (r[1] < 0){
+    		angle = 2 * (float)Math.PI - angle;
+    	}
+    	
+    	rigthSpin = (r[0] * mSpeed[1] - r[1] * mSpeed[0]) > 0;
+    	dt = lenV / length;
     }
 	
     public boolean isSpinning(){
@@ -211,8 +224,8 @@ public class Ball extends GameObject
     }
     
     /**Скалярнорное произведение*/
-    private float scalMul(Point p1, Point p2){
-    	return p1.x * p2.x + p1.y * p2.y;
+    private float scalMul(float[] p1, float[] p2){
+    	return p1[0] * p2[0] + p1[1] * p2[1];
     }
     
     /** Верхняя граница объекта на следующем шаге */

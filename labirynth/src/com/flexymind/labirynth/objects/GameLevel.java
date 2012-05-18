@@ -366,6 +366,10 @@ public class GameLevel extends GameObject{
     private float scalMul(float[] p1, float[] p2){
     	return p1[0] * p2[0] + p1[1] * p2[1];
     }
+    
+    private float scalMul(Point p1, Point p2){
+    	return p1.x * p2.x + p1.y * p2.y;
+    }
 
     /**
      * проверка на соударение с левой стеной
@@ -442,11 +446,14 @@ public class GameLevel extends GameObject{
     
     /** условие прохождения уровня */
     protected void victory() {
-
-    	if(GameObject.intersects_finish(mball, mfinish))
+    	Point r = new Point();
+    	r.x = mfinish.getCenter().x - mball.getCenter().x;
+    	r.y = mfinish.getCenter().y - mball.getCenter().y;
+    	
+    	if(scalMul(r,r) <= Math.pow(mfinish.finDiam() / 2f + mball.getHeight() / 2f, 2))
     	{
     		if (!mball.isSpinning()){
-    			mball.startSpin(mfinish.getCenter(), mfinish.finDiam());
+    			mball.startSpin(mfinish.getCenter());
     		}
     	}
     }
