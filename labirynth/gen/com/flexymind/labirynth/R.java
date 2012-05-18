@@ -18,13 +18,14 @@ public final class R {
         public static final int finish=0x7f020004;
         public static final int flexy3=0x7f020005;
         public static final int flexy3big=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
-        public static final int level1mini=0x7f020008;
-        public static final int level2mini=0x7f020009;
-        public static final int level3mini=0x7f02000a;
-        public static final int pause=0x7f02000b;
-        public static final int stenka=0x7f02000c;
-        public static final int stenka2=0x7f02000d;
+        public static final int freefalse=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
+        public static final int level1mini=0x7f020009;
+        public static final int level2mini=0x7f02000a;
+        public static final int level3mini=0x7f02000b;
+        public static final int pause=0x7f02000c;
+        public static final int stenka=0x7f02000d;
+        public static final int stenka2=0x7f02000e;
     }
     public static final class id {
         public static final int ExitButton=0x7f06000c;

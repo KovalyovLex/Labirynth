@@ -17,9 +17,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class ChoiceLevelScreen extends Activity implements OnClickListener{
@@ -27,6 +29,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 	private static final int id = 2376;
 	private Vector<String> names = null;
 	private LevelStorage lvlstor = null;
+	private Vector<Boolean> access = new Vector<Boolean>();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,23 +47,34 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		addButtons();
 	}
 			
-	/** Обработка нажатия кнопок */
+	/** пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
 	public void onClick(View v) {
-		int buttnum = v.getId() - id;
 		
-		Intent intent = new Intent(this, GameScreen.class);
-		Bundle bundle = new Bundle();
-		bundle.putString(GameScreen.LEVELNAME, names.elementAt(buttnum));
-		intent.putExtras(bundle);
-		intent.setAction(GameScreen.LEVELCHOOSEACTION);
-		startActivity(intent);
+		int buttnum = v.getId() - id;
+		if (access.get(buttnum))
+		{
+			Intent intent = new Intent(this, GameScreen.class);
+			Bundle bundle = new Bundle();
+			bundle.putString(GameScreen.LEVELNAME, names.elementAt(buttnum));
+			intent.putExtras(bundle);
+			intent.setAction(GameScreen.LEVELCHOOSEACTION);
+			startActivity(intent);
+		} else {
+			Toast toast = Toast.makeText(getApplicationContext(), "Р­С‚РѕС‚ СѓСЂРѕРІРµРЅСЊ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ!", Toast.LENGTH_LONG);
+	        toast.setGravity(Gravity.CENTER, 0, 0);
+	        LinearLayout toastView = (LinearLayout) toast.getView();
+	        ImageView imageWorld = new ImageView(getApplicationContext());
+	        imageWorld.setImageDrawable(v.getResources().getDrawable(R.drawable.freefalse));
+	        toastView.addView(imageWorld, 0);
+	        toast.show();
+		}
 	}
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	}
 		
 	public void addButtons() {
-		// высота и ширина кнопок на экране 480x800
+		// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 480x800
 		int heightImageBut = 220;
 		int widthImageBut = 220;
 		
@@ -100,7 +114,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			
 			newbulllay.setOrientation(LinearLayout.VERTICAL);
 			
-			newbutton.setEnabled(lvlstor.isFree(names.get(i)));
+			access.addElement(lvlstor.isFree(names.get(i)));
 			newbutton.setId(id + i);
 			newbutton.setOnClickListener(this);
 			newbutton.setBackgroundDrawable(lvlstor.getPrevPictireByName(names.get(i)));
