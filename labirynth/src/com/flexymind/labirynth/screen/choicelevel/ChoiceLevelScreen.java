@@ -10,6 +10,9 @@ import com.flexymind.labirynth.storage.LevelStorage;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -63,9 +66,11 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			Toast toast = Toast.makeText(getApplicationContext(), "Этот уровень заблокирован!", Toast.LENGTH_LONG);
 	        toast.setGravity(Gravity.CENTER, 0, 0);
 	        LinearLayout toastView = (LinearLayout) toast.getView();
-	        ImageView imageWorld = new ImageView(getApplicationContext());
-	        imageWorld.setImageDrawable(v.getResources().getDrawable(R.drawable.freefalse));
-	        toastView.addView(imageWorld, 0);
+	        ImageView imageAccess = new ImageView(getApplicationContext());
+	        Drawable image = v.getResources().getDrawable(R.drawable.freefalse);
+	        autoScale(image);
+	        imageAccess.setImageDrawable(image);
+	        toastView.addView(imageAccess, 0);
 	        toast.show();
 		}
 	}
@@ -130,6 +135,17 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			
 			levelslay.addView(newbulllay);
 		}
+	}
+	
+	private void autoScale(Drawable image){
+		int Width = image.getIntrinsicWidth();
+        int Height = image.getIntrinsicHeight();
+    	int newX = (int)(ScreenSettings.ScaleFactorX() * Width);
+    	int newY = (int)(ScreenSettings.ScaleFactorY() * Height);
+    	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
+    	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
+        bmp = tmp;
+        image = new BitmapDrawable(bmp);		
 	}
 
 }
