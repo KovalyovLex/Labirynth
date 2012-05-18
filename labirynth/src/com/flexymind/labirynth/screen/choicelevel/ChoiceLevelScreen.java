@@ -30,6 +30,7 @@ import android.widget.Toast;
 public class ChoiceLevelScreen extends Activity implements OnClickListener{
 
 	private static final int id = 2376;
+	private static final CharSequence MESSAGE = "Этот уровень заблокирован!";
 	private Vector<String> names = null;
 	private LevelStorage lvlstor = null;
 	private Vector<Boolean> access = new Vector<Boolean>();
@@ -63,7 +64,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			intent.setAction(GameScreen.LEVELCHOOSEACTION);
 			startActivity(intent);
 		} else {
-			Toast toast = Toast.makeText(getApplicationContext(), "Этот уровень заблокирован!", Toast.LENGTH_LONG);
+			Toast toast = Toast.makeText(getApplicationContext(), MESSAGE, Toast.LENGTH_LONG);
 	        toast.setGravity(Gravity.CENTER, 0, 0);
 	        LinearLayout toastView = (LinearLayout) toast.getView();
 	        ImageView imageAccess = new ImageView(getApplicationContext());
