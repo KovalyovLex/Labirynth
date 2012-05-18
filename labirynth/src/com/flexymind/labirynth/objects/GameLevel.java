@@ -98,14 +98,16 @@ public class GameLevel extends GameObject{
     @Override
     /** Перемещение объекта */
     public void Update()
-    {	
+    {
         mball.Update();
         mfinish.Update();
         for(int i = 0; i < Walls.size();i++){
-        	Walls.elementAt(i).Update(); 
+        	Walls.elementAt(i).Update();
         }
-        collisionsCheck();
-    	while (collision_With_Field (mball, mplayField));
+        int i = 0;
+    	while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
+    		i++;
+    	}
     	victory();
     }
     
@@ -172,20 +174,20 @@ public class GameLevel extends GameObject{
 			v4[0] = p3[0] - p4[0];
 			v4[1] = p3[1] - p4[1];
 			
-			p1[0] -=	mball.mWidth / 2 * v3[0] /(int)(Math.sqrt(scalMul(v3,v3))) + 
-						mball.mHeight / 2 * v1[0] /(int)(Math.sqrt(scalMul(v1,v1)));
-        	p1[1] -= 	mball.mWidth / 2 * v3[1] /(int)(Math.sqrt(scalMul(v3,v3))) + 
-						mball.mHeight / 2 * v1[1] /(int)(Math.sqrt(scalMul(v1,v1)));
+			p1[0] -=	mball.mWidth / 2f * v3[0] /(int)(Math.sqrt(scalMul(v3,v3))) + 
+						mball.mHeight / 2f * v1[0] /(int)(Math.sqrt(scalMul(v1,v1)));
+        	p1[1] -= 	mball.mWidth / 2f * v3[1] /(int)(Math.sqrt(scalMul(v3,v3))) + 
+						mball.mHeight / 2f * v1[1] /(int)(Math.sqrt(scalMul(v1,v1)));
         	
-        	p2[0] +=	mball.mHeight / 2 * v1[0] /(int)(Math.sqrt(scalMul(v1,v1))) -
-        				mball.mWidth / 2 * v2[0] /(int)(Math.sqrt(scalMul(v2,v2)));
-        	p2[1] +=	mball.mHeight / 2 * v1[1] /(int)(Math.sqrt(scalMul(v1,v1))) -
-    					mball.mWidth / 2 * v2[1] /(int)(Math.sqrt(scalMul(v2,v2)));
+        	p2[0] +=	mball.mHeight / 2f * v1[0] /(int)(Math.sqrt(scalMul(v1,v1))) -
+        				mball.mWidth / 2f * v2[0] /(int)(Math.sqrt(scalMul(v2,v2)));
+        	p2[1] +=	mball.mHeight / 2f * v1[1] /(int)(Math.sqrt(scalMul(v1,v1))) -
+    					mball.mWidth / 2f * v2[1] /(int)(Math.sqrt(scalMul(v2,v2)));
         	
-        	p3[0] +=	mball.mWidth / 2 * v2[0] /(int)(Math.sqrt(scalMul(v2,v2))) + 
-						mball.mHeight / 2 * v4[0] /(int)(Math.sqrt(scalMul(v4,v4)));
-        	p3[1] +=	mball.mWidth / 2 * v2[1] /(int)(Math.sqrt(scalMul(v2,v2))) + 
-						mball.mHeight / 2 * v4[1] /(int)(Math.sqrt(scalMul(v4,v4)));
+        	p3[0] +=	mball.mWidth / 2f * v2[0] /(int)(Math.sqrt(scalMul(v2,v2))) + 
+						mball.mHeight / 2f * v4[0] /(int)(Math.sqrt(scalMul(v4,v4)));
+        	p3[1] +=	mball.mWidth / 2f * v2[1] /(int)(Math.sqrt(scalMul(v2,v2))) + 
+						mball.mHeight / 2f * v4[1] /(int)(Math.sqrt(scalMul(v4,v4)));
 			
         	p4[0] = p1[0] + p3[0] - p2[0];
         	p4[1] = p1[1] + p3[1] - p2[1];
@@ -374,10 +376,10 @@ public class GameLevel extends GameObject{
      * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
      */
     private boolean check_intersect(float[] vec_v_1, float[] vec1, float[] v1, float[] speed){
-    	return ( scalMul(vec_v_1,v1) <= scalMul(v1,v1) 
-    		  && scalMul(vec_v_1,v1) >= 0
-    		  && scalMul(vec1,speed) <= scalMul(speed,speed)
-    		  && scalMul(vec1,speed) >= 0 );
+    	return ( scalMul(vec_v_1,v1) < scalMul(v1,v1) 
+    		  && scalMul(vec_v_1,v1) > 0
+    		  && scalMul(vec1,speed) < scalMul(speed,speed)
+    		  && scalMul(vec1,speed) > 0 );
     }
     
     /**
@@ -390,10 +392,17 @@ public class GameLevel extends GameObject{
      * @return <code>float[2] Point</code> - x и y координаты точки пересечения или <code>null</code> если нет такой точки 
      */
     private float[] getIntersectionPoint(float[] p1, float[] p2, float[] cord_p1, float[] cord_p2){
-    	float x1 = p1[0], x2 = p2[0], y1 = p1[1], y2 = p2[1];
-    	float x3 = cord_p1[0], x4 = cord_p2[0], y3 = cord_p1[1], y4 = cord_p2[1];
-
+    	float	x1 = p1[0],
+    			x2 = p2[0],
+    			y1 = p1[1],
+    			y2 = p2[1],
+    			x3 = cord_p1[0],
+    			x4 = cord_p2[0],
+    			y3 = cord_p1[1],
+    			y4 = cord_p2[1];
+    	
     	float d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+    	
     	if (d == 0) {
     		return null;
     	}
@@ -405,7 +414,7 @@ public class GameLevel extends GameObject{
     }
     
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
-    private boolean collision_With_Field (Ball ball, Rect PlayField){
+    private boolean collisionWithField (Ball ball, Rect PlayField){
     	
     	if (ball.getNextLeft() <= PlayField.left)
         {

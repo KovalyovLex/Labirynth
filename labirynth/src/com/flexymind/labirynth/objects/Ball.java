@@ -44,7 +44,7 @@ public class Ball extends GameObject
     private int     diam;
     
     /** Коэффициент трения об пол */
-    private float fric_coef = 0.95f;
+    private float fricCoef = 0.95f;
     
     /** Координаты левого верхнего угла шарика (int очень груб) */
     private float[] mPosition;
@@ -165,8 +165,8 @@ public class Ball extends GameObject
 		}
 		else{
 			// Вязкое трение об пол
-			mSpeed[0] = fric_coef * mSpeed[0];
-			mSpeed[1] = fric_coef * mSpeed[1];
+			mSpeed[0] = fricCoef * mSpeed[0];
+			mSpeed[1] = fricCoef * mSpeed[1];
 
 			//изменение скорости в зависимости от разрешения экрана
 			// for asus prime o_0
@@ -279,9 +279,13 @@ public class Ball extends GameObject
 		project = vec1[0] * mSpeed[0] + vec1[1] * mSpeed[1];
 		mSpeed[0] -= (1 + softness) * project * vec1[0];
 		mSpeed[1] -= (1 + softness) * project * vec1[1];
-		
-		mPoint.x = (int)(newpos[0] - mWidth / 2f);
-        mPoint.y = (int)(newpos[1] - mHeight / 2f);
+
+		project = vec1[0] * (newpos[0] - mPosition[0] - mWidth / 2f) + vec1[1] * (newpos[1] - mPosition[1] - mHeight / 2f);
+		mPosition[0] = newpos[0] - mWidth / 2f - project * vec1[0];
+		mPosition[1] = newpos[1] - mHeight / 2f - project * vec1[1];
+		mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
+
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
         
 		mNextPoint[0] = mPosition[0] + mSpeed[0];
@@ -307,9 +311,13 @@ public class Ball extends GameObject
 		project = vec2[0] * mSpeed[0] + vec2[1] * mSpeed[1];
 		mSpeed[0] -= (1 + softness) * project * vec2[0];
 		mSpeed[1] -= (1 + softness) * project * vec2[1];
-		
-		mPoint.x = (int)(newpos[0] - mWidth / 2f);
-        mPoint.y = (int)(newpos[1] - mHeight / 2f);
+
+		project = vec2[0] * (newpos[0] - mPosition[0] - mWidth / 2f) + vec2[1] * (newpos[1] - mPosition[1] - mHeight / 2f);
+		mPosition[0] = newpos[0] - mWidth / 2f - project * vec2[0];
+		mPosition[1] = newpos[1] - mHeight / 2f - project * vec2[1];
+		mPoint.x = (int)mPosition[0];
+        mPoint.y = (int)mPosition[1];
+
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
 		
 		mNextPoint[0] = mPosition[0] + mSpeed[0];
