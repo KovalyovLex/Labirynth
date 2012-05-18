@@ -174,12 +174,12 @@ public class Ball extends GameObject
 
 			//изменение скорости в зависимости от разрешения экрана
 			// for asus prime o_0
-			mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX() * macelleration[0];
-	        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
+			//mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX() * macelleration[0];
+	        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
 	        
 	        // for other normal devices
-	        //mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX() * macelleration[1];
-	        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[0];
+	        mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX() * macelleration[1];
+	        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[0];
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
 	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));

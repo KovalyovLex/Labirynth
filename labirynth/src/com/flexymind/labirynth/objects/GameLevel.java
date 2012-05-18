@@ -26,7 +26,7 @@ public class GameLevel extends GameObject{
 	private int rectHeight = 460;
 	private int rectWidth = 805;
 	private int left = 9;
-	private int top  = 9; 
+	private int top  = 9;
 	private boolean dostup  = true;
 	private Rect mplayField = new Rect(left,top,rectWidth,rectHeight);
 

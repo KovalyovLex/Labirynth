@@ -49,8 +49,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		
 		addButtons();
 	}
-			
-	/** ��������� ������� ������ */
+	
 	public void onClick(View v) {
 		
 		int buttnum = v.getId() - id;
@@ -79,7 +78,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 	}
 		
 	public void addButtons() {
-		// ������ � ������ ������ �� ������ 480x800
+		// размер кнопок на экране 480x800
 		int heightImageBut = 220;
 		int widthImageBut = 220;
 		

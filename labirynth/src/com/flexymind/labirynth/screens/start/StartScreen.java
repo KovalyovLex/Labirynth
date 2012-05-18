@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +25,8 @@ public class StartScreen extends Activity implements OnClickListener {
 
 		Display display = getWindowManager().getDefaultDisplay();
 
+		Log.v("resolution",Integer.toString(display.getWidth()) + "x" + Integer.toString(display.getHeight()));
+		
 		ScreenSettings.GenerateSettings(display.getWidth(), display.getHeight());
 		
 		// Кнопка "Start"
