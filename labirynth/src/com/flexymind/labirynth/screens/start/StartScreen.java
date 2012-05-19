@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -33,7 +34,7 @@ public class StartScreen extends Activity implements OnClickListener {
 		Display display = getWindowManager().getDefaultDisplay();
 		
 		ScreenSettings.GenerateSettings(display.getWidth(), display.getHeight());
-		
+
 		// Кнопка "Start"
 		Button startButton = (Button) findViewById(R.id.StartButton);
 		startButton.setOnClickListener(this);
@@ -106,10 +107,6 @@ public class StartScreen extends Activity implements OnClickListener {
 	public void AutoSize() {
 		if (ScreenSettings.getAutoScale()) {
 			
-			// высота и ширина кнопок на экране 480x800
-			int height = 80;
-			int width = 250;
-			
 			LinearLayout llayout = (LinearLayout)findViewById(R.id.buttLayout);
 			
 			RelativeLayout.LayoutParams llparams = (RelativeLayout.LayoutParams)llayout.getLayoutParams();
@@ -132,12 +129,14 @@ public class StartScreen extends Activity implements OnClickListener {
 			// удаляем все кнопки
 			llayout.removeAllViews();
 			
-			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( 	(int)(ScreenSettings.getScaleFactorX() * width), 
-																					(int)(ScreenSettings.getScaleFactorY() * height) );
-			
-			llayout.addView(startButton, params);
-			llayout.addView(settingsButton, params);
-			llayout.addView(exitButton, params);
+			ViewGroup.LayoutParams buttonparams = (ViewGroup.LayoutParams)startButton.getLayoutParams();
+
+			buttonparams.height = (int)(ScreenSettings.getScaleFactorY() * buttonparams.height);
+			buttonparams.width  = (int)(ScreenSettings.getScaleFactorX() * buttonparams.width);
+
+			llayout.addView(startButton, buttonparams);
+			llayout.addView(settingsButton, buttonparams);
+			llayout.addView(exitButton, buttonparams);
 			
 			// удаляем layout с кнопками
 			mainLayout.removeAllViews();
