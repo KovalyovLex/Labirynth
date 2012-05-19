@@ -151,8 +151,8 @@ public class GameManager extends Thread
     public void initPositions(int screenHeight, int screenWidth)
     {
     	
-        int left = (int) ((screenWidth - ScreenSettings.ScaleFactorX() * FIELD_WIDTH) / 2);
-        int top = (int) ((screenHeight - ScreenSettings.ScaleFactorY() * FIELD_HEIGHT) / 2);
+        int left = (int) ((screenWidth - ScreenSettings.getScaleFactorX() * FIELD_WIDTH) / 2);
+        int top = (int) ((screenHeight - ScreenSettings.getScaleFactorY() * FIELD_HEIGHT) / 2);
         
         mField.set(left, top, left + FIELD_WIDTH, top + FIELD_HEIGHT);
         

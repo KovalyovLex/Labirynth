@@ -39,9 +39,9 @@ public abstract class GameObject {
     
     private void AutoSize()
     {
-        if (ScreenSettings.AutoScale())
+        if (ScreenSettings.getAutoScale())
         {
-        	this.resize(ScreenSettings.ScaleFactorX(), ScreenSettings.ScaleFactorY());
+        	this.resize(ScreenSettings.getScaleFactorX(), ScreenSettings.getScaleFactorY());
         }
     }
 

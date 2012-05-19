@@ -147,7 +147,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     		Ball.registerListeners();
     		if (Thread.State.TERMINATED.equals(mGameManager.getState())){
     			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel());
-    			mGameManager.initPositions(ScreenSettings.CurrentYRes(), ScreenSettings.CurrentXRes());
+    			mGameManager.initPositions(ScreenSettings.getCurrentYRes(), ScreenSettings.getCurrentXRes());
     			mGameManager.setRunning(true);
     			mGameManager.start();
     		}

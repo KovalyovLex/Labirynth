@@ -31,42 +31,42 @@ public class ScreenSettings {
         defaultYRes = y;
     }
 
-    public static boolean AutoScale()
+    public static boolean getAutoScale()
     {
         return autoScale;
     }
     
-    public static int DefaultXRes()
+    public static int getDefaultXRes()
     {
         return defaultXRes;
     }
     
-    public static int DefaultYRes()
+    public static int getDefaultYRes()
     {
         return defaultYRes;
     }
     
-    public static int CurrentXRes()
+    public static int getCurrentXRes()
     {
         return currentXRes;
     }
     
-    public static int CurrentYRes()
+    public static int getCurrentYRes()
     {
         return currentYRes;
     }
     
-    public static double ScaleFactorX()
+    public static double getScaleFactorX()
     {
         return scaleFactorX;
     }
     
-    public static double ScaleFactorY()
+    public static double getScaleFactorY()
     {
         return scaleFactorY;
     }
     
-    public static boolean FullScreen()
+    public static boolean isFullScreen()
     {
         return fullScreen;
     }

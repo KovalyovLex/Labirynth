@@ -1,7 +1,7 @@
 ﻿package com.flexymind.labirynth.screens.start;
 
 import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.screen.choicelevel.ChoiceLevelScreen;
+import com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen;
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.app.Activity;
@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,9 +21,9 @@ import android.widget.RelativeLayout;
 public class StartScreen extends Activity implements OnClickListener {
 	
 	private final int ID_EXIT = 0;
-	private final CharSequence MESSAGE= "Вы действительно хотите выйти?";
-	private final CharSequence YES_ANSWER= "Да";
-	private final CharSequence NO_ANSWER= "Нет";
+	private final CharSequence MESSAGE		= "Вы действительно хотите выйти?";
+	private final CharSequence YES_ANSWER	= "Да";
+	private final CharSequence NO_ANSWER	= "Нет";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,8 +31,6 @@ public class StartScreen extends Activity implements OnClickListener {
 		setContentView(R.layout.start);
 
 		Display display = getWindowManager().getDefaultDisplay();
-
-		Log.v("resolution",Integer.toString(display.getWidth()) + "x" + Integer.toString(display.getHeight()));
 		
 		ScreenSettings.GenerateSettings(display.getWidth(), display.getHeight());
 		
@@ -107,7 +104,7 @@ public class StartScreen extends Activity implements OnClickListener {
 	
 	}
 	public void AutoSize() {
-		if (ScreenSettings.AutoScale()) {
+		if (ScreenSettings.getAutoScale()) {
 			
 			// высота и ширина кнопок на экране 480x800
 			int height = 80;
@@ -116,10 +113,10 @@ public class StartScreen extends Activity implements OnClickListener {
 			LinearLayout llayout = (LinearLayout)findViewById(R.id.buttLayout);
 			
 			RelativeLayout.LayoutParams llparams = (RelativeLayout.LayoutParams)llayout.getLayoutParams();
-			llparams.topMargin		= (int)(ScreenSettings.ScaleFactorY() * llparams.topMargin);
-			llparams.bottomMargin	= (int)(ScreenSettings.ScaleFactorY() * llparams.bottomMargin);
-			llparams.leftMargin		= (int)(ScreenSettings.ScaleFactorX() * llparams.leftMargin);
-			llparams.rightMargin	= (int)(ScreenSettings.ScaleFactorX() * llparams.rightMargin);
+			llparams.topMargin		= (int)(ScreenSettings.getScaleFactorY() * llparams.topMargin);
+			llparams.bottomMargin	= (int)(ScreenSettings.getScaleFactorY() * llparams.bottomMargin);
+			llparams.leftMargin		= (int)(ScreenSettings.getScaleFactorX() * llparams.leftMargin);
+			llparams.rightMargin	= (int)(ScreenSettings.getScaleFactorX() * llparams.rightMargin);
 			
 			RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.startmainlayout);
 			
@@ -135,8 +132,8 @@ public class StartScreen extends Activity implements OnClickListener {
 			// удаляем все кнопки
 			llayout.removeAllViews();
 			
-			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( 	(int)(ScreenSettings.ScaleFactorX() * width), 
-																					(int)(ScreenSettings.ScaleFactorY() * height) );
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( 	(int)(ScreenSettings.getScaleFactorX() * width), 
+																					(int)(ScreenSettings.getScaleFactorY() * height) );
 			
 			llayout.addView(startButton, params);
 			llayout.addView(settingsButton, params);

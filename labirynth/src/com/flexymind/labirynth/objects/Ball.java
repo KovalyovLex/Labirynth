@@ -3,6 +3,7 @@
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,16 +12,16 @@ import android.hardware.SensorManager;
 
 /**
  * Класс Шарик
- * @author Kurnikov Sergey + Soloviev Vyacheslav
+ * @author Kovalyov Alexander + Soloviev Vyacheslav
  *
  */
 
 public class Ball extends GameObject
 {
-    private static final float[] NULL_SPEED = new float[]{16, 5};
+    private static final PointF NULL_SPEED = new PointF(0, 0);
 	
     /** Скорость шарика */
-    private float[] mSpeed;
+    private PointF mSpeed;
     
     /**Вращение шарика в лунке */
     private boolean spin = false;
@@ -50,10 +51,10 @@ public class Ball extends GameObject
     private float fricCoef = 0.95f;
     
     /** Координаты левого верхнего угла шарика (int очень груб) */
-    private float[] mPosition;
+    private PointF mPosition;
     
     /** Координаты левого верхнего угла шарика на следующем шаге */
-    private float[] mNextPoint;
+    private PointF mNextPoint;
     
     /** Ускорение шарика */
     private static float[] macelleration = new float[3];
@@ -84,19 +85,19 @@ public class Ball extends GameObject
         
         registerListeners();
         
-        mSpeed = new float[] {NULL_SPEED[0], NULL_SPEED[1]};
+        mSpeed = new PointF (NULL_SPEED.x, NULL_SPEED.y);
         
         mPoint = pos;
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
         
-        mPosition = new float[2];
-        mPosition[0] = mPoint.x;
-        mPosition[1] = mPoint.y;
+        mPosition = new PointF();
+        mPosition.x = mPoint.x;
+        mPosition.y = mPoint.y;
         
-        mNextPoint = new float[]{mPosition[0], mPosition[1]};
-        mNextPoint[0] += mSpeed[0];
-        mNextPoint[1] += mSpeed[1];
+        mNextPoint = new PointF(mPosition.x, mPosition.y);
+        mNextPoint.x += mSpeed.x;
+        mNextPoint.y += mSpeed.y;
         
         this.mHeight = this.mWidth = diam;
     }
@@ -169,29 +170,29 @@ public class Ball extends GameObject
 		}
 		else{
 			// Вязкое трение об пол
-			mSpeed[0] = fricCoef * mSpeed[0];
-			mSpeed[1] = fricCoef * mSpeed[1];
+			mSpeed.x = fricCoef * mSpeed.x;
+			mSpeed.y = fricCoef * mSpeed.y;
 
 			//изменение скорости в зависимости от разрешения экрана
 			// for asus prime o_0
-			//mSpeed[0] += 0.045 * ScreenSettings.ScaleFactorX() * macelleration[0];
-	        //mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[1];
+			mSpeed.x += 0.045 * ScreenSettings.getScaleFactorX() * macelleration[0];
+	        mSpeed.y -= 0.045 * ScreenSettings.getScaleFactorY() * macelleration[1];
 	        
 	        // for other normal devices
-	        mSpeed[0] -= 0.045 * ScreenSettings.ScaleFactorX() * macelleration[1];
-	        mSpeed[1] -= 0.045 * ScreenSettings.ScaleFactorY() * macelleration[0];
+	        //mSpeed.x -= 0.045 * ScreenSettings.getScaleFactorX() * macelleration[1];
+	        //mSpeed.y -= 0.045 * ScreenSettings.getScaleFactorY() * macelleration[0];
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
-	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles[1]))));
+	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles.y))));
 	        
-	        mPosition[0] = mNextPoint[0];
-	        mPosition[1] = mNextPoint[1];
+	        mPosition.x = mNextPoint.x;
+	        mPosition.y = mNextPoint.y;
 	        
-	        mPoint.x = (int)mPosition[0];
-	        mPoint.y = (int)mPosition[1];
+	        mPoint.x = (int)mPosition.x;
+	        mPoint.y = (int)mPosition.y;
 	        
-	        mNextPoint[0] += mSpeed[0];
-	        mNextPoint[1] += mSpeed[1];
+	        mNextPoint.x += mSpeed.x;
+	        mNextPoint.y += mSpeed.y;
 		}
     }
 	
@@ -202,20 +203,20 @@ public class Ball extends GameObject
     public void startSpin(Point center){ 
     	spin  = true;
     	this.center = center;
-    	float[] r = new float[] {	mPosition[0] - center.x,
-    								mPosition[1] - center.y};
+    	PointF r = new PointF (	mPosition.x - center.x,
+    							mPosition.y - center.y);
     	float length = (float)Math.sqrt(scalMul(r,r));
     	float lenV = (float)Math.sqrt(scalMul(mSpeed,mSpeed));
     	diam = (int)length;
-    	r[0] /= length;
-    	r[1] /= length;
+    	r.x /= length;
+    	r.y /= length;
     	
-    	angle = (float)Math.acos(r[0]);
-    	if (r[1] < 0){
+    	angle = (float)Math.acos(r.x);
+    	if (r.y < 0){
     		angle = 2 * (float)Math.PI - angle;
     	}
     	
-    	rigthSpin = (r[0] * mSpeed[1] - r[1] * mSpeed[0]) > 0;
+    	rigthSpin = (r.x * mSpeed.y - r.y * mSpeed.x) > 0;
     	dt = lenV / length;
     }
 	
@@ -224,53 +225,53 @@ public class Ball extends GameObject
     }
     
     /**Скалярнорное произведение*/
-    private float scalMul(float[] p1, float[] p2){
-    	return p1[0] * p2[0] + p1[1] * p2[1];
+    private float scalMul(PointF p1, PointF p2){
+    	return p1.x * p2.x + p1.y * p2.y;
     }
     
     /** Верхняя граница объекта на следующем шаге */
-    public int getNextTop() { return (int)mNextPoint[1]; }
+    public int getNextTop() { return (int)mNextPoint.y; }
 
     /** Нижняя граница объекта на следующем шаге */
-    public int getNextBottom() { return (int)mNextPoint[1] + mHeight; }
+    public int getNextBottom() { return (int)mNextPoint.y + mHeight; }
 
     /** Левая граница объекта на следующем шаге */
-    public int getNextLeft() { return (int)mNextPoint[0]; }
+    public int getNextLeft() { return (int)mNextPoint.x; }
 
     /** Правая граница объекта на следующем шаге */
-    public int getNextRight() { return (int)mNextPoint[0] + mWidth; }
+    public int getNextRight() { return (int)mNextPoint.x + mWidth; }
 
     /** Центральная точка объекта на следующем шаге */
-    public Point getNextCenter() { return new Point((int)mNextPoint[0] + mWidth / 2, (int)mNextPoint[1] + mHeight / 2); }
+    public Point getNextCenter() { return new Point((int)mNextPoint.x + mWidth / 2, (int)mNextPoint.y + mHeight / 2); }
 
     /** Верхняя левая точка объекта на следующем шаге */
-    public Point getNextPoint() { return new Point((int)mNextPoint[0], (int)mNextPoint[1]); }
+    public Point getNextPoint() { return new Point((int)mNextPoint.x, (int)mNextPoint.y); }
 	
-	public float[] getCenterf(){
-		return new float[]{mPosition[0] + mWidth / 2f, mPosition[1] + mHeight / 2f};
+	public PointF getCenterf(){
+		return new PointF(mPosition.x + mWidth / 2f, mPosition.y + mHeight / 2f);
 	}
 	
     /** Возвращает следующее положение центра шара */
-    public float[] getNextCenterf()
+    public PointF getNextCenterf()
     {
-    	return new float[]{mNextPoint[0] + mWidth / 2f, mNextPoint[1] + mHeight / 2f};
+    	return new PointF(mNextPoint.x + mWidth / 2f, mNextPoint.y + mHeight / 2f);
     }
     
-    public float[] getSpeedCenterf()
+    public PointF getSpeedCenterf()
     {
-    	return new float[]{mSpeed[0],mSpeed[1]};
+    	return new PointF(mSpeed.x,mSpeed.y);
     }
     
     @Override
 	protected void setCenterY(int value){
 		super.setCenterY(value);
-		mPosition[1] = value - mHeight / 2;
+		mPosition.y = value - mHeight / 2;
 	}
 	
 	@Override
 	protected void setCenterX(int value){
 		super.setCenterX(value);
-		mPosition[0] = value - mHeight / 2;
+		mPosition.x = value - mHeight / 2;
 	}
 
     /**
@@ -279,30 +280,30 @@ public class Ball extends GameObject
 	 * @param softness мягкость стены (0..1)
 	 * @param newpos новая позиция центра шара
 	 */
-    public void reflectWallV1(Wall wall, float softness, float[] newpos){
+    public void reflectWallV1(Wall wall, float softness, PointF newpos){
 		float project;
-		float[] vec1 = new float[]{	wall.getPoint2().x - wall.getPoint1().x,
-									wall.getPoint2().y - wall.getPoint1().y};
+		PointF vec1 = new PointF(	wall.getPoint2().x - wall.getPoint1().x,
+									wall.getPoint2().y - wall.getPoint1().y);
 		
-		float length = (float)Math.sqrt(vec1[0]*vec1[0]+vec1[1]*vec1[1]);
+		float length = (float)Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
 		
-		vec1[0] /= length;
-		vec1[1] /= length;
+		vec1.x /= length;
+		vec1.y /= length;
 		
-		project = vec1[0] * mSpeed[0] + vec1[1] * mSpeed[1];
-		mSpeed[0] -= (1 + softness) * project * vec1[0];
-		mSpeed[1] -= (1 + softness) * project * vec1[1];
+		project = vec1.x * mSpeed.x + vec1.y * mSpeed.y;
+		mSpeed.x -= (1 + softness) * project * vec1.x;
+		mSpeed.y -= (1 + softness) * project * vec1.y;
 
-		project = vec1[0] * (newpos[0] - mPosition[0] - mWidth / 2f) + vec1[1] * (newpos[1] - mPosition[1] - mHeight / 2f);
-		mPosition[0] = newpos[0] - mWidth / 2f - project * vec1[0];
-		mPosition[1] = newpos[1] - mHeight / 2f - project * vec1[1];
-		mPoint.x = (int)mPosition[0];
-        mPoint.y = (int)mPosition[1];
+		project = vec1.x * (newpos.x - mPosition.x - mWidth / 2f) + vec1.y * (newpos.y - mPosition.y - mHeight / 2f);
+		mPosition.x = newpos.x - mWidth / 2f - project * vec1.x;
+		mPosition.y = newpos.y - mHeight / 2f - project * vec1.y;
+		mPoint.x = (int)mPosition.x;
+        mPoint.y = (int)mPosition.y;
 
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
         
-		mNextPoint[0] = mPosition[0] + mSpeed[0];
-		mNextPoint[1] = mPosition[1] + mSpeed[1];
+		mNextPoint.x = mPosition.x + mSpeed.x;
+		mNextPoint.y = mPosition.y + mSpeed.y;
 	}
     
 	/**
@@ -311,30 +312,30 @@ public class Ball extends GameObject
 	 * @param softness мягкость стены (0..1)
 	 * @param newpos новая позиция центра шара
 	 */
-	public void reflectWallV2(Wall wall, float softness, float[] newpos){
+	public void reflectWallV2(Wall wall, float softness, PointF newpos){
 		float project;
-		float[] vec2 = new float[]{	wall.getPoint3().x - wall.getPoint2().x,
-									wall.getPoint3().y - wall.getPoint2().y};
+		PointF vec2 = new PointF(	wall.getPoint3().x - wall.getPoint2().x,
+									wall.getPoint3().y - wall.getPoint2().y);
 		
-		float length = (float)Math.sqrt(vec2[0]*vec2[0]+vec2[1]*vec2[1]);
+		float length = (float)Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
 		
-		vec2[0] /= length;
-		vec2[1] /= length;
+		vec2.x /= length;
+		vec2.y /= length;
 		
-		project = vec2[0] * mSpeed[0] + vec2[1] * mSpeed[1];
-		mSpeed[0] -= (1 + softness) * project * vec2[0];
-		mSpeed[1] -= (1 + softness) * project * vec2[1];
+		project = vec2.x * mSpeed.x + vec2.y * mSpeed.y;
+		mSpeed.x -= (1 + softness) * project * vec2.x;
+		mSpeed.y -= (1 + softness) * project * vec2.y;
 
-		project = vec2[0] * (newpos[0] - mPosition[0] - mWidth / 2f) + vec2[1] * (newpos[1] - mPosition[1] - mHeight / 2f);
-		mPosition[0] = newpos[0] - mWidth / 2f - project * vec2[0];
-		mPosition[1] = newpos[1] - mHeight / 2f - project * vec2[1];
-		mPoint.x = (int)mPosition[0];
-        mPoint.y = (int)mPosition[1];
+		project = vec2.x * (newpos.x - mPosition.x - mWidth / 2f) + vec2.y * (newpos.y - mPosition.y - mHeight / 2f);
+		mPosition.x = newpos.x - mWidth / 2f - project * vec2.x;
+		mPosition.y = newpos.y - mHeight / 2f - project * vec2.y;
+		mPoint.x = (int)mPosition.x;
+        mPoint.y = (int)mPosition.y;
 
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
 		
-		mNextPoint[0] = mPosition[0] + mSpeed[0];
-		mNextPoint[1] = mPosition[1] + mSpeed[1];
+		mNextPoint.x = mPosition.x + mSpeed.x;
+		mNextPoint.y = mPosition.y + mSpeed.y;
 	}
 	
     /** Отражение мячика от вертикали 
@@ -343,13 +344,13 @@ public class Ball extends GameObject
     public void reflectVertical(Point newPoint)
     {
     	mPoint = newPoint;
-    	mNextPoint[0] = newPoint.x;
-    	mNextPoint[1] = newPoint.y;
+    	mNextPoint.x = newPoint.x;
+    	mNextPoint.y = newPoint.y;
     	
-    	mSpeed[0] = -mSpeed[0];
+    	mSpeed.x = -mSpeed.x;
     	
-    	mNextPoint[0] += mSpeed[0];
-        mNextPoint[1] += mSpeed[1];
+    	mNextPoint.x += mSpeed.x;
+        mNextPoint.y += mSpeed.y;
     }
 
     /** Отражение мячика от горизонтали 
@@ -358,13 +359,13 @@ public class Ball extends GameObject
     public void reflectHorizontal(Point newPoint)
     {
     	mPoint = newPoint;
-    	mNextPoint[0] = newPoint.x;
-    	mNextPoint[1] = newPoint.y;
+    	mNextPoint.x = newPoint.x;
+    	mNextPoint.y = newPoint.y;
     	
-    	mSpeed[1] = -mSpeed[1];
+    	mSpeed.y = -mSpeed.y;
     	
-    	mNextPoint[0] += mSpeed[0];
-        mNextPoint[1] += mSpeed[1];
+    	mNextPoint.x += mSpeed.x;
+        mNextPoint.y += mSpeed.y;
     }
 
 }
