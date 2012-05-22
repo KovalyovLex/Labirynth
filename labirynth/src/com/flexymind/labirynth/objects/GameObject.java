@@ -1,8 +1,6 @@
 ﻿package com.flexymind.labirynth.objects;
 
 
-import java.util.Vector;
-
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.graphics.Bitmap;
@@ -29,21 +27,7 @@ public abstract class GameObject {
     protected Drawable mImage;
  
     /** Пременная для autoScale */
-    private boolean dostup = true;
-    
-    public void refreshSize()
-    {
-    	mWidth = mImage.getIntrinsicWidth();
-        mHeight = mImage.getIntrinsicHeight();
-    }
-    
-    private void AutoSize()
-    {
-        if (ScreenSettings.getAutoScale())
-        {
-        	this.resize(ScreenSettings.getScaleFactorX(), ScreenSettings.getScaleFactorY());
-        }
-    }
+    protected boolean needResize = true;
 
     /**
      * Конструктор
@@ -55,6 +39,7 @@ public abstract class GameObject {
         mPoint = new Point(0, 0);
         refreshSize();
     }
+    
     /** Перемещение опорной точки */
     protected void updatePoint() { }
  
@@ -77,20 +62,34 @@ public abstract class GameObject {
         refreshSize();
     }
     
+    public void refreshSize()
+    {
+    	mWidth = mImage.getBounds().width();
+        mHeight = mImage.getBounds().height();
+    }
+    
+    protected void autoSize()
+    {
+        if (ScreenSettings.getAutoScale())
+        {
+        	this.resize(ScreenSettings.getScaleFactorX(), ScreenSettings.getScaleFactorY());
+        }
+    }
+    
     /** Перемещение объекта */
-    public void Update()
+    public void onUpdate()
     {
         updatePoint();
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
     }
     
     /** Отрисовка объекта */
-    public void Draw(Canvas canvas)
+    public void onDraw(Canvas canvas)
     {
-    	if(dostup)
+    	if(needResize)
         {
-    		AutoSize();
-        	dostup = false;
+    		autoSize();
+        	needResize = false;
         }
         mImage.draw(canvas);
     }
@@ -144,22 +143,8 @@ public abstract class GameObject {
     
     /** @return Прямоугольник, ограничивающий объект */
     public Rect getRect() { return mImage.getBounds(); }
-
-    /** Проверяет, пересекаются ли два игровых объекта */
-    public static boolean intersects(GameObject obj1, Vector <Wall> Walls, int index)
-    {
-    	int Number = Walls.size();
-    	boolean strike = false;
-    	for (int i = 0;i<Number;i++){
-    		strike = Rect.intersects(obj1.getRect(), Walls.elementAt(i).getRect());
-    		if(strike){
-    			index = i;
-    		}
-    	}
-		return strike;
-    }
     
-    public static boolean intersects_finish(GameObject obj1, GameObject obj2)
+    public static boolean intersectsFinish(GameObject obj1, GameObject obj2)
     {
         return Rect.intersects(obj1.getRect(), obj2.getRect());
     }

@@ -2,8 +2,10 @@
 
 import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -147,6 +149,36 @@ public class Ball extends GameObject
 		}
 	}
     
+	/** изменение размеров объекта */
+    public void resize(double ScaleFactorX, double ScaleFactorY)
+    {
+    	int newX;
+    	int newY;
+    	
+    	mPoint.x = (int)(mPoint.x * ScaleFactorX);
+    	mPoint.y = (int)(mPoint.y * ScaleFactorY);
+    	
+    	mPosition.x = (float)(mPosition.x * ScaleFactorX);
+    	mPosition.y = (float)(mPosition.y * ScaleFactorY);
+    	
+    	mNextPoint.x = (float)(mNextPoint.x * ScaleFactorX);
+    	mNextPoint.y = (float)(mNextPoint.y * ScaleFactorY);
+    	
+    	newX = (int)(ScaleFactorX * mWidth);
+    	newY = (int)(ScaleFactorY * mHeight);
+    	
+    	if (newX > newY){
+    		newY = newX;
+    	}
+    	
+    	mWidth = mHeight = newY;
+    	
+    	Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
+    	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newY, newY, true);
+        bmp = tmp;
+        mImage = new BitmapDrawable(bmp);
+    }
+	
 	@Override
     /**
      * Функция, определяющая последующее положение шарика
@@ -203,8 +235,8 @@ public class Ball extends GameObject
     public void startSpin(Point center){ 
     	spin  = true;
     	this.center = center;
-    	PointF r = new PointF (	mPosition.x - center.x,
-    							mPosition.y - center.y);
+    	PointF r = new PointF (	mPosition.x + mWidth / 2f - center.x,
+    							mPosition.y + mHeight / 2f - center.y);
     	float length = (float)Math.sqrt(scalMul(r,r));
     	float lenV = (float)Math.sqrt(scalMul(mSpeed,mSpeed));
     	diam = (int)length;

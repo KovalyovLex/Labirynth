@@ -7,6 +7,7 @@ import com.flexymind.labirynth.screens.settings.ScreenSettings;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -110,6 +111,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
 		surfWasCreated = true;
 		if (Thread.State.NEW.equals(mGameManager.getState()) && mGameManager != null){
+			Log.v("new","thread");
 			mGameManager.setRunning(true);
 			mGameManager.start();
 		}else{
@@ -135,7 +137,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
             } 
             catch (InterruptedException e) { }
         }
-        
     }
     
     public void onPause(){

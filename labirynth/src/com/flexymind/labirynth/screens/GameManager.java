@@ -4,42 +4,32 @@
 import java.util.Vector;
 
 import com.flexymind.labirynth.objects.GameLevel;
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
 import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Paint.Style;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
 public class GameManager extends Thread
 {
-    private static final int FIELD_WIDTH  = 800;
-    private static final int FIELD_HEIGHT = 410;
 
+	public static final int FPS = 60;
+	
+	private long updMillisec = 1000 / FPS;
+	
     /** Область, на которой будем рисовать */
     private SurfaceHolder mSurfaceHolder;
     
     /** Состояние потока  */
     private boolean mRunning;
     
-    /** Стили рисования */
-    private Paint mPaint;
-    
-    /** Прямоугольник игрового поля */
-    private Rect mField;
-    
     private GameLevel mlevel = null;
-
-    /** Фон */
-    private Bitmap mBackground;
     
-        
+    private long lastDrawTime = 0;
+    
     /**
      * Конструктор
      * @param surfaceHolder Область рисования
@@ -51,17 +41,11 @@ public class GameManager extends Thread
     	mlevel = level;
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
-        // инициализация стилей рисования
-        mPaint = new Paint();
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth(2);
-        mPaint.setStyle(Style.STROKE);
-
-        mField = new Rect();
+        lastDrawTime = SystemClock.elapsedRealtime();
     }
     
     /**
-     * Конструктор
+     * Конструктор по умолчанию запускающий первый уровень
      * @param surfaceHolder Область рисования
      * @param context Контекст приложения
      */
@@ -69,18 +53,11 @@ public class GameManager extends Thread
     {
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
-        // инициализация стилей рисования
-        mPaint = new Paint();
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth(2);
-        mPaint.setStyle(Style.STROKE);
         
         // загрузка первого уровня из файла
         LevelStorage storage = new LevelStorage(context);
         Vector<String> names = storage.get_level_names();
         mlevel = storage.loadGameLevelbyName(names.elementAt(0));
-        
-        mField = new Rect();
     }
     
 	/**
@@ -97,8 +74,16 @@ public class GameManager extends Thread
     public void run()
     {
     	Canvas canvas = null;
+    	lastDrawTime = SystemClock.elapsedRealtime();
+    	
         while (mRunning)
-        {	
+        {
+        	lastDrawTime = SystemClock.elapsedRealtime() - lastDrawTime;
+        	if (lastDrawTime < updMillisec){
+        		SystemClock.sleep(updMillisec - lastDrawTime);
+        	}
+        	lastDrawTime = SystemClock.elapsedRealtime();
+        	
         	canvas = null;
             updateObjects();     // обновляем объекты
         	try
@@ -106,12 +91,14 @@ public class GameManager extends Thread
                 synchronized (mSurfaceHolder)
                 {
                     // подготовка Canvas-а
-                    canvas = mSurfaceHolder.lockCanvas(); 
+                    canvas = mSurfaceHolder.lockCanvas();
+                    
+                	Log.v("CanvasAcell",new Boolean(canvas.isHardwareAccelerated()).toString());
+                	
                     refreshCanvas(canvas); // обновляем экран
-                    sleep(2);
                 }
             }
-            catch (Exception e) { }
+        	catch(Exception ex){ }
             finally
             {
                 if (canvas != null)
@@ -125,22 +112,15 @@ public class GameManager extends Thread
     /** Обновление объектов на экране */
     private void refreshCanvas(Canvas canvas)
     {
-    	
-    	// вывод фонового изображения
-    	canvas.drawBitmap(mBackground, 0, 0, null);
-    	
-    	// debug отрисовка краёв рамки
-    	canvas.drawRect(mField, mPaint);
-    	
     	// рисуем уровень
-    	mlevel.Draw(canvas);
+    	mlevel.onDraw(canvas);
     }
 
         
     /** Обновление состояния игровых объектов */
     private void updateObjects()
     {
-        mlevel.Update();
+        mlevel.onUpdate();
     }
    
     /**
@@ -148,17 +128,7 @@ public class GameManager extends Thread
      * @param screenHeight Высота экрана
      * @param screenWidth Ширина экрана
      */
-    public void initPositions(int screenHeight, int screenWidth)
-    {
-    	
-        int left = (int) ((screenWidth - ScreenSettings.getScaleFactorX() * FIELD_WIDTH) / 2);
-        int top = (int) ((screenHeight - ScreenSettings.getScaleFactorY() * FIELD_HEIGHT) / 2);
-        
-        mField.set(left, top, left + FIELD_WIDTH, top + FIELD_HEIGHT);
-        
-        mBackground = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
-        
-    }
+    public void initPositions(int screenHeight, int screenWidth){ }
     
     /**
      * Возвращает игровой уровень
@@ -201,7 +171,6 @@ public class GameManager extends Thread
             keyCode == KeyEvent.KEYCODE_D
             )
         {
-            //stenka2.setDirection(GameObject.DIR_NONE);
             return true;
         }
         return false;

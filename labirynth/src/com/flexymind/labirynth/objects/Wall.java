@@ -106,7 +106,7 @@ public class Wall extends GameObject{
 	
 	@Override
     /** Перемещение объекта */
-    public void Update(){ }
+    public void onUpdate(){ }
 	
 	@Override
 	/**
