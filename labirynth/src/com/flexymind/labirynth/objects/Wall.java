@@ -7,11 +7,22 @@ import android.graphics.drawable.Drawable;
 
 public class Wall extends GameObject{
 
+	// показывать стену 30 кадров
+	private final int SHOWTIME = 30;
+	
 	private Point 	secPoint	= new Point(),
 					thirdPoint	= new Point(),
 					leftUp		= new Point();
 	
 	private float softness = 1;
+	
+	private boolean show = false;
+	
+	private boolean animateOn = false;
+	private boolean animateOff = false;
+	
+	private int alpfa = 2;
+	private int frameWasShow = 0;
 	
 	/**
 	 * Конструктор по умолчанию
@@ -38,6 +49,8 @@ public class Wall extends GameObject{
 		
 		mWidth = mImage.getBounds().width();
         mHeight = mImage.getBounds().height();
+        
+        mImage.setAlpha(0);
 	}
 
 	/**
@@ -70,6 +83,8 @@ public class Wall extends GameObject{
 		leftUp.y = mPoint.y - shift.y;
 		
 		mImage.setBounds(leftUp.x, leftUp.y, leftUp.x + mWidth, leftUp.y + mHeight);
+		
+		mImage.setAlpha(0);
 	}
 	
 	/**
@@ -106,7 +121,54 @@ public class Wall extends GameObject{
 	
 	@Override
     /** Перемещение объекта */
-    public void onUpdate(){ }
+    public void onUpdate(){
+		if (animateOn){
+			mImage.setAlpha(alpfa);
+			alpfa += alpfa / 2;
+			if (alpfa > 255){
+				alpfa = 255;
+				if (show){
+					animateOn = false;
+				}
+				show = true;
+			}
+		}
+		if (animateOff){
+			mImage.setAlpha(alpfa);
+			alpfa -= alpfa / 2;
+			if (alpfa < 2){
+				animateOff = false;
+				alpfa = 2;
+				mImage.setAlpha(0);
+			}
+		}
+		if (show && frameWasShow++ >= SHOWTIME){
+			frameWasShow = 0;
+			show = false;
+			animateOff = true;
+			alpfa = 211;
+		}
+	}
+	
+	/**
+	 * показать стену на 30 frame + 2 * 14 (анимация)
+	 */
+	protected void showWall(){
+		if (animateOn){
+			animateOn = true;
+		}else{
+			if (show){
+				frameWasShow = 0;
+			}else{
+				if (animateOff){
+					animateOff = false;
+					animateOn = true;
+				}else{
+					animateOn = true;
+				}
+			}
+		}
+	}
 	
 	@Override
 	/**

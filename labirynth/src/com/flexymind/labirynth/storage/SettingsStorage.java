@@ -12,11 +12,14 @@ public class SettingsStorage {
 	private static final String ACCELX = "accelX";
 	private static final String ACCELY = "accelY";
 	private static final String ACCELZ = "accelZ";
+	private static final String ACCELSENSIVITY = "accelSens";
 	
 	private static Context context = null;
+	private static SharedPreferences settings = null;
 	
 	public SettingsStorage(Context initContext){
 		context = initContext;
+		settings = context.getSharedPreferences(STORAGE, 0);
 	}
 	
 	/**
@@ -25,6 +28,7 @@ public class SettingsStorage {
 	 */
 	public static void initialize(Context initContext){
 		context = initContext;
+		settings = context.getSharedPreferences(STORAGE, 0);
 	}
 	
 	/**
@@ -35,7 +39,6 @@ public class SettingsStorage {
 	public static boolean saveAcellPosition(float[] pos){
 		if (pos.length < 3)
 			return false;
-		SharedPreferences settings = context.getSharedPreferences(STORAGE, 0);
 		SharedPreferences.Editor edit = settings.edit();
 		edit.putFloat(ACCELX, pos[0]);
 		edit.putFloat(ACCELY, pos[1]);
@@ -49,10 +52,27 @@ public class SettingsStorage {
 	 */
 	public static float[] getAcellPosition(){
 		float[] pos = new float[]{0,0,0};
-		SharedPreferences settings = context.getSharedPreferences(STORAGE, 0);
 		pos[0] = settings.getFloat(ACCELX, 0);
 		pos[1] = settings.getFloat(ACCELY, 0);
 		pos[2] = settings.getFloat(ACCELZ, 0);
 		return pos;
+	}
+	
+	/**
+	 * Сохраняет значение чувствительности акселерометра
+	 * @param sens - зничение
+	 */
+	public static void saveSensivity(float sens){
+		SharedPreferences.Editor edit = settings.edit();
+		edit.putFloat(ACCELSENSIVITY, sens);
+		edit.commit();
+	}
+	
+	/**
+	 * Возвращает значение чувствительности акселерометра (или 1 если нет в настройках)
+	 * @return значение
+	 */
+	public static float getSensivity(){
+		return settings.getFloat(ACCELSENSIVITY, 1);
 	}
 }

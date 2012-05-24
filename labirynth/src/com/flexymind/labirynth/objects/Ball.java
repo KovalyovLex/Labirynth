@@ -336,6 +336,8 @@ public class Ball extends GameObject
         
 		mNextPoint.x = mPosition.x + mSpeed.x;
 		mNextPoint.y = mPosition.y + mSpeed.y;
+		
+		wall.showWall();
 	}
     
 	/**
@@ -368,6 +370,8 @@ public class Ball extends GameObject
 		
 		mNextPoint.x = mPosition.x + mSpeed.x;
 		mNextPoint.y = mPosition.y + mSpeed.y;
+		
+		wall.showWall();
 	}
 	
     /** Отражение мячика от вертикали 
