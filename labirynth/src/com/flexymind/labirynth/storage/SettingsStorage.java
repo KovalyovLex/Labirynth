@@ -40,6 +40,7 @@ public class SettingsStorage {
 		edit.putFloat(ACCELX, pos[0]);
 		edit.putFloat(ACCELY, pos[1]);
 		edit.putFloat(ACCELZ, pos[2]);
+		edit.commit();
 		return true;
 	}
 	
