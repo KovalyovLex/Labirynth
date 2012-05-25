@@ -1,7 +1,11 @@
 ﻿package com.flexymind.labirynth.objects;
 
+import java.util.Calendar;
 import java.util.Vector;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -27,7 +31,12 @@ public class GameLevel extends GameObject{
 
 	private final int preShowFrame = 60; // вначле игры уровень показывается 60 кадров
 	private boolean hidewall = true;
-	private int frameShowed = 0;
+	private int frameShowed = 0; // переменная для отсчёта кадров
+	private long startTime = 0; // время начала раунда в секундах
+	
+	private float scorePF = 1.5f; // понижение очков за кадр
+	private float score = 1000; // Стартовое значение очков
+	private float scorePWall = 100; // понижение очков за удар об стену
 	
     /**Игровое поле */
 	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
@@ -83,6 +92,13 @@ public class GameLevel extends GameObject{
         	Walls.elementAt(i).onDraw(canvas);
         }
 
+        Paint mPaint = new Paint();
+        mPaint.setColor(Color.WHITE);
+        mPaint.setStrokeWidth(2);
+        mPaint.setStyle(Style.STROKE);
+        
+        canvas.drawText(Integer.toString((int)score), Settings.getCurrentXRes() / 2, 5, new Paint());
+        
         // debug отрисовка краев рамки
         //Paint mPaint = new Paint();
         //mPaint.setColor(Color.MAGENTA);
@@ -95,6 +111,7 @@ public class GameLevel extends GameObject{
     /** Перемещение объекта */
     public void onUpdate()
     {
+    	score -= scorePF;
     	if (frameShowed > preShowFrame){
     		mball.onUpdate();
     		mfinish.onUpdate();
@@ -103,6 +120,8 @@ public class GameLevel extends GameObject{
     			for(int i = 0; i < Walls.size();i++){
         			Walls.elementAt(i).hideWall();
         		}
+    			Calendar calendar = Calendar.getInstance();
+    			startTime = calendar.getTimeInMillis() / 1000;
     		}
     		for(int i = 0; i < Walls.size();i++){
     			Walls.elementAt(i).onUpdate();
@@ -111,10 +130,26 @@ public class GameLevel extends GameObject{
     		while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
     			i++;
     		}
+    		if (i > 0){
+    			// вычитаем очки за удар об стену или ограничивающие стенки
+    			score -= scorePWall;
+    		}
     		victory();
     	}else{
     		frameShowed++;
     	}
+    	if (score < 0){
+    		score = 0;
+    	}
+    }
+    
+    /**
+     * возвращает время в секундах с момента старта игры
+     * @return time
+     */
+    protected long getPlayTime(){
+    	Calendar calendar = Calendar.getInstance();
+    	return calendar.getTimeInMillis() / 1000 - startTime;
     }
     
     /** Функция, описывающая столкновения объектов шар и станки между собой */

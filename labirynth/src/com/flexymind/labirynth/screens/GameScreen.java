@@ -39,7 +39,7 @@ public class GameScreen extends Activity {
         	&& b != null 
         	&& b.containsKey(LEVELNAME)) {
         	
-        	gameView.setGameLevel(lvlstor.loadGameLevelbyName(b.getString(LEVELCHOOSEACTION)));
+        	gameView.setGameLevel(lvlstor.loadGameLevelbyName(b.getString(LEVELNAME)));
         }
     }
 	
