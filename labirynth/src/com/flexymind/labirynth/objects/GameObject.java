@@ -60,6 +60,7 @@ public abstract class GameObject {
         bmp = tmp;
         mImage = new BitmapDrawable(bmp);
         refreshSize();
+        onUpdate();
     }
     
     public void refreshSize()
@@ -72,7 +73,7 @@ public abstract class GameObject {
     {
         if (Settings.getAutoScale())
         {
-        	this.resize(Settings.getScaleFactorX(), Settings.getScaleFactorY());
+        	resize(Settings.getScaleFactorX(), Settings.getScaleFactorY());
         }
     }
     

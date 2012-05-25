@@ -25,6 +25,10 @@ public class GameLevel extends GameObject{
 	private int top  = 9;
 	private Rect mplayField = null;
 
+	private final int preShowFrame = 60; // вначле игры уровень показывается 60 кадров
+	private boolean hidewall = true;
+	private int frameShowed = 0;
+	
     /**Игровое поле */
 	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
     //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
@@ -47,6 +51,9 @@ public class GameLevel extends GameObject{
 		mfinish = finish;
 		Walls   = walls;
 		mplayField = new Rect(left, top, Settings.getCurrentXRes()-left, Settings.getCurrentYRes()-top);
+		
+		mball.onUpdate();
+		mfinish.onUpdate();
 	}
     
     @Override
@@ -88,16 +95,26 @@ public class GameLevel extends GameObject{
     /** Перемещение объекта */
     public void onUpdate()
     {
-        mball.onUpdate();
-        mfinish.onUpdate();
-        for(int i = 0; i < Walls.size();i++){
-        	Walls.elementAt(i).onUpdate();
-        }
-        int i = 0;
-    	while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
-    		i++;
+    	if (frameShowed > preShowFrame){
+    		mball.onUpdate();
+    		mfinish.onUpdate();
+    		if (hidewall){
+    			hidewall = false;
+    			for(int i = 0; i < Walls.size();i++){
+        			Walls.elementAt(i).hideWall();
+        		}
+    		}
+    		for(int i = 0; i < Walls.size();i++){
+    			Walls.elementAt(i).onUpdate();
+    		}
+    		int i = 0;
+    		while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
+    			i++;
+    		}
+    		victory();
+    	}else{
+    		frameShowed++;
     	}
-    	victory();
     }
     
     /** Функция, описывающая столкновения объектов шар и станки между собой */

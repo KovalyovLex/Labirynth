@@ -50,7 +50,7 @@ public class Wall extends GameObject{
 		mWidth = mImage.getBounds().width();
         mHeight = mImage.getBounds().height();
         
-        mImage.setAlpha(0);
+        mImage.setAlpha(255);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class Wall extends GameObject{
 		
 		mImage.setBounds(leftUp.x, leftUp.y, leftUp.x + mWidth, leftUp.y + mHeight);
 		
-		mImage.setAlpha(0);
+		mImage.setAlpha(255);
 	}
 	
 	/**
@@ -168,6 +168,13 @@ public class Wall extends GameObject{
 				}
 			}
 		}
+	}
+	
+	/**
+	 * вызывается перед началом игры, чтобы спрятать стены
+	 */
+	protected void hideWall(){
+		mImage.setAlpha(0);
 	}
 	
 	@Override

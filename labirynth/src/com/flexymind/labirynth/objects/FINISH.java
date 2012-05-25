@@ -34,6 +34,7 @@ public class FINISH extends GameObject{
     	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newX, true);
         bmp = tmp;
         mImage = new BitmapDrawable(bmp);
+        onUpdate();
     }
 	
     public int finDiam(){

@@ -188,6 +188,7 @@ public class Ball extends GameObject
     	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newY, newY, true);
         bmp = tmp;
         mImage = new BitmapDrawable(bmp);
+        onUpdate();
     }
 	
 	@Override
