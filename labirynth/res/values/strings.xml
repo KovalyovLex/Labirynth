@@ -6,5 +6,9 @@
     <string name="settings_title">Settings</string>
     <string name="exit_title">Exit</string>
     <string name="levelname">Name of Level</string>
-
+
+    <string name="settingsSensivity">Чувствительность акселерометра</string>
+
+    <string name="calibrate">Калибровка акселерометра</string>
+    <string name="blockedLevel">Этот уровень заблокирован!</string>
 </resources>

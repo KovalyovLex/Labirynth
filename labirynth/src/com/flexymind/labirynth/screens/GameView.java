@@ -3,7 +3,7 @@
 
 import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
+import com.flexymind.labirynth.storage.Settings;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -66,7 +66,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
         mGameManager.initPositions(height, width);
-        ScreenSettings.GenerateSettings(width, height);
+        Settings.GenerateSettings(width, height);
     }
 
     /**
@@ -148,7 +148,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     		Ball.registerListeners();
     		if (Thread.State.TERMINATED.equals(mGameManager.getState())){
     			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel());
-    			mGameManager.initPositions(ScreenSettings.getCurrentYRes(), ScreenSettings.getCurrentXRes());
+    			mGameManager.initPositions(Settings.getCurrentYRes(), Settings.getCurrentXRes());
     			mGameManager.setRunning(true);
     			mGameManager.start();
     		}

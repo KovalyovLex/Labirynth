@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".screens.start.StartScreen"
+            android:name="com.flexymind.labirynth.screens.start.StartScreen"
             android:configChanges="orientation"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
@@ -36,7 +36,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".screens.choicelevel.ChoiceLevelScreen"
+            android:name="com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen"
+            android:configChanges="orientation"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.flexymind.labirynth.screens.settings.SettingsScreen"
             android:configChanges="orientation"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >

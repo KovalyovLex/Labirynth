@@ -1,7 +1,7 @@
 ﻿package com.flexymind.labirynth.objects;
 
 
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
+import com.flexymind.labirynth.storage.Settings;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -70,9 +70,9 @@ public abstract class GameObject {
     
     protected void autoSize()
     {
-        if (ScreenSettings.getAutoScale())
+        if (Settings.getAutoScale())
         {
-        	this.resize(ScreenSettings.getScaleFactorX(), ScreenSettings.getScaleFactorY());
+        	this.resize(Settings.getScaleFactorX(), Settings.getScaleFactorY());
         }
     }
     

@@ -4,8 +4,8 @@ import java.util.Vector;
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.GameScreen;
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
 import com.flexymind.labirynth.storage.LevelStorage;
+import com.flexymind.labirynth.storage.Settings;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,7 +31,6 @@ import android.widget.Toast;
 public class ChoiceLevelScreen extends Activity implements OnClickListener{
 
 	private static final int id = 2376;
-	private static final CharSequence MESSAGE = "Этот уровень заблокирован!";
 	private Vector<String> names = null;
 	private LevelStorage lvlstor = null;
 	private Vector<Boolean> access = new Vector<Boolean>();
@@ -43,7 +42,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 
 		Display display = getWindowManager().getDefaultDisplay();
 
-		ScreenSettings.GenerateSettings(display.getWidth(), display.getHeight());
+		Settings.GenerateSettings(display.getWidth(), display.getHeight());
 		
 		lvlstor = new LevelStorage(this);
 		
@@ -64,7 +63,9 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			intent.setAction(GameScreen.LEVELCHOOSEACTION);
 			startActivity(intent);
 		} else {
-			Toast toast = Toast.makeText(getApplicationContext(), MESSAGE, Toast.LENGTH_LONG);
+			Toast toast = Toast.makeText(getApplicationContext(), 
+					getApplicationContext().getString(R.string.blockedLevel), 
+					Toast.LENGTH_LONG);
 	        toast.setGravity(Gravity.CENTER, 0, 0);
 	        LinearLayout toastView = (LinearLayout) toast.getView();
 	        ImageView imageAccess = new ImageView(getApplicationContext());
@@ -91,10 +92,10 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		
 		ViewGroup.LayoutParams buttonparams = (ViewGroup.LayoutParams)startButton.getLayoutParams();
 		
-		if (ScreenSettings.getAutoScale()) {
+		if (Settings.getAutoScale()) {
 			
-			buttonparams.height = (int)(ScreenSettings.getScaleFactorY() * buttonparams.height);
-			buttonparams.width  = (int)(ScreenSettings.getScaleFactorX() * buttonparams.width);
+			buttonparams.height = (int)(Settings.getScaleFactorY() * buttonparams.height);
+			buttonparams.width  = (int)(Settings.getScaleFactorX() * buttonparams.width);
 			
 			HorizontalScrollView hscroll = (HorizontalScrollView)findViewById(R.id.horizontalScrollView1);
 			
@@ -103,12 +104,12 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			parent.removeAllViews();
 			
 			RelativeLayout.LayoutParams rlparams = (RelativeLayout.LayoutParams)hscroll.getLayoutParams();
-			rlparams.topMargin = (int)(ScreenSettings.getScaleFactorY() * rlparams.topMargin);
-			rlparams.bottomMargin = (int)(ScreenSettings.getScaleFactorY() * rlparams.bottomMargin);
-			rlparams.leftMargin = (int)(ScreenSettings.getScaleFactorX() * rlparams.leftMargin);
-			rlparams.rightMargin = (int)(ScreenSettings.getScaleFactorX() * rlparams.rightMargin);
-			rlparams.height = (int)(ScreenSettings.getScaleFactorY() * rlparams.height);
-			rlparams.width = (int)(ScreenSettings.getScaleFactorX() * rlparams.width);
+			rlparams.topMargin = (int)(Settings.getScaleFactorY() * rlparams.topMargin);
+			rlparams.bottomMargin = (int)(Settings.getScaleFactorY() * rlparams.bottomMargin);
+			rlparams.leftMargin = (int)(Settings.getScaleFactorX() * rlparams.leftMargin);
+			rlparams.rightMargin = (int)(Settings.getScaleFactorX() * rlparams.rightMargin);
+			rlparams.height = (int)(Settings.getScaleFactorY() * rlparams.height);
+			rlparams.width = (int)(Settings.getScaleFactorX() * rlparams.width);
 			
 			parent.addView(hscroll,rlparams);
 		}
@@ -141,8 +142,8 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 	private void autoScale(Drawable image){
 		int Width = image.getIntrinsicWidth();
         int Height = image.getIntrinsicHeight();
-    	int newX = (int)(ScreenSettings.getScaleFactorX() * Width);
-    	int newY = (int)(ScreenSettings.getScaleFactorY() * Height);
+    	int newX = (int)(Settings.getScaleFactorX() * Width);
+    	int newY = (int)(Settings.getScaleFactorY() * Height);
     	Bitmap bmp = ((BitmapDrawable)image).getBitmap();
     	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
         bmp = tmp;

@@ -2,7 +2,9 @@
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen;
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
+import com.flexymind.labirynth.screens.settings.SettingsScreen;
+import com.flexymind.labirynth.storage.Settings;
+import com.flexymind.labirynth.storage.SettingsStorage;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,7 +35,7 @@ public class StartScreen extends Activity implements OnClickListener {
 
 		Display display = getWindowManager().getDefaultDisplay();
 		
-		ScreenSettings.GenerateSettings(display.getWidth(), display.getHeight());
+		Settings.GenerateSettings(display.getWidth(), display.getHeight());
 
 		// Кнопка "Start"
 		Button startButton = (Button) findViewById(R.id.StartButton);
@@ -46,6 +48,8 @@ public class StartScreen extends Activity implements OnClickListener {
 		// Кнопка "Settings"
 		Button settingsButton = (Button) findViewById(R.id.SettingsButton);
 		settingsButton.setOnClickListener(this);
+		
+		SettingsStorage.initialize(this);
 		
 		AutoSize();
 	}
@@ -61,6 +65,9 @@ public class StartScreen extends Activity implements OnClickListener {
 		}
 
 		case R.id.SettingsButton: {
+			Intent intent = new Intent();
+			intent.setClass(this, SettingsScreen.class);
+			startActivity(intent);
 			break;
 		}
 
@@ -105,15 +112,15 @@ public class StartScreen extends Activity implements OnClickListener {
 	
 	}
 	public void AutoSize() {
-		if (ScreenSettings.getAutoScale()) {
+		if (Settings.getAutoScale()) {
 			
 			LinearLayout llayout = (LinearLayout)findViewById(R.id.buttLayout);
 			
 			RelativeLayout.LayoutParams llparams = (RelativeLayout.LayoutParams)llayout.getLayoutParams();
-			llparams.topMargin		= (int)(ScreenSettings.getScaleFactorY() * llparams.topMargin);
-			llparams.bottomMargin	= (int)(ScreenSettings.getScaleFactorY() * llparams.bottomMargin);
-			llparams.leftMargin		= (int)(ScreenSettings.getScaleFactorX() * llparams.leftMargin);
-			llparams.rightMargin	= (int)(ScreenSettings.getScaleFactorX() * llparams.rightMargin);
+			llparams.topMargin		= (int)(Settings.getScaleFactorY() * llparams.topMargin);
+			llparams.bottomMargin	= (int)(Settings.getScaleFactorY() * llparams.bottomMargin);
+			llparams.leftMargin		= (int)(Settings.getScaleFactorX() * llparams.leftMargin);
+			llparams.rightMargin	= (int)(Settings.getScaleFactorX() * llparams.rightMargin);
 			
 			RelativeLayout mainLayout = (RelativeLayout)findViewById(R.id.startmainlayout);
 			
@@ -131,8 +138,8 @@ public class StartScreen extends Activity implements OnClickListener {
 			
 			ViewGroup.LayoutParams buttonparams = (ViewGroup.LayoutParams)startButton.getLayoutParams();
 
-			buttonparams.height = (int)(ScreenSettings.getScaleFactorY() * buttonparams.height);
-			buttonparams.width  = (int)(ScreenSettings.getScaleFactorX() * buttonparams.width);
+			buttonparams.height = (int)(Settings.getScaleFactorY() * buttonparams.height);
+			buttonparams.width  = (int)(Settings.getScaleFactorX() * buttonparams.width);
 
 			llayout.addView(startButton, buttonparams);
 			llayout.addView(settingsButton, buttonparams);

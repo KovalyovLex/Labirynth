@@ -1,6 +1,7 @@
 ﻿package com.flexymind.labirynth.objects;
 
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
+import com.flexymind.labirynth.storage.Settings;
+import com.flexymind.labirynth.storage.SettingsStorage;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -52,6 +53,8 @@ public class Ball extends GameObject
     /** Коэффициент трения об пол */
     private float fricCoef = 0.95f;
     
+    private float sensAccel = SettingsStorage.getSensivity();
+    
     /** Координаты левого верхнего угла шарика (int очень груб) */
     private PointF mPosition;
     
@@ -60,6 +63,9 @@ public class Ball extends GameObject
     
     /** Ускорение шарика */
     private static float[] macelleration = new float[3];
+    
+    /** Нулевое положение акселерометра */
+    private static float[] nullacelleration = new float[3];
     
     /** Данные компаса */
     private static float[] compassValues = new float[3];
@@ -102,6 +108,8 @@ public class Ball extends GameObject
         mNextPoint.y += mSpeed.y;
         
         this.mHeight = this.mWidth = diam;
+        
+        nullacelleration = SettingsStorage.getAcellPosition();
     }
 	
 	/** Прослушка акселерометра */
@@ -109,6 +117,9 @@ public class Ball extends GameObject
 		
 		public void onSensorChanged(SensorEvent event) {
 			macelleration = event.values;
+			macelleration[0] -= nullacelleration[0];
+			macelleration[1] -= nullacelleration[1];
+			macelleration[2] -= nullacelleration[2];
 		}
 		
 		public void onAccuracyChanged(Sensor sensor, int accuracy) { }
@@ -207,12 +218,12 @@ public class Ball extends GameObject
 
 			//изменение скорости в зависимости от разрешения экрана
 			// for asus prime o_0
-			mSpeed.x += 0.045 * ScreenSettings.getScaleFactorX() * macelleration[0];
-	        mSpeed.y -= 0.045 * ScreenSettings.getScaleFactorY() * macelleration[1];
+			mSpeed.x += 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[0];
+	        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
 	        
 	        // for other normal devices
-	        //mSpeed.x -= 0.045 * ScreenSettings.getScaleFactorX() * macelleration[1];
-	        //mSpeed.y -= 0.045 * ScreenSettings.getScaleFactorY() * macelleration[0];
+	        //mSpeed.x -= 0.01 * sensAccel * ScreenSettings.getScaleFactorX() * macelleration[1];
+	        //mSpeed.y -= 0.01 * sensAccel * ScreenSettings.getScaleFactorY() * macelleration[0];
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
 	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles.y))));

@@ -2,15 +2,12 @@
 
 import java.util.Vector;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import com.flexymind.labirynth.screens.settings.ScreenSettings;
+import com.flexymind.labirynth.storage.Settings;
 
 
 /**
@@ -49,7 +46,7 @@ public class GameLevel extends GameObject{
 		mball   = ball;
 		mfinish = finish;
 		Walls   = walls;
-		mplayField = new Rect(left, top, ScreenSettings.getCurrentXRes()-left, ScreenSettings.getCurrentYRes()-top);
+		mplayField = new Rect(left, top, Settings.getCurrentXRes()-left, Settings.getCurrentYRes()-top);
 	}
     
     @Override
@@ -58,7 +55,7 @@ public class GameLevel extends GameObject{
     	super.resize(ScaleFactorX, ScaleFactorY);
         left            =  (int)(ScaleFactorX * left);
         top             =  (int)(ScaleFactorY * top);
-        mplayField = new Rect(left, top, ScreenSettings.getCurrentXRes()-left, ScreenSettings.getCurrentYRes()-top);
+        mplayField = new Rect(left, top, Settings.getCurrentXRes()-left, Settings.getCurrentYRes()-top);
     }
 
     @Override
