@@ -74,7 +74,7 @@ public class SettingsScreen extends Activity implements OnClickListener{
 		
 		LinearLayout lay = (LinearLayout)findViewById(R.id.settButtLayout);
 		
-		ViewGroup.LayoutParams buttonparams = (ViewGroup.LayoutParams)calibrButton.getLayoutParams();
+		LinearLayout.LayoutParams buttonparams = (LinearLayout.LayoutParams)calibrButton.getLayoutParams();
 		ViewGroup.LayoutParams barparams = (ViewGroup.LayoutParams)bar.getLayoutParams();
 		ViewGroup.LayoutParams textparams = (ViewGroup.LayoutParams)text.getLayoutParams();
 		
@@ -82,6 +82,10 @@ public class SettingsScreen extends Activity implements OnClickListener{
 			
 			buttonparams.height = (int)(Settings.getScaleFactorY() * buttonparams.height);
 			buttonparams.width  = (int)(Settings.getScaleFactorX() * buttonparams.width);
+			buttonparams.topMargin = (int)(Settings.getScaleFactorY() * buttonparams.topMargin);
+			buttonparams.bottomMargin = (int)(Settings.getScaleFactorY() * buttonparams.bottomMargin);
+			buttonparams.leftMargin = (int)(Settings.getScaleFactorX() * buttonparams.leftMargin);
+			buttonparams.rightMargin = (int)(Settings.getScaleFactorX() * buttonparams.rightMargin);
 			
 			barparams.height = (int)(Settings.getScaleFactorY() * barparams.height);
 			barparams.width  = (int)(Settings.getScaleFactorX() * barparams.width);
