@@ -5,7 +5,6 @@ import java.util.Vector;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -35,8 +34,10 @@ public class GameLevel extends GameObject{
 	private long startTime = 0; // время начала раунда в секундах
 	
 	private float scorePF = 1.5f; // понижение очков за кадр
-	private float score = 1000; // Стартовое значение очков
+	private float score = 10000; // Стартовое значение очков
 	private float scorePWall = 100; // понижение очков за удар об стену
+	
+	Paint mPaintScore = new Paint(); // Для отрисовки очков
 	
     /**Игровое поле */
 	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
@@ -63,6 +64,13 @@ public class GameLevel extends GameObject{
 		
 		mball.onUpdate();
 		mfinish.onUpdate();
+		
+		mPaintScore = new Paint();
+        mPaintScore.setAntiAlias(true);
+        mPaintScore.setTextSize((int)(20 * Settings.getScaleFactorY()));
+        mPaintScore.setColor(Color.WHITE);
+        mPaintScore.setTextAlign(Paint.Align.CENTER);
+        
 	}
     
     @Override
@@ -91,13 +99,11 @@ public class GameLevel extends GameObject{
         for(int i=0;i < Walls.size();i++){
         	Walls.elementAt(i).onDraw(canvas);
         }
-
-        Paint mPaint = new Paint();
-        mPaint.setColor(Color.WHITE);
-        mPaint.setStrokeWidth(2);
-        mPaint.setStyle(Style.STROKE);
         
-        canvas.drawText(Integer.toString((int)score), Settings.getCurrentXRes() / 2, 5, new Paint());
+        canvas.drawText(Integer.toString((int)score),
+        		(float)(Settings.getCurrentXRes()) / 2,
+        		(float) (30 * Settings.getScaleFactorY()),
+        		mPaintScore);
         
         // debug отрисовка краев рамки
         //Paint mPaint = new Paint();
@@ -111,8 +117,8 @@ public class GameLevel extends GameObject{
     /** Перемещение объекта */
     public void onUpdate()
     {
-    	score -= scorePF;
     	if (frameShowed > preShowFrame){
+    		score -= scorePF;
     		mball.onUpdate();
     		mfinish.onUpdate();
     		if (hidewall){

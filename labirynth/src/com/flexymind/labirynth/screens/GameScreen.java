@@ -13,6 +13,7 @@ public class GameScreen extends Activity {
     /** Called when the activity is first created. */
 	
 	public static final String LEVELNAME = "name of level";
+	public static final String LEVELID = "id of level";
 	public static final String LEVELCHOOSEACTION = "levelchoose Action";
 	
 	GameView gameView;
