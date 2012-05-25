@@ -46,7 +46,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		
 		lvlstor = new LevelStorage(this);
 		
-		names = lvlstor.get_level_names();
+		names = lvlstor.getLevelNames();
 		
 		addButtons();
 	}

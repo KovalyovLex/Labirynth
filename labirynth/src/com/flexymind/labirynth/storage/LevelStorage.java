@@ -107,7 +107,7 @@ public class LevelStorage {
 	 * Возвращает список всех имен уровней из хранилища
 	 * @return <code>Vector<String></code> - список имен уровней
 	 */
-	public Vector<String> get_level_names(){
+	public Vector<String> getLevelNames(){
 		return names;
 	}
 

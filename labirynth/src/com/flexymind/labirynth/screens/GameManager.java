@@ -55,7 +55,7 @@ public class GameManager extends Thread
         
         // загрузка первого уровня из файла
         LevelStorage storage = new LevelStorage(context);
-        Vector<String> names = storage.get_level_names();
+        Vector<String> names = storage.getLevelNames();
         mlevel = storage.loadGameLevelbyName(names.elementAt(0));
     }
     
