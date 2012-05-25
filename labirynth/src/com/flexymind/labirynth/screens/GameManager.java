@@ -9,7 +9,6 @@ import com.flexymind.labirynth.storage.LevelStorage;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
@@ -92,9 +91,6 @@ public class GameManager extends Thread
                 {
                     // подготовка Canvas-а
                     canvas = mSurfaceHolder.lockCanvas();
-                    
-                	Log.v("CanvasAcell",new Boolean(canvas.isHardwareAccelerated()).toString());
-                	
                     refreshCanvas(canvas); // обновляем экран
                 }
             }
