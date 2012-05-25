@@ -1,11 +1,5 @@
 ﻿package com.flexymind.labirynth.screens.start;
 
-import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen;
-import com.flexymind.labirynth.screens.settings.SettingsScreen;
-import com.flexymind.labirynth.storage.Settings;
-import com.flexymind.labirynth.storage.SettingsStorage;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.flexymind.labirynth.R;
+import com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen;
+import com.flexymind.labirynth.screens.settings.SettingsScreen;
+import com.flexymind.labirynth.storage.Settings;
+import com.flexymind.labirynth.storage.SettingsStorage;
 
 public class StartScreen extends Activity implements OnClickListener {
 	
