@@ -1,21 +1,32 @@
 ﻿package com.flexymind.labirynth.screens;
 
 
-import java.util.Vector;
 
-import com.flexymind.labirynth.objects.GameLevel;
-import com.flexymind.labirynth.storage.LevelStorage;
-
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.flexymind.labirynth.R;
+import com.flexymind.labirynth.objects.GameLevel;
+import com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen;
+import com.flexymind.labirynth.screens.start.StartScreen;
+
 
 public class GameManager extends Thread
 {
 
 	public static final int FPS = 60;
+	
+	private Context context;
 	
 	private long updMillisec = 1000 / FPS;
 	
@@ -35,12 +46,13 @@ public class GameManager extends Thread
      * @param context Контекст приложения
      * @param level Игровой уровень
      */
-    public GameManager(SurfaceHolder surfaceHolder, GameLevel level)
+    public GameManager(SurfaceHolder surfaceHolder, GameLevel level, Context context)
     {
     	mlevel = level;
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
         lastDrawTime = SystemClock.elapsedRealtime();
+        this.context = context;
     }
     
     /**
@@ -48,7 +60,7 @@ public class GameManager extends Thread
      * @param surfaceHolder Область рисования
      * @param context Контекст приложения
      */
-    public GameManager(SurfaceHolder surfaceHolder, Context context)
+    /*public GameManager(SurfaceHolder surfaceHolder, Context context)
     {
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
@@ -57,7 +69,7 @@ public class GameManager extends Thread
         LevelStorage storage = new LevelStorage(context);
         Vector<String> names = storage.getLevelNames();
         mlevel = storage.loadGameLevelbyName(names.elementAt(0));
-    }
+    }*/
     
 	/**
      * Задание состояния потока
@@ -84,7 +96,58 @@ public class GameManager extends Thread
         	lastDrawTime = SystemClock.elapsedRealtime();
         	
         	canvas = null;
-            updateObjects();     // обновляем объекты
+        	
+        	//если достигли финиша - то финишное меню, иначе обновляем уровень
+        	if(mlevel.getIsFinished()) {
+        		
+        		Looper.prepare();
+        		
+        		final Dialog dialog = new Dialog(context);
+        		
+    			dialog.setContentView(R.layout.finishmenu);
+    			dialog.setTitle("You WIN!");
+    			
+    			TextView text = (TextView) dialog.findViewById(R.id.score);
+    			text.setText(String.format("Your score -  %d", (int)mlevel.getScore()));
+    			
+    			Button dialogButtonRestart = (Button) dialog.findViewById(R.id.dialogButtonRestart);
+    			// if button is clicked, close the custom dialog
+    			dialogButtonRestart.setOnClickListener(new OnClickListener() {
+    				public void onClick(View v) {
+						// TODO Auto-generated method stub
+    					dialog.dismiss();
+					}
+    			});
+    			
+    			Button dialogButtonLevels = (Button) dialog.findViewById(R.id.dialogButtonLevels);
+    			// if button is clicked, close the custom dialog
+    			dialogButtonLevels.setOnClickListener(new OnClickListener() {
+    				public void onClick(View v) {
+						// TODO Auto-generated method stub
+    					Intent intent = new Intent();
+					    intent.setClass(context, ChoiceLevelScreen.class);
+					    context.startActivity(intent);
+					}
+    			});
+    			
+    			Button dialogButtonQuit = (Button) dialog.findViewById(R.id.dialogButtonQuit);
+    			// if button is clicked, close the custom dialog
+    			dialogButtonQuit.setOnClickListener(new OnClickListener() {
+    				public void onClick(View v) {
+						// TODO Auto-generated method stub
+    					Intent intent = new Intent();
+					    intent.setClass(context, StartScreen.class);
+					    context.startActivity(intent);
+					}
+    			});
+    			dialog.show();
+    			Looper.loop();
+        		
+        	} else {
+        		mlevel.onUpdate();
+        	}
+
+        	
         	try
             {
                 synchronized (mSurfaceHolder)
@@ -111,14 +174,7 @@ public class GameManager extends Thread
     	// рисуем уровень
     	mlevel.onDraw(canvas);
     }
-
-        
-    /** Обновление состояния игровых объектов */
-    private void updateObjects()
-    {
-        mlevel.onUpdate();
-    }
-   
+    
     /**
      * Инициализация положения объектов, в соответствии с размерами экрана
      * @param screenHeight Высота экрана

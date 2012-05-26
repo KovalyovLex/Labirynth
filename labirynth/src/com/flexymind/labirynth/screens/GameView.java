@@ -26,6 +26,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     
     private GameLevel level = null;
     
+    private Context context;
+    
     private boolean surfWasCreated = false;
     
     /**
@@ -42,6 +44,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         super(context, attrs);
         
+        this.context = context;
+        
         // подписываемся на события Surface
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
@@ -52,7 +56,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         
         if (level != null){
         	// Создание менеджера игровых объектов
-        	mGameManager = new GameManager(mSurfaceHolder,  level);
+        	mGameManager = new GameManager(mSurfaceHolder,  level, context);
         }
         
         // Разрешаем форме обрабатывать события клавиатуры
@@ -79,7 +83,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     		return;
     	}
     	if (mGameManager == null){
-    		mGameManager = new GameManager(mSurfaceHolder,  lvl);
+    		mGameManager = new GameManager(mSurfaceHolder,  lvl, context);
     	}else{
     		mGameManager.setRunning(false);
             while (true) 
@@ -92,7 +96,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
                 } 
                 catch (InterruptedException e) { }
             }
-            mGameManager = new GameManager(mSurfaceHolder,  lvl);
+            mGameManager = new GameManager(mSurfaceHolder,  lvl, context);
     	}
     	if (surfWasCreated){
     		if (Thread.State.NEW.equals(mGameManager.getState()) && mGameManager != null){
@@ -147,7 +151,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     	if (surfWasCreated){
     		Ball.registerListeners();
     		if (Thread.State.TERMINATED.equals(mGameManager.getState())){
-    			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel());
+    			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel(), context);
     			mGameManager.initPositions(Settings.getCurrentYRes(), Settings.getCurrentXRes());
     			mGameManager.setRunning(true);
     			mGameManager.start();

@@ -2,6 +2,7 @@
 
 import java.util.Calendar;
 import java.util.Vector;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,6 +23,8 @@ public class GameLevel extends GameObject{
  
 	private Ball mball;
 	private FINISH mfinish;
+	
+	private static boolean isFinished;
 
 	/**Эталонные значения, относительно которых происходит масшатабирование*/
 	private int left = 9;
@@ -57,6 +60,9 @@ public class GameLevel extends GameObject{
 						Drawable mBackGr){
 		//инициализируем параметры, переданные с помощью конструктора
 		super(mBackGr);
+		
+		isFinished = false;
+		
 		mball   = ball;
 		mfinish = finish;
 		Walls   = walls;
@@ -72,6 +78,18 @@ public class GameLevel extends GameObject{
         mPaintScore.setTextAlign(Paint.Align.CENTER);
         
 	}
+    
+    public boolean getIsFinished() {
+    	return isFinished;
+    }
+    
+    protected static void setIsFinidhed(boolean isFin) {
+    	isFinished = isFin;
+    }
+    
+    public float getScore() {
+    	return score;
+    }
     
     @Override
     public void resize(double ScaleFactorX, double ScaleFactorY)
@@ -118,7 +136,9 @@ public class GameLevel extends GameObject{
     public void onUpdate()
     {
     	if (frameShowed > preShowFrame){
-    		score -= scorePF;
+    		if(!mball.isSpinning()) {
+    			score -= scorePF;
+    		}
     		mball.onUpdate();
     		mfinish.onUpdate();
     		if (hidewall){
@@ -129,7 +149,7 @@ public class GameLevel extends GameObject{
     			Calendar calendar = Calendar.getInstance();
     			startTime = calendar.getTimeInMillis() / 1000;
     		}
-    		for(int i = 0; i < Walls.size();i++){
+    		for(int i = 0; i < Walls.size(); i++){
     			Walls.elementAt(i).onUpdate();
     		}
     		int i = 0;

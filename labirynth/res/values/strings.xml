@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Labirynth_2D</string>
+    <string name="app_name">Labirynth Maze</string>
     <string name="start_title">Start Game</string>
     <string name="settings_title">Settings</string>
     <string name="exit_title">Exit</string>
     <string name="levelname">Name of Level</string>
+    <string name="quit">Quit</string>
+    <string name="levels">Levels</string>
+    <string name="restart">Restart</string>
 
-    <string name="settingsSensivity">Чувствительность акселерометра</string>
+    <string name="settingsSensivity">Sensitivity of the accelerometer</string>
 
-    <string name="calibrate">Калибровка акселерометра</string>
-    <string name="blockedLevel">Этот уровень заблокирован!</string>
+    <string name="calibrate">Calibrating the accelerometer</string>
+    <string name="blockedLevel">This level is blocked!</string>
 </resources>

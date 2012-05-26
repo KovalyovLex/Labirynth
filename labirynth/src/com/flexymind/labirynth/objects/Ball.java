@@ -198,18 +198,20 @@ public class Ball extends GameObject
      */
 	protected void updatePoint()
     {	
-		if(spin){
+		if (spin) {
+			
 			t += dt;
-			if(rigthSpin){
+			
+			if (rigthSpin) {
 				angle += dt;
-			}else{
+			} else {
 				angle -= dt;
 			}
-			if (numberSpin * Math.PI * 2 > Math.abs(angle)){
+			if (numberSpin * Math.PI * 2 > Math.abs(angle)) {
 				mPoint.x = center.x - mWidth / 2 + (int)(diam / 2 / t * Math.cos(angle) );
 				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / t * Math.sin(angle) );
-			}else{
-				// шарик в лунке!
+			} else {
+				GameLevel.setIsFinidhed(true);
 			}
 		}
 		else{
@@ -219,12 +221,12 @@ public class Ball extends GameObject
 
 			//изменение скорости в зависимости от разрешения экрана
 			// for asus prime o_0
-			mSpeed.x += 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[0];
-	        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
+			//mSpeed.x += 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[0];
+	        //mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
 	        
 	        // for other normal devices
-	        //mSpeed.x -= 0.01 * sensAccel * ScreenSettings.getScaleFactorX() * macelleration[1];
-	        //mSpeed.y -= 0.01 * sensAccel * ScreenSettings.getScaleFactorY() * macelleration[0];
+	        mSpeed.x -= 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[1];
+	        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[0];
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
 	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles.y))));
@@ -244,8 +246,9 @@ public class Ball extends GameObject
 	 * Начало вращения в лунке
 	 * @param center - центр лунки
 	 */
-    public void startSpin(Point center){ 
+    public void startSpin(Point center) {
     	spin  = true;
+    	
     	this.center = center;
     	PointF r = new PointF (	mPosition.x + mWidth / 2f - center.x,
     							mPosition.y + mHeight / 2f - center.y);
@@ -264,7 +267,7 @@ public class Ball extends GameObject
     	dt = lenV / length;
     }
 	
-    public boolean isSpinning(){
+    public boolean isSpinning() {
     	return spin;
     }
     
