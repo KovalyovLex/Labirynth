@@ -49,6 +49,7 @@ public class GameScreen extends Activity {
 		gameView.onPause();
 		super.onPause();
 	}
+
 	
 	@Override
     protected void onResume() {
@@ -60,4 +61,5 @@ public class GameScreen extends Activity {
     public void onConfigurationChanged(Configuration newConfig) { 
     	super.onConfigurationChanged(newConfig);
     }
+
 }

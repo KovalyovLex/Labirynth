@@ -6,6 +6,7 @@ import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.storage.Settings;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -72,7 +73,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
         mGameManager.initPositions(height, width);
         Settings.GenerateSettings(width, height);
     }
-
+    
     /**
      * Запускает gameManager с новым уровнем игры
      * @param lvl - уровень игры
@@ -86,22 +87,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     		mGameManager = new GameManager(mSurfaceHolder,  lvl, context);
     	}else{
     		mGameManager.setRunning(false);
-            while (true) 
-            {
-                try 
-                {
-                    // ожидание завершение потока
-                    mGameManager.join();
-                    break;
-                } 
-                catch (InterruptedException e) { }
-            }
             mGameManager = new GameManager(mSurfaceHolder,  lvl, context);
     	}
     	if (surfWasCreated){
-    		if (Thread.State.NEW.equals(mGameManager.getState()) && mGameManager != null){
+    		if (AsyncTask.Status.PENDING.equals(mGameManager.getStatus()) && mGameManager != null){
     			mGameManager.setRunning(true);
-    			mGameManager.start();
+    			mGameManager.execute();
     		}else{
     			onResume();
     		}
@@ -114,10 +105,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated(SurfaceHolder holder)
     {
 		surfWasCreated = true;
-		if (Thread.State.NEW.equals(mGameManager.getState()) && mGameManager != null){
+		if (AsyncTask.Status.PENDING.equals(mGameManager.getStatus()) && mGameManager != null){
 			Log.v("new","thread");
 			mGameManager.setRunning(true);
-			mGameManager.start();
+			mGameManager.execute();
 		}else{
 			onResume();
 		}
@@ -130,17 +121,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceDestroyed(SurfaceHolder holder)
     {
     	surfWasCreated = false;
-        mGameManager.setRunning(false);
-        while (true) 
-        {
-            try 
-            {
-                // ожидание завершение потока
-                mGameManager.join();
-                break;
-            } 
-            catch (InterruptedException e) { }
-        }
+    	onDestroy();
     }
     
     public void onPause(){
@@ -150,13 +131,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void onResume(){
     	if (surfWasCreated){
     		Ball.registerListeners();
-    		if (Thread.State.TERMINATED.equals(mGameManager.getState())){
+    		if (AsyncTask.Status.FINISHED.equals(mGameManager.getStatus())){
     			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel(), context);
     			mGameManager.initPositions(Settings.getCurrentYRes(), Settings.getCurrentXRes());
     			mGameManager.setRunning(true);
-    			mGameManager.start();
+    			mGameManager.execute();
     		}
     	}
+    }
+    
+    /**
+     * Run when destroy activity GameScreen
+     */
+    public void onDestroy(){
+    	mGameManager.setRunning(false);
     }
     
     /**

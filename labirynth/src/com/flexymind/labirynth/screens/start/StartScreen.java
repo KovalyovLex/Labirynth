@@ -23,6 +23,12 @@ import com.flexymind.labirynth.storage.SettingsStorage;
 
 public class StartScreen extends Activity implements OnClickListener {
 	
+	public static final int ID_SETTINGSSCREEN = 1;
+	public static final int ID_CHOISELEVELSCREEN = 2;
+	public static final int ID_GAMESCREEN = 3;
+	
+	public static Activity startActivity = null;
+	
 	private final int ID_EXIT = 0;
 	private final CharSequence MESSAGE		= "Вы действительно хотите выйти?";
 	private final CharSequence YES_ANSWER	= "Да";
@@ -52,6 +58,8 @@ public class StartScreen extends Activity implements OnClickListener {
 		SettingsStorage.initialize(this);
 		
 		AutoSize();
+		
+		startActivity = this;
 	}
 
 	/** Обработка нажатия кнопок */
@@ -60,14 +68,14 @@ public class StartScreen extends Activity implements OnClickListener {
 		case R.id.StartButton: {
 			Intent intent = new Intent();
 			intent.setClass(this, ChoiceLevelScreen.class);
-			startActivity(intent);
+			startActivityForResult(intent, ID_CHOISELEVELSCREEN);
 			break;
 		}
 
 		case R.id.SettingsButton: {
 			Intent intent = new Intent();
 			intent.setClass(this, SettingsScreen.class);
-			startActivity(intent);
+			startActivityForResult(intent, ID_SETTINGSSCREEN);
 			break;
 		}
 
@@ -85,6 +93,10 @@ public class StartScreen extends Activity implements OnClickListener {
 		super.onConfigurationChanged(newConfig);
 	}
 
+	@Override
+	public void onBackPressed(){
+		showDialog(ID_EXIT);
+	}
 	
 	protected Dialog onCreateDialog(int id){
 		switch(id) {
@@ -93,7 +105,7 @@ public class StartScreen extends Activity implements OnClickListener {
 			builder.setMessage(MESSAGE);
 			builder.setPositiveButton(YES_ANSWER, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					finish();			
+					finish();
 				}
 			});
 		

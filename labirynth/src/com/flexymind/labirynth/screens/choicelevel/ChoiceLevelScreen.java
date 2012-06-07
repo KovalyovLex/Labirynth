@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.GameScreen;
+import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
 import com.flexymind.labirynth.storage.Settings;
 
@@ -61,7 +62,9 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			bundle.putString(GameScreen.LEVELNAME, names.elementAt(buttnum));
 			intent.putExtras(bundle);
 			intent.setAction(GameScreen.LEVELCHOOSEACTION);
-			startActivity(intent);
+			if (StartScreen.startActivity != null){
+				StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
+			}
 		} else {
 			Toast toast = Toast.makeText(getApplicationContext(), 
 					getApplicationContext().getString(R.string.blockedLevel), 
@@ -79,7 +82,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	}
-		
+	
 	public void addButtons() {
 		
 		LinearLayout levelslay = (LinearLayout)findViewById(R.id.levelsLayout);
