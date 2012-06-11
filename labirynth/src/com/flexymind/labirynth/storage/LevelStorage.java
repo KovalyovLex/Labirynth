@@ -1,6 +1,8 @@
 ﻿package com.flexymind.labirynth.storage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -11,9 +13,16 @@ import com.flexymind.labirynth.objects.Ball;
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.objects.Wall;
 import com.flexymind.labirynth.objects.FINISH;
+
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 
 /**
@@ -22,20 +31,26 @@ import android.hardware.SensorManager;
  */
 public class LevelStorage {
 
-	private static final String LEVEL = "level";
-	private static final String BALL = "ball";
-	private static final String WALL = "wall";
-	private static final String FINISH = "finish";
-	private static final String PROP_DIAM = "D";
-	private static final String PROP_X1 = "X1";
-	private static final String PROP_X2 = "X2";
-	private static final String PROP_X3 = "X3";
-	private static final String PROP_Y1 = "Y1";
-	private static final String PROP_Y2 = "Y2";
-	private static final String PROP_Y3 = "Y3";
-	private static final String PROP_X = "X";
-	private static final String PROP_Y = "Y";
-	private static final String ATTR_NAME = "name";
+	private static final String LEVEL		= "level";
+	private static final String BALL		= "ball";
+	private static final String WALL		= "wall";
+	private static final String FINISH		= "finish";
+	private static final String FREE		= "isFree";
+	private static final String DRAWABLE	= "drawable";
+	private static final String PROP_DIAM 	= "D";
+	private static final String PROP_X1		= "X1";
+	private static final String PROP_X2		= "X2";
+	private static final String PROP_X3		= "X3";
+	private static final String PROP_Y1		= "Y1";
+	private static final String PROP_Y2		= "Y2";
+	private static final String PROP_Y3		= "Y3";
+	private static final String PROP_X		= "X";
+	private static final String PROP_Y		= "Y";
+	private static final String ATTR_NAME	= "name";
+	
+	private Map<String,String> drawablenames = new HashMap<String,String>();
+	private Map<String,Boolean> frees = new HashMap<String,Boolean>();
+	private Vector<String> names = new Vector<String>();
 	
 	private Context context;
 	
@@ -44,39 +59,86 @@ public class LevelStorage {
 	 */
 	public LevelStorage(Context cont){
 		context = cont;
+		parseXML();
 	}
 	
-	/**
-	 * Возвращает список всех имен уровней из хранилища
-	 * @return <code>Vector<String></code> - список имен уровней
-	 */
-        //[review] mandrigin: bad name of function: use getLevelNames()
-        //[review] mandrigin: maybe Collection<String> is better type of return value
-	public Vector<String> get_level_names(){
-		Vector<String> strs = new Vector<String>();
+	private void parseXML(){
+		names = new Vector<String>();
+		int deep = 0;
+		String name = null;
+		
 		XmlResourceParser xml = context.getResources().getXml(R.xml.levels);
 		try {
 			while (xml.next() != XmlPullParser.END_DOCUMENT){
 				if ( LEVEL.equals(xml.getName()) ){
+					deep = xml.getDepth();
 					for (int i = 0; i < xml.getAttributeCount(); i++){
 						if ( ATTR_NAME.equals(xml.getAttributeName(i)) ){
-							strs.addElement(xml.getAttributeValue(i));
+							name = xml.getAttributeValue(i);
+							names.addElement(xml.getAttributeValue(i));
 						}
+					}
+					xml.next();
+					while(xml.getDepth() > deep){
+						if (FREE.equals(xml.getName())){
+							frees.put(name, new Boolean(xml.nextText()));
+						}
+						if (DRAWABLE.equals(xml.getName())){
+							drawablenames.put(name, xml.nextText());
+						}
+						xml.next();
 					}
 				}
 			}
 			
 		} catch (XmlPullParserException e) {
 			e.printStackTrace();
-			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+		}finally{
+			xml.close();
 		}
 		
-		return strs;
+	}
+	
+	/**
+	 * Возвращает список всех имен уровней из хранилища
+	 * @return <code>Vector<String></code> - список имен уровней
+	 */
+	public Vector<String> getLevelNames(){
+		return names;
 	}
 
+	/**
+	 * возвращает картинку превью уровня
+	 * @param name - название уровня
+	 * @return
+	 */
+	public Drawable getPrevPictireByName(String name){
+		Drawable pic = null;
+		String uri = "@drawable/";
+
+		if (drawablenames.containsKey(name)){
+			uri = uri.concat(drawablenames.get(name));		
+			int imageResource = context.getResources().getIdentifier(uri, null, context.getPackageName());
+		    pic = context.getResources().getDrawable(imageResource);
+		}
+
+		return pic;
+	}
+	
+	/**
+	 * возвращает доступность уровня
+	 * @param name - название уровня
+	 * @return true если уровень доступен, false в другом случае
+	 */
+	public boolean isFree(String name){
+		if (frees.containsKey(name)){
+			return frees.get(name);
+		}
+		return false;
+	}
+	
 	/**
 	 * Загружает из xml файла обьект GameLevel
 	 * @param <code>String name<code> - имя уровня
@@ -94,7 +156,7 @@ public class LevelStorage {
 					for (int i = 0; i < xml.getAttributeCount(); i++){
 						if ( ATTR_NAME.equals(xml.getAttributeName(i)) ){
 							if (xml.getAttributeValue(i).equals(name) ){
-								game = loadGameLevelfromxml(xml);
+								game = loadGameLevelfromXml(xml);
 							}
 						}
 					}
@@ -106,8 +168,10 @@ public class LevelStorage {
 			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+		}finally{
+			xml.close();
 		}
+		
 		return game;
 	}
 	
@@ -116,26 +180,23 @@ public class LevelStorage {
 	 * @param <code>XmlResourceParser xml<code> - xml файл из базы, указывающий на level
 	 * @return <code>GameLevel</code>, загруженный из базы
 	 */
-//[review] mandrigin: unaccurate function name here -- 'loadGameLevelFromXml'
-//is better
-	private GameLevel loadGameLevelfromxml(XmlResourceParser xml){
+	private GameLevel loadGameLevelfromXml(XmlResourceParser xml){
 		GameLevel game = null;
 		Vector<Wall> walls = new Vector<Wall>();
 		Wall twall     = null;
 		Ball tball     = null;
 		FINISH tfinish = null;
-		int		x1 = 0,
-				x2 = 0,
-				y1 = 0,
-				y2 = 0,
-				d = 0,
-				deep = 0,
-				x3 = 0,
-				y3 = 0;
-		
-		int 	finX = 0,
-				finY = 0,
-				finDiam = 0;
+		int x1		= 0,
+			x2		= 0,
+			y1		= 0,
+			y2		= 0,
+			d		= 0,
+			deep	= 0,
+			x3		= 0,
+			y3		= 0,
+			finX	= 0,
+			finY	= 0,
+			finDiam = 0;
 		
 //[review] mandrigin: very large try...catch block!
 		try {
@@ -148,7 +209,7 @@ public class LevelStorage {
 							x1 = new Integer(xml.nextText());
 						}
 						if (PROP_Y.equals(xml.getName())){
-							x1 = new Integer(xml.nextText());
+							y1 = new Integer(xml.nextText());
 						}
 						if (PROP_DIAM.equals(xml.getName())){
 							d = new Integer(xml.nextText());
@@ -186,11 +247,70 @@ public class LevelStorage {
 						}
 						xml.next();
 					}
+					Drawable texture = context.getResources().getDrawable(R.drawable.stenka2);
+					
+					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
+					bmp = Bitmap.createScaledBitmap(bmp, (int)(Math.sqrt((x2-x3)*(x2-x3)+(y2-y3)*(y2-y3))), (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)), true);
+					
+					int max = bmp.getHeight() > bmp.getWidth() ? bmp.getHeight() : bmp.getWidth();
+					
+					Bitmap textbmp = Bitmap.createBitmap(max, max, Bitmap.Config.ARGB_8888);
+					Canvas canv = new Canvas(textbmp);
+					
+					Paint p = new Paint();
+					
+					// угол поворота текстуры
+					float angle, centang;
+					int x = - y1 + y2;
+					int y = x1 - x2;
+					
+					Point	shift	= new Point((max - bmp.getWidth() ) / 2, (max - bmp.getHeight()) / 2);
+					float shiftleng;
+					Point cent = new Point(max / 2, max / 2);
+					
+					shift.x -= cent.x;
+					shift.y -= cent.y;
+					shiftleng = (float)Math.sqrt((shift.x)*(shift.x)+(shift.y)*(shift.y));
+					
+					// угол поворота вектора от центра до point1
+					centang = (float)Math.acos( shift.x / shiftleng);
+					if (shift.y < 0){
+						centang = 2 * (float)Math.PI - centang;
+					}
+					// угол поворота текстуры
+					angle = (float)Math.acos( x / Math.sqrt(x * x + y * y));
+					if (y < 0){
+						angle = 2 * (float)Math.PI - angle;
+					}
+					centang += angle;
+					angle *= 360f / 2 / (float)Math.PI;
+					
+					shift.x = (int)(shiftleng * Math.cos(centang));
+					shift.y = (int)(shiftleng * Math.sin(centang));
+					
+					// расстояние до точки p1
+					shift.x += cent.x;
+					shift.y += cent.y;
+					
+					Matrix 	matrix	= new Matrix();
+
+					matrix.setTranslate( (max - bmp.getWidth()) / 2, (max - bmp.getHeight()) / 2);
+					matrix.postRotate(angle, max / 2, max / 2);
+
+					p = new Paint();
+					p.setFilterBitmap(true);
+					
+					canv.drawBitmap(bmp, matrix, p);
+
+					bmp.recycle();
+					
 					// загрузка стены с текстурой stenka
-					twall = new Wall(	context.getResources().getDrawable(R.drawable.stenka2),
+					twall = new Wall(	textbmp,
 										new Point(x1, y1), 
 										new Point(x2, y2), 
-										new Point(x3, y3));
+										new Point(x3, y3),
+										shift,
+										0.70f);
 					walls.add(twall);
 				}
 				
@@ -224,7 +344,8 @@ public class LevelStorage {
 			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+		}finally{
+			xml.close();
 		}
 		
 		game = new GameLevel(	walls,

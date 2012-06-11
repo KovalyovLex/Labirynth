@@ -1,10 +1,14 @@
 ﻿package com.flexymind.labirynth.screens;
 
 
-import com.flexymind.labirynth.storage.LevelStorage;
+import com.flexymind.labirynth.objects.Ball;
+import com.flexymind.labirynth.objects.GameLevel;
+import com.flexymind.labirynth.storage.Settings;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,12 +23,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     /**
      * Область рисования
      */
-    private SurfaceHolder mSurfaceHolder;
+    private SurfaceHolder mSurfaceHolder = null;
+    
+    private GameLevel level = null;
+    
+    private Context context;
+    
+    private boolean surfWasCreated = false;
     
     /**
      * Поток, рисующий в области
      */
-    private GameManager mGameManager;
+    private GameManager mGameManager = null;
     
     /**
      * Конструктор
@@ -35,15 +45,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     {
         super(context, attrs);
         
+        this.context = context;
+        
         // подписываемся на события Surface
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         
         // загрузка уровня
-        LevelStorage storage = new LevelStorage(context);
+        //LevelStorage storage = new LevelStorage(context);
+        //GameLevel lvl = storage.loadGameLevelbyName("Test level");
         
-        // Создание менеджера игровых объектов
-        mGameManager = new GameManager(mSurfaceHolder, storage.loadGameLevelbyName("First level") );
+        if (level != null){
+        	// Создание менеджера игровых объектов
+        	mGameManager = new GameManager(mSurfaceHolder,  level, context);
+        }
         
         // Разрешаем форме обрабатывать события клавиатуры
         setFocusable(true);
@@ -56,17 +71,47 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
     {
         mGameManager.initPositions(height, width);
-        ScreenSettings.GenerateSettings(width, height);
+        Settings.GenerateSettings(width, height);
     }
-
+    
+    /**
+     * Запускает gameManager с новым уровнем игры
+     * @param lvl - уровень игры
+     */
+    protected void setGameLevel(GameLevel lvl){
+    	level = lvl;
+    	if (mSurfaceHolder == null){
+    		return;
+    	}
+    	if (mGameManager == null){
+    		mGameManager = new GameManager(mSurfaceHolder,  lvl, context);
+    	}else{
+    		mGameManager.setRunning(false);
+            mGameManager = new GameManager(mSurfaceHolder,  lvl, context);
+    	}
+    	if (surfWasCreated){
+    		if (AsyncTask.Status.PENDING.equals(mGameManager.getStatus()) && mGameManager != null){
+    			mGameManager.setRunning(true);
+    			mGameManager.execute();
+    		}else{
+    			onResume();
+    		}
+    	}
+    }
     
     /**
      * Создание области рисования
      */
     public void surfaceCreated(SurfaceHolder holder)
-    {	
-        mGameManager.setRunning(true);
-        mGameManager.start();
+    {
+		surfWasCreated = true;
+		if (AsyncTask.Status.PENDING.equals(mGameManager.getStatus()) && mGameManager != null){
+			Log.v("new","thread");
+			mGameManager.setRunning(true);
+			mGameManager.execute();
+		}else{
+			onResume();
+		}
     }
 
     
@@ -75,18 +120,31 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
      */
     public void surfaceDestroyed(SurfaceHolder holder)
     {
-        mGameManager.setRunning(false);
-        while (true) 
-        {
-            try 
-            {
-                // ожидание завершение потока
-                mGameManager.join();
-                break;
-            } 
-            catch (InterruptedException e) { }
-        }
-        
+    	surfWasCreated = false;
+    	onDestroy();
+    }
+    
+    public void onPause(){
+    	Ball.unregisterListeners();
+    }
+    
+    public void onResume(){
+    	if (surfWasCreated){
+    		Ball.registerListeners();
+    		if (AsyncTask.Status.FINISHED.equals(mGameManager.getStatus())){
+    			mGameManager = new GameManager(mSurfaceHolder,  mGameManager.getGameLevel(), context);
+    			mGameManager.initPositions(Settings.getCurrentYRes(), Settings.getCurrentXRes());
+    			mGameManager.setRunning(true);
+    			mGameManager.execute();
+    		}
+    	}
+    }
+    
+    /**
+     * Run when destroy activity GameScreen
+     */
+    public void onDestroy(){
+    	mGameManager.setRunning(false);
     }
     
     /**

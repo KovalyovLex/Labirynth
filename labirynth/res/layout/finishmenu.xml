@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+ 
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFF" 
+        />
+    
+    <Button
+        android:id="@+id/dialogButtonRestart"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/restart"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        />
+    
+    <Button
+        android:id="@+id/dialogButtonLevels"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/levels"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        />
+ 
+     <Button
+        android:id="@+id/dialogButtonQuit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/quit"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        />
+ 
+</LinearLayout>

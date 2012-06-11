@@ -1,107 +1,74 @@
 ﻿package com.flexymind.labirynth.screens;
 
 
-import java.util.Vector;
-
-import com.flexymind.labirynth.objects.GameLevel;
-import com.flexymind.labirynth.storage.LevelStorage;
-
+import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Paint.Style;
+import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
 
 //[review] mandrigin: why is it located in 'screens' package?
-public class GameManager extends Thread
-{
-    private static final int FIELD_WIDTH  = 800;
-    private static final int FIELD_HEIGHT = 410;
 
+import com.flexymind.labirynth.R;
+import com.flexymind.labirynth.objects.GameLevel;
+import com.flexymind.labirynth.screens.start.StartScreen;
+
+
+public class GameManager extends AsyncTask<Void, Void, Boolean>
+{
+
+	public static final int FPS = 60;
+	
+	private Context context;
+	
+	private long updMillisec = 1000 / FPS;
+	
     /** Область, на которой будем рисовать */
     private SurfaceHolder mSurfaceHolder;
     
     /** Состояние потока  */
     private boolean mRunning;
     
-    /** Стили рисования */
-    private Paint mPaint;
-    
-    /** Прямоугольник игрового поля */
-    private Rect mField;
-    
     private GameLevel mlevel = null;
-
-    /** Фон */
-    private Bitmap mBackground;
     
-        
+    private long lastDrawTime = 0;
+    
     /**
      * Конструктор
      * @param surfaceHolder Область рисования
      * @param context Контекст приложения
      * @param level Игровой уровень
      */
-    public GameManager(SurfaceHolder surfaceHolder, GameLevel level)
+    public GameManager(SurfaceHolder surfaceHolder, GameLevel level, Context context)
     {
     	mlevel = level;
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
-        // инициализация стилей рисования
-        mPaint = new Paint();
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth(2);
-        mPaint.setStyle(Style.STROKE);
-
-        mField = new Rect();
+        lastDrawTime = SystemClock.elapsedRealtime();
+        this.context = context;
     }
     
     /**
-     * Конструктор
+     * Конструктор по умолчанию запускающий первый уровень
      * @param surfaceHolder Область рисования
      * @param context Контекст приложения
      */
-    public GameManager(SurfaceHolder surfaceHolder, Context context)
+    /*public GameManager(SurfaceHolder surfaceHolder, Context context)
     {
         mSurfaceHolder = surfaceHolder;
         mRunning = false;
-        // инициализация стилей рисования
-        mPaint = new Paint();
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStrokeWidth(2);
-        mPaint.setStyle(Style.STROKE);
         
         // загрузка первого уровня из файла
         LevelStorage storage = new LevelStorage(context);
-        Vector<String> names = storage.get_level_names();
+        Vector<String> names = storage.getLevelNames();
         mlevel = storage.loadGameLevelbyName(names.elementAt(0));
-        
-        mField = new Rect();
-    }
-
-    public void resize(double ScaleFactorX, double ScaleFactorY)
-    {
-    	int newX;
-    	int newY;
-    	newX=(int)ScaleFactorX*mBackground.getWidth();
-    	newY=(int)ScaleFactorY*mBackground.getHeight();
-    	Bitmap tmp = Bitmap.createScaledBitmap(mBackground, newX, newY, true);
-        mBackground = tmp;
-    }
-    
-
-    private void AutoSize()
-    {
-        if (ScreenSettings.AutoScale)
-        {
-        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
-        }
-    }
-    
+    }*/
     
 	/**
      * Задание состояния потока
@@ -112,26 +79,39 @@ public class GameManager extends Thread
         mRunning = running;
     }
     
-    @Override
-    /** Действия, выполняемые в потоке */
-    public void run()
-    {
-    	Canvas canvas = null;
+	@Override
+	/** Действия, выполняемые в потоке */
+	protected Boolean doInBackground(Void... arg0) {
+		Canvas canvas = null;
+    	lastDrawTime = SystemClock.elapsedRealtime();
+    	
         while (mRunning)
-        {	
+        {
+        	lastDrawTime = SystemClock.elapsedRealtime() - lastDrawTime;
+        	if (lastDrawTime < updMillisec){
+        		SystemClock.sleep(updMillisec - lastDrawTime);
+        	}
+        	lastDrawTime = SystemClock.elapsedRealtime();
+        	
         	canvas = null;
-            try
+        	
+        	//если достигли финиша - то финишное меню, иначе обновляем уровень
+        	if(mlevel.getIsFinished()) {        		
+        		return true;
+        	} else {
+        		mlevel.onUpdate();
+        	}
+        	
+        	try
             {
-                // подготовка Canvas-а
-                canvas = mSurfaceHolder.lockCanvas(); 
                 synchronized (mSurfaceHolder)
                 {
-                    updateObjects();     // обновляем объекты
+                    // подготовка Canvas-а
+                    canvas = mSurfaceHolder.lockCanvas();
                     refreshCanvas(canvas); // обновляем экран
-                    sleep(5);
                 }
             }
-            catch (Exception e) { }
+        	catch(Exception ex){ }
             finally
             {
                 if (canvas != null)
@@ -140,45 +120,75 @@ public class GameManager extends Thread
                 }
             }
         }
-    }
+		return false;
+	}
     
+	@Override
+	/**
+	 * if result == true start dialog with finish!
+	 */
+    protected void onPostExecute(Boolean result) {
+        if (result == true){
+        	final Dialog dialog = new Dialog(context);
+    		
+			dialog.setContentView(R.layout.finishmenu);
+			dialog.setTitle("You WIN!");
+			
+			TextView text = (TextView) dialog.findViewById(R.id.score);
+			text.setText(String.format("Your score -  %d", (int)mlevel.getScore()));
+			
+			Button dialogButtonRestart = (Button) dialog.findViewById(R.id.dialogButtonRestart);
+			// if button is clicked, close the custom dialog
+			dialogButtonRestart.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+			
+			Button dialogButtonLevels = (Button) dialog.findViewById(R.id.dialogButtonLevels);
+			// if button is clicked, close the custom dialog
+			dialogButtonLevels.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					if (StartScreen.startActivity != null){
+						StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+					}
+				}
+			});
+			
+			Button dialogButtonQuit = (Button) dialog.findViewById(R.id.dialogButtonQuit);
+			// if button is clicked, close the custom dialog
+			dialogButtonQuit.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					if (StartScreen.startActivity != null){
+						StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+						StartScreen.startActivity.finishActivity(StartScreen.ID_CHOISELEVELSCREEN);
+					}
+				}
+			});
+			dialog.show();
+        }
+    }
+	
     /** Обновление объектов на экране */
     private void refreshCanvas(Canvas canvas)
     {
-    	
-    	// вывод фонового изображения
-    	AutoSize();
-    	canvas.drawBitmap(mBackground, 0, 0, null);
-    	canvas.drawRect(mField, mPaint);
-    	
     	// рисуем уровень
-    	mlevel.Draw(canvas);
+    	mlevel.onDraw(canvas);
     }
-
-        
-    /** Обновление состояния игровых объектов */
-    private void updateObjects()
-    {
-        mlevel.Update();
-    }
-   
+    
     /**
      * Инициализация положения объектов, в соответствии с размерами экрана
      * @param screenHeight Высота экрана
      * @param screenWidth Ширина экрана
      */
-    public void initPositions(int screenHeight, int screenWidth)
-    {
-    	
-        int left = (int) ((screenWidth - ScreenSettings.ScaleFactorX * FIELD_WIDTH) / 2);
-        int top = (int) ((screenHeight - ScreenSettings.ScaleFactorY * FIELD_HEIGHT) / 2);
-        
-        mField.set(left, top, left + FIELD_WIDTH, top + FIELD_HEIGHT);
-        
-        mBackground = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
-        
-        this.AutoSize();
-        
+    public void initPositions(int screenHeight, int screenWidth){ }
+    
+    /**
+     * Возвращает игровой уровень
+     * @return уровень
+     */
+    public GameLevel getGameLevel(){
+    	return mlevel;
     }
     
     /**
@@ -218,6 +228,5 @@ public class GameManager extends Thread
         }
         return false;
     }
-
 
 }

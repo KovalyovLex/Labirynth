@@ -1,9 +1,8 @@
 ﻿package com.flexymind.labirynth.objects;
 
 
-import java.util.Vector;
+import com.flexymind.labirynth.storage.Settings;
 
-import com.flexymind.labirynth.screens.ScreenSettings;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -12,11 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 public abstract class GameObject {
-	
-	// Константы для направлений
-    public final static int DIR_LEFT = -1;
-    public final static int DIR_RIGHT = 1;
-    public final static int DIR_NONE = 0;
+
     public int index = 0; //номер стенки, с которой происходит соударение
  
     /** Координаты опорной точки */
@@ -31,19 +26,8 @@ public abstract class GameObject {
     /** Изображение */
     protected Drawable mImage;
  
-    public void refreshSize()
-    {
-    	mWidth = mImage.getIntrinsicWidth();
-        mHeight = mImage.getIntrinsicHeight();
-    }
-    
-    private void AutoSize()
-    {
-        if (ScreenSettings.AutoScale)
-        {
-        	this.resize(ScreenSettings.ScaleFactorX, ScreenSettings.ScaleFactorY);
-        }
-    }
+    /** Пременная для autoScale */
+    protected boolean needResize = true;
 
     /**
      * Конструктор
@@ -54,35 +38,60 @@ public abstract class GameObject {
         mImage = image;
         mPoint = new Point(0, 0);
         refreshSize();
-        AutoSize();
     }
+    
     /** Перемещение опорной точки */
     protected void updatePoint() { }
  
+    /** изменение размеров объекта */
     public void resize(double ScaleFactorX, double ScaleFactorY)
     {
     	int newX;
     	int newY;
+    	
+    	mPoint.x = (int)(mPoint.x * ScaleFactorX);
+    	mPoint.y = (int)(mPoint.y * ScaleFactorY);
+    	
     	refreshSize();
-    	newX=(int)(ScaleFactorX*mWidth);
-    	newY=(int)(ScaleFactorY*mHeight);
+    	newX = (int)(ScaleFactorX * mWidth);
+    	newY = (int)(ScaleFactorY * mHeight);
     	Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
     	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
         bmp = tmp;
         mImage = new BitmapDrawable(bmp);
         refreshSize();
+        onUpdate();
+    }
+    
+    public void refreshSize()
+    {
+    	mWidth = mImage.getBounds().width();
+        mHeight = mImage.getBounds().height();
+    }
+    
+    protected void autoSize()
+    {
+        if (Settings.getAutoScale())
+        {
+        	resize(Settings.getScaleFactorX(), Settings.getScaleFactorY());
+        }
     }
     
     /** Перемещение объекта */
-    public void Update()
+    public void onUpdate()
     {
         updatePoint();
         mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
     }
     
     /** Отрисовка объекта */
-    public void Draw(Canvas canvas)
+    public void onDraw(Canvas canvas)
     {
+    	if(needResize)
+        {
+    		autoSize();
+        	needResize = false;
+        }
         mImage.draw(canvas);
     }
     
@@ -135,22 +144,8 @@ public abstract class GameObject {
     
     /** @return Прямоугольник, ограничивающий объект */
     public Rect getRect() { return mImage.getBounds(); }
-
-    /** Проверяет, пересекаются ли два игровых объекта */
-    public static boolean intersects(GameObject obj1, Vector <Wall> Walls, int index)
-    {
-    	int Number = Walls.size();
-    	boolean strike = false;
-    	for (int i = 0;i<Number;i++){
-    		strike = Rect.intersects(obj1.getRect(), Walls.elementAt(i).getRect());
-    		if(strike){
-    			index = i;
-    		}
-    	}
-		return strike;
-    }
     
-    public static boolean intersects_finish(GameObject obj1, GameObject obj2)
+    public static boolean intersectsFinish(GameObject obj1, GameObject obj2)
     {
         return Rect.intersects(obj1.getRect(), obj2.getRect());
     }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/flexy3big"
+    android:orientation="horizontal"
+    android:padding="8dip" >
+
+    <LinearLayout
+        android:id="@+id/settButtLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15px"
+        android:layout_marginTop="145px"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/sensText"
+            android:layout_width="350px"
+            android:layout_height="wrap_content"
+            android:text="@string/settingsSensivity"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <SeekBar
+            android:id="@+id/seekBar1"
+            android:layout_width="350px"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/accelCalibr"
+            android:layout_width="350px"
+            android:layout_marginTop="15px"
+            android:layout_height="wrap_content"
+            android:text="@string/calibrate" />
+
+    </LinearLayout>
+
+</RelativeLayout>

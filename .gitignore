@@ -5,10 +5,7 @@
 *.war
 *.ear
 *.dex
-
 *.apk
-*.psd
-*.jpg
-*.png
+*.ap_
 
-*/bin/
+./labirynth/bin/*

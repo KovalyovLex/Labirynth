@@ -2,44 +2,64 @@
 
 
 import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.objects.Ball;
+import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.Display;
+import android.widget.FrameLayout;
 
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
-    
-	public Display display;
-    public int ScreenHeight;
-    public int ScreenWidth;
+	
+	public static final String LEVELNAME = "name of level";
+	public static final String LEVELID = "id of level";
+	public static final String LEVELCHOOSEACTION = "levelchoose Action";
+	
+	GameView gameView;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        if (getIntent() == null){
+        	finish();
+        	return;
+        }
+        
         setContentView(R.layout.main);
-        Display display = getWindowManager().getDefaultDisplay();
-        final int ScreenHeight = display.getHeight();
-    	final int ScreenWidth = display.getWidth();
-    	ScreenSettings.GenerateSettings(ScreenWidth, ScreenHeight);
+        
+        FrameLayout rlay = (FrameLayout)findViewById(R.id.gameLayout);
+        
+        gameView = (GameView)rlay.getChildAt(0);
+        
+        LevelStorage lvlstor = new LevelStorage(this);
+        
+        Bundle b = getIntent().getExtras();
+        if (   LEVELCHOOSEACTION.equals(getIntent().getAction()) 
+        	&& b != null 
+        	&& b.containsKey(LEVELNAME)) {
+        	
+        	gameView.setGameLevel(lvlstor.loadGameLevelbyName(b.getString(LEVELNAME)));
+        }
     }
 	
 	@Override
-    protected void onStop() {
-		Ball.unregisterListeners();
-		super.onStop();
+    protected void onPause() {
+		gameView.onPause();
+		super.onPause();
 	}
+
 	
 	@Override
     protected void onResume() {
-		Ball.registerListeners();
-		super.onStop();
+		gameView.onResume();
+		super.onResume();
 	}
         
     @Override
     public void onConfigurationChanged(Configuration newConfig) { 
     	super.onConfigurationChanged(newConfig);
     }
+
 }
