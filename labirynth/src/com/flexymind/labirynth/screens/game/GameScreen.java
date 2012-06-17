@@ -1,8 +1,7 @@
-﻿package com.flexymind.labirynth.screens;
-
+package com.flexymind.labirynth.screens.game;
 
 import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.storage.LevelStorage;
+import com.flexymind.labirynth.screens.game.OpenGL.GLGameView;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -16,7 +15,7 @@ public class GameScreen extends Activity {
 	public static final String LEVELID = "id of level";
 	public static final String LEVELCHOOSEACTION = "levelchoose Action";
 	
-	GameView gameView;
+	GLGameView gameView;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,16 +30,14 @@ public class GameScreen extends Activity {
         
         FrameLayout rlay = (FrameLayout)findViewById(R.id.gameLayout);
         
-        gameView = (GameView)rlay.getChildAt(0);
-        
-        LevelStorage lvlstor = new LevelStorage(this);
+        gameView = (GLGameView)rlay.getChildAt(0);
         
         Bundle b = getIntent().getExtras();
         if (   LEVELCHOOSEACTION.equals(getIntent().getAction()) 
         	&& b != null 
         	&& b.containsKey(LEVELNAME)) {
         	
-        	gameView.setGameLevel(lvlstor.loadGameLevelbyName(b.getString(LEVELNAME)));
+        	gameView.setGameLevelName(b.getString(LEVELNAME));
         }
     }
 	

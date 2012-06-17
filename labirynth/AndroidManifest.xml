@@ -11,7 +11,7 @@
         android:label="@string/app_name" >
         
         <activity
-            android:name="com.flexymind.labirynth.screens.GameScreen"
+            android:name="com.flexymind.labirynth.screens.game.GameScreen"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
@@ -22,6 +22,7 @@
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.flexymind.labirynth.screens.start.StartScreen"
             android:configChanges="orientation"
@@ -33,6 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.flexymind.labirynth.screens.choicelevel.ChoiceLevelScreen"
             android:configChanges="orientation"
@@ -44,9 +46,9 @@
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.flexymind.labirynth.screens.settings.SettingsScreen"
-            android:configChanges="orientation"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
@@ -55,6 +57,7 @@
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        
     </application>
 
 </manifest>

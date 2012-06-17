@@ -1,17 +1,16 @@
 ﻿package com.flexymind.labirynth.objects;
 
-import com.flexymind.labirynth.storage.Settings;
+import javax.microedition.khronos.opengles.GL10;
+
 import com.flexymind.labirynth.storage.SettingsStorage;
 
-import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 /**
  * Класс Шарик
@@ -30,7 +29,7 @@ public class Ball extends GameObject
     private boolean spin = false;
     
     /**Центр лунки */
-    private Point   center;
+    private PointF   center;
     
     /**Направление закручавания шарика в лунке, true - увеличивается угол*/
     private boolean rigthSpin = true;
@@ -55,9 +54,6 @@ public class Ball extends GameObject
     
     private float sensAccel = SettingsStorage.getSensivity();
     
-    /** Координаты левого верхнего угла шарика (int очень груб) */
-    private PointF mPosition;
-    
     /** Координаты левого верхнего угла шарика на следующем шаге */
     private PointF mNextPoint;
     
@@ -65,7 +61,7 @@ public class Ball extends GameObject
     private static float[] macelleration = new float[3];
     
     /** Нулевое положение акселерометра */
-    private static float[] nullacelleration = new float[3];
+    private static float[] nullacelleration;
     
     /** Данные компаса */
     private static float[] compassValues = new float[3];
@@ -86,9 +82,11 @@ public class Ball extends GameObject
      * @input sensMan - сенсор акселерометра
      * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
-	public Ball(Drawable image, Point pos, int diam, SensorManager sensMan)
+	public Ball(GL10 gl, Drawable image, PointF pos, int diam, SensorManager sensMan)
     {
-        super(image);
+        super(gl, image);
+        mSquare.setSize(diam, diam);
+        
         Ball.sMan = sensMan;
         
         registerListeners();
@@ -99,11 +97,9 @@ public class Ball extends GameObject
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
         
-        mPosition = new PointF();
-        mPosition.x = mPoint.x;
-        mPosition.y = mPoint.y;
+        mSquare.setLeftTop(mPoint);
         
-        mNextPoint = new PointF(mPosition.x, mPosition.y);
+        mNextPoint = new PointF(mPoint.x, mPoint.y);
         mNextPoint.x += mSpeed.x;
         mNextPoint.y += mSpeed.y;
         
@@ -159,42 +155,10 @@ public class Ball extends GameObject
 			//sMan.unregisterListener(compassListener);
 		}
 	}
-    
-	/** изменение размеров объекта */
-    public void resize(double ScaleFactorX, double ScaleFactorY)
-    {
-    	int newX;
-    	int newY;
-    	
-    	mPoint.x = (int)(mPoint.x * ScaleFactorX);
-    	mPoint.y = (int)(mPoint.y * ScaleFactorY);
-    	
-    	mPosition.x = (float)(mPosition.x * ScaleFactorX);
-    	mPosition.y = (float)(mPosition.y * ScaleFactorY);
-    	
-    	mNextPoint.x = (float)(mNextPoint.x * ScaleFactorX);
-    	mNextPoint.y = (float)(mNextPoint.y * ScaleFactorY);
-    	
-    	newX = (int)(ScaleFactorX * mWidth);
-    	newY = (int)(ScaleFactorY * mHeight);
-    	
-    	if (newX > newY){
-    		newY = newX;
-    	}
-    	
-    	mWidth = mHeight = newY;
-    	
-    	Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
-    	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newY, newY, true);
-        bmp = tmp;
-        mImage = new BitmapDrawable(bmp);
-        onUpdate();
-    }
 	
 	@Override
     /**
      * Функция, определяющая последующее положение шарика
-     * @see com.android.pingpong.objects.GameObject#GameObject(Drawable)
      */
 	protected void updatePoint()
     {	
@@ -216,8 +180,8 @@ public class Ball extends GameObject
 		}
 		else{
 			// Вязкое трение об пол
-			mSpeed.x = fricCoef * mSpeed.x;
-			mSpeed.y = fricCoef * mSpeed.y;
+			mSpeed.x *= fricCoef;
+			mSpeed.y *= fricCoef;
 
 			//изменение скорости в зависимости от разрешения экрана
 			// for asus prime o_0
@@ -225,17 +189,14 @@ public class Ball extends GameObject
 	        //mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
 	        
 	        // for other normal devices
-	        mSpeed.x -= 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[1];
-	        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[0];
+	        mSpeed.x -= 0.01 * sensAccel * macelleration[1];
+	        mSpeed.y -= 0.01 * sensAccel * macelleration[0];
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
 	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles.y))));
 	        
-	        mPosition.x = mNextPoint.x;
-	        mPosition.y = mNextPoint.y;
-	        
-	        mPoint.x = (int)mPosition.x;
-	        mPoint.y = (int)mPosition.y;
+			mPoint.x = mNextPoint.x;
+	        mPoint.y = mNextPoint.y;
 	        
 	        mNextPoint.x += mSpeed.x;
 	        mNextPoint.y += mSpeed.y;
@@ -246,12 +207,12 @@ public class Ball extends GameObject
 	 * Начало вращения в лунке
 	 * @param center - центр лунки
 	 */
-    public void startSpin(Point center) {
+    public void startSpin(PointF center) {
     	spin  = true;
     	
     	this.center = center;
-    	PointF r = new PointF (	mPosition.x + mWidth / 2f - center.x,
-    							mPosition.y + mHeight / 2f - center.y);
+    	PointF r = new PointF (	mPoint.x + mWidth / 2f - center.x,
+    							mPoint.y + mHeight / 2f - center.y);
     	float length = (float)Math.sqrt(scalMul(r,r));
     	float lenV = (float)Math.sqrt(scalMul(mSpeed,mSpeed));
     	diam = (int)length;
@@ -289,13 +250,13 @@ public class Ball extends GameObject
     public int getNextRight() { return (int)mNextPoint.x + mWidth; }
 
     /** Центральная точка объекта на следующем шаге */
-    public Point getNextCenter() { return new Point((int)mNextPoint.x + mWidth / 2, (int)mNextPoint.y + mHeight / 2); }
+    public PointF getNextCenter() { return new PointF(mNextPoint.x + mWidth / 2, mNextPoint.y + mHeight / 2); }
 
     /** Верхняя левая точка объекта на следующем шаге */
-    public Point getNextPoint() { return new Point((int)mNextPoint.x, (int)mNextPoint.y); }
+    public PointF getNextPoint() { return new PointF(mNextPoint.x, mNextPoint.y); }
 	
 	public PointF getCenterf(){
-		return new PointF(mPosition.x + mWidth / 2f, mPosition.y + mHeight / 2f);
+		return new PointF(mPoint.x + mWidth / 2f, mPoint.y + mHeight / 2f);
 	}
 	
     /** Возвращает следующее положение центра шара */
@@ -310,15 +271,15 @@ public class Ball extends GameObject
     }
     
     @Override
-	protected void setCenterY(int value){
+	protected void setCenterY(float value){
 		super.setCenterY(value);
-		mPosition.y = value - mHeight / 2;
+		mPoint.y = value - mHeight / 2;
 	}
 	
 	@Override
-	protected void setCenterX(int value){
+	protected void setCenterX(float value){
 		super.setCenterX(value);
-		mPosition.x = value - mHeight / 2;
+		mPoint.x = value - mHeight / 2;
 	}
 
     /**
@@ -328,6 +289,8 @@ public class Ball extends GameObject
 	 * @param newpos новая позиция центра шара
 	 */
     public void reflectWallV1(Wall wall, float softness, PointF newpos){
+    	Log.v("reflect V1","ball");
+    	
 		float project;
 		PointF vec1 = new PointF(	wall.getPoint2().x - wall.getPoint1().x,
 									wall.getPoint2().y - wall.getPoint1().y);
@@ -341,16 +304,14 @@ public class Ball extends GameObject
 		mSpeed.x -= (1 + softness) * project * vec1.x;
 		mSpeed.y -= (1 + softness) * project * vec1.y;
 
-		project = vec1.x * (newpos.x - mPosition.x - mWidth / 2f) + vec1.y * (newpos.y - mPosition.y - mHeight / 2f);
-		mPosition.x = newpos.x - mWidth / 2f - project * vec1.x;
-		mPosition.y = newpos.y - mHeight / 2f - project * vec1.y;
-		mPoint.x = (int)mPosition.x;
-        mPoint.y = (int)mPosition.y;
+		project = vec1.x * (newpos.x - mPoint.x - mWidth / 2f) + vec1.y * (newpos.y - mPoint.y - mHeight / 2f);
+		mPoint.x = newpos.x - mWidth / 2f - project * vec1.x;
+		mPoint.y = newpos.y - mHeight / 2f - project * vec1.y;
 
-        mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
+        mSquare.setLeftTop(mPoint);
         
-		mNextPoint.x = mPosition.x + mSpeed.x;
-		mNextPoint.y = mPosition.y + mSpeed.y;
+		mNextPoint.x = mPoint.x + mSpeed.x;
+		mNextPoint.y = mPoint.y + mSpeed.y;
 		
 		wall.showWall();
 	}
@@ -362,6 +323,8 @@ public class Ball extends GameObject
 	 * @param newpos новая позиция центра шара
 	 */
 	public void reflectWallV2(Wall wall, float softness, PointF newpos){
+		Log.v("reflect V1","ball");
+		
 		float project;
 		PointF vec2 = new PointF(	wall.getPoint3().x - wall.getPoint2().x,
 									wall.getPoint3().y - wall.getPoint2().y);
@@ -375,16 +338,14 @@ public class Ball extends GameObject
 		mSpeed.x -= (1 + softness) * project * vec2.x;
 		mSpeed.y -= (1 + softness) * project * vec2.y;
 
-		project = vec2.x * (newpos.x - mPosition.x - mWidth / 2f) + vec2.y * (newpos.y - mPosition.y - mHeight / 2f);
-		mPosition.x = newpos.x - mWidth / 2f - project * vec2.x;
-		mPosition.y = newpos.y - mHeight / 2f - project * vec2.y;
-		mPoint.x = (int)mPosition.x;
-        mPoint.y = (int)mPosition.y;
+		project = vec2.x * (newpos.x - mPoint.x - mWidth / 2f) + vec2.y * (newpos.y - mPoint.y - mHeight / 2f);
+		mPoint.x = newpos.x - mWidth / 2f - project * vec2.x;
+		mPoint.y = newpos.y - mHeight / 2f - project * vec2.y;
 
-        mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
+        mSquare.setLeftTop(mPoint);
 		
-		mNextPoint.x = mPosition.x + mSpeed.x;
-		mNextPoint.y = mPosition.y + mSpeed.y;
+		mNextPoint.x = mPoint.x + mSpeed.x;
+		mNextPoint.y = mPoint.y + mSpeed.y;
 		
 		wall.showWall();
 	}
@@ -392,9 +353,12 @@ public class Ball extends GameObject
     /** Отражение мячика от вертикали 
      * @param newPoint точка шара после соударения
      * */
-    public void reflectVertical(Point newPoint)
+    public void reflectVertical(PointF newPoint)
     {
-    	mPoint = newPoint;
+    	Log.v("reflect Vertical","ball");
+    	
+    	mPoint.x = newPoint.x;
+    	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
     	mNextPoint.y = newPoint.y;
     	
@@ -407,9 +371,12 @@ public class Ball extends GameObject
     /** Отражение мячика от горизонтали 
      * @param newPoint точка шара после соударения
      * */
-    public void reflectHorizontal(Point newPoint)
+    public void reflectHorizontal(PointF newPoint)
     {
-    	mPoint = newPoint;
+    	Log.v("reflect Horizontal","ball");
+    	
+    	mPoint.x = newPoint.x;
+    	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
     	mNextPoint.y = newPoint.y;
     	

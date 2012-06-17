@@ -1,18 +1,19 @@
 ﻿package com.flexymind.labirynth.objects;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import android.graphics.Bitmap;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 
 public class Wall extends GameObject{
 
 	// показывать стену 30 кадров
-	private final int SHOWTIME = 30;
+	private final int SHOWTIME = 60;
 	
-	private Point 	secPoint	= new Point(),
-					thirdPoint	= new Point(),
-					leftUp		= new Point();
+	private PointF 	secPoint	= new PointF(),
+					thirdPoint	= new PointF(),
+					leftUp		= new PointF();
 	
 	private float softness = 1;
 	
@@ -21,37 +22,9 @@ public class Wall extends GameObject{
 	private boolean animateOn = false;
 	private boolean animateOff = false;
 	
-	private int alpfa = 2;
+	private float minalfa = 0.1f;
+	private float alpfa = minalfa;
 	private int frameWasShow = 0;
-	
-	/**
-	 * Конструктор по умолчанию
-	 * @param mBackG Текстура
-	 * @param first Point 1
-	 * @param second Point 2
-	 * @param third Point 3
-	 * @param softness мягкость стены
-	 */
-	public Wall(	Drawable mBackG,
-					Point first,
-					Point second,
-					Point third,
-					float softness){
-		super(mBackG);
-		
-		this.softness = softness;
-		
-		mPoint = first;
-		thirdPoint = third;
-		secPoint = second;
-		
-		mImage.setBounds(mPoint.x, mPoint.y, thirdPoint.x, thirdPoint.y);
-		
-		mWidth = mImage.getBounds().width();
-        mHeight = mImage.getBounds().height();
-        
-        mImage.setAlpha(255);
-	}
 
 	/**
 	 * Конструктор для текстур которые можно поворачивать
@@ -62,13 +35,14 @@ public class Wall extends GameObject{
 	 * @param shift расстояние от верхнего левого угла до Point1
 	 * @param softness мягкость стены
 	 */
-	public Wall(	Bitmap mBackG,
-					Point first,
-					Point second,
-					Point third,
-					Point shift,
+	public Wall(	GL10 gl,
+					Bitmap mBackG,
+					PointF first,
+					PointF second,
+					PointF third,
+					PointF shift,
 					float softness){
-		super(new BitmapDrawable(mBackG));
+		super(gl, new BitmapDrawable(mBackG));
 		
 		this.softness = softness;
 		
@@ -82,16 +56,16 @@ public class Wall extends GameObject{
 		leftUp.x = mPoint.x - shift.x;
 		leftUp.y = mPoint.y - shift.y;
 		
-		mImage.setBounds(leftUp.x, leftUp.y, leftUp.x + mWidth, leftUp.y + mHeight);
-		
-		mImage.setAlpha(255);
+		mSquare.setLeftTop(leftUp);
+        
+		mSquare.setOpacity(1.0f);
 	}
 	
 	/**
 	 * Возвращает значение 1 точки
 	 * @return point 1
 	 */
-	public Point getPoint1(){
+	public PointF getPoint1(){
 		return mPoint;
 	}
 	
@@ -99,7 +73,7 @@ public class Wall extends GameObject{
 	 * Возвращает значение 2 точки
 	 * @return point 2
 	 */
-	public Point getPoint2(){
+	public PointF getPoint2(){
 		return secPoint;
 	}
 	
@@ -107,7 +81,7 @@ public class Wall extends GameObject{
 	 * Возвращает значение 3 точки
 	 * @return point 3
 	 */
-	public Point getPoint3(){
+	public PointF getPoint3(){
 		return thirdPoint;
 	}
 	
@@ -123,10 +97,10 @@ public class Wall extends GameObject{
     /** Перемещение объекта */
     public void onUpdate(){
 		if (animateOn){
-			mImage.setAlpha(alpfa);
-			alpfa += alpfa / 2;
-			if (alpfa > 255){
-				alpfa = 255;
+			mSquare.setOpacity(alpfa);
+			alpfa += alpfa / 20;
+			if (alpfa > 1){
+				alpfa = 1;
 				if (show){
 					animateOn = false;
 				}
@@ -134,24 +108,24 @@ public class Wall extends GameObject{
 			}
 		}
 		if (animateOff){
-			mImage.setAlpha(alpfa);
-			alpfa -= alpfa / 2;
-			if (alpfa < 2){
+			mSquare.setOpacity(alpfa);
+			alpfa -= alpfa / 20;
+			if (alpfa < minalfa){
 				animateOff = false;
-				alpfa = 2;
-				mImage.setAlpha(0);
+				alpfa = minalfa;
+				mSquare.setOpacity(0);
 			}
 		}
 		if (show && frameWasShow++ >= SHOWTIME){
 			frameWasShow = 0;
 			show = false;
 			animateOff = true;
-			alpfa = 211;
+			alpfa = 1;
 		}
 	}
 	
 	/**
-	 * показать стену на 30 frame + 2 * 14 (анимация)
+	 * показать стену, начало анимации
 	 */
 	protected void showWall(){
 		if (animateOn){
@@ -174,29 +148,7 @@ public class Wall extends GameObject{
 	 * вызывается перед началом игры, чтобы спрятать стены
 	 */
 	protected void hideWall(){
-		mImage.setAlpha(0);
-	}
-	
-	@Override
-	/**
-	 * Изменяем положение точек на нашем дисплее и делаем scale текстуры
-	 * @param ScaleFactorX - множитель размера экрана по оси X
-	 * @param ScaleFactorY - множитель размера экрана по оси Y
-	 */
-	public void resize(double ScaleFactorX, double ScaleFactorY){
-		mPoint.x = (int)(mPoint.x * ScaleFactorX);
-		mPoint.y = (int)(mPoint.y * ScaleFactorY);
-		secPoint.x = (int)(secPoint.x * ScaleFactorX);
-		secPoint.y = (int)(secPoint.y * ScaleFactorY);
-		thirdPoint.x = (int)(thirdPoint.x * ScaleFactorX);
-		thirdPoint.y = (int)(thirdPoint.y * ScaleFactorY);
-		leftUp.x = (int)(leftUp.x * ScaleFactorX);
-		leftUp.y = (int)(leftUp.y * ScaleFactorY);
-
-		mWidth	= (int)(mWidth * ScaleFactorX);
-        mHeight	= (int)(mHeight * ScaleFactorY);
-
-		mImage.setBounds(leftUp.x, leftUp.y, leftUp.x + mWidth, leftUp.y + mHeight);
+		mSquare.setOpacity(0);
 	}
 	
 }

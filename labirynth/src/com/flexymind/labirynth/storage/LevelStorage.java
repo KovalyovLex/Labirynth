@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.microedition.khronos.opengles.GL10;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -20,7 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
@@ -144,9 +146,10 @@ public class LevelStorage {
 	/**
 	 * Загружает из xml файла обьект GameLevel
 	 * @param <code>String name<code> - имя уровня
+	 * @param <code>GL10 gl<code> - OpenGL объект для рисования
 	 * @return <code>GameLevel</code>, загруженный из базы
 	 */
-	public GameLevel loadGameLevelbyName(String name){
+	public GameLevel loadGameLevelbyName(GL10 gl, String name){
 		GameLevel game = null;
 		XmlResourceParser xml = context.getResources().getXml(R.xml.levels);
 		try {
@@ -155,7 +158,7 @@ public class LevelStorage {
 					for (int i = 0; i < xml.getAttributeCount(); i++){
 						if ( ATTR_NAME.equals(xml.getAttributeName(i)) ){
 							if (xml.getAttributeValue(i).equals(name) ){
-								game = loadGameLevelfromxml(xml);
+								game = loadGameLevelfromxml(gl, xml);
 							}
 						}
 					}
@@ -180,7 +183,7 @@ public class LevelStorage {
 	 * @param <code>XmlResourceParser xml<code> - xml файл из базы, указывающий на level
 	 * @return <code>GameLevel</code>, загруженный из базы
 	 */
-	private GameLevel loadGameLevelfromxml(XmlResourceParser xml){
+	private GameLevel loadGameLevelfromxml(GL10 gl, XmlResourceParser xml){
 		GameLevel game = null;
 		Vector<Wall> walls = new Vector<Wall>();
 		Wall twall     = null;
@@ -216,8 +219,9 @@ public class LevelStorage {
 						xml.next();
 					}
 					// загрузка шара с текстурой ball
-					tball = new Ball(	context.getResources().getDrawable(R.drawable.ball2),
-										new Point(x1, y1), 
+					tball = new Ball(	gl,
+										context.getResources().getDrawable(R.drawable.ball2),
+										new PointF(x1, y1), 
 										d,
 										(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
 				}else if (WALL.equals(xml.getName())){
@@ -261,9 +265,9 @@ public class LevelStorage {
 					int x = - y1 + y2;
 					int y = x1 - x2;
 					
-					Point	shift	= new Point((max - bmp.getWidth() ) / 2, (max - bmp.getHeight()) / 2);
+					PointF	shift	= new PointF((max - bmp.getWidth() ) / 2, (max - bmp.getHeight()) / 2);
 					float shiftleng;
-					Point cent = new Point(max / 2, max / 2);
+					PointF cent = new PointF(max / 2, max / 2);
 					
 					shift.x -= cent.x;
 					shift.y -= cent.y;
@@ -302,10 +306,11 @@ public class LevelStorage {
 					bmp.recycle();
 					
 					// загрузка стены с текстурой stenka
-					twall = new Wall(	textbmp,
-										new Point(x1, y1), 
-										new Point(x2, y2), 
-										new Point(x3, y3),
+					twall = new Wall(	gl,
+										textbmp,
+										new PointF(x1, y1), 
+										new PointF(x2, y2), 
+										new PointF(x3, y3),
 										shift,
 										0.70f);
 					walls.add(twall);
@@ -324,11 +329,12 @@ public class LevelStorage {
 						}
 						xml.next();
 					}
+					// загрузка  Объекта финиш, с текстурой
+					tfinish = new FINISH (	gl,
+											context.getResources().getDrawable(R.drawable.finish),
+											new PointF(finX, finY), 
+											finDiam);
 				}
-				// загрузка  Объекта финиш, с текстурой
-				tfinish = new FINISH (	context.getResources().getDrawable(R.drawable.finish),
-									new Point(finX, finY), 
-									finDiam);
 				if ( LEVEL.equals(xml.getName()) ){
 					break;
 				}
@@ -347,6 +353,7 @@ public class LevelStorage {
 		game = new GameLevel(	walls,
 								tball,
 								tfinish,
+								gl,
 								context.getResources().getDrawable(R.drawable.flexy3));
 		
 		return game;

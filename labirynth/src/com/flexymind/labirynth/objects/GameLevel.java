@@ -3,10 +3,10 @@
 import java.util.Calendar;
 import java.util.Vector;
 
-import android.graphics.Canvas;
+import javax.microedition.khronos.opengles.GL10;
+
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -57,16 +57,20 @@ public class GameLevel extends GameObject{
      */
     public GameLevel(	Vector <Wall> walls,
 						Ball ball, FINISH finish,
+						GL10 gl,
 						Drawable mBackGr){
 		//инициализируем параметры, переданные с помощью конструктора
-		super(mBackGr);
+		super(gl, mBackGr);
+		
+		mSquare.setSize(480, 800);
 		
 		isFinished = false;
 		
+        mplayField = new Rect(left, top, 800 - left, 480 - top);
+        
 		mball   = ball;
 		mfinish = finish;
 		Walls   = walls;
-		mplayField = new Rect(left, top, Settings.getCurrentXRes()-left, Settings.getCurrentYRes()-top);
 		
 		mball.onUpdate();
 		mfinish.onUpdate();
@@ -90,38 +94,33 @@ public class GameLevel extends GameObject{
     public float getScore() {
     	return score;
     }
-    
-    @Override
-    public void resize(double ScaleFactorX, double ScaleFactorY)
-    {
-    	super.resize(ScaleFactorX, ScaleFactorY);
-        left            =  (int)(ScaleFactorX * left);
-        top             =  (int)(ScaleFactorY * top);
-        mplayField = new Rect(left, top, Settings.getCurrentXRes()-left, Settings.getCurrentYRes()-top);
-    }
 
     @Override
     /** Отрисовка объектов на игровом поле */
-    public void onDraw(Canvas canvas)
-    {
-    	if(needResize)
-        {
-    		mImage.setBounds(canvas.getClipBounds());
-    		autoSize();
-    		mImage.setBounds(canvas.getClipBounds());
-        	needResize = false;
-        }
-    	mImage.draw(canvas);
-    	mfinish.onDraw(canvas);
-    	mball.onDraw(canvas);
+    public void onDraw(GL10 gl)
+    {	
+		// Point to our buffers
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		
+    	mSquare.draw(gl);
+    	mfinish.onDraw(gl);
+    	mball.onDraw(gl);
         for(int i=0;i < Walls.size();i++){
-        	Walls.elementAt(i).onDraw(canvas);
-        }
+        	Walls.elementAt(i).onDraw(gl);
+        }       
+
+		// Disable the client state before leaving
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
         
+        /*
         canvas.drawText(Integer.toString((int)score),
         		(float)(Settings.getCurrentXRes()) / 2,
         		(float) (30 * Settings.getScaleFactorY()),
         		mPaintScore);
+        */
         
         // debug отрисовка краев рамки
         //Paint mPaint = new Paint();
@@ -427,10 +426,6 @@ public class GameLevel extends GameObject{
     private float scalMul(PointF p1, PointF p2){
     	return p1.x * p2.x + p1.y * p2.y;
     }
-    
-    private float scalMul(Point p1, Point p2){
-    	return p1.x * p2.x + p1.y * p2.y;
-    }
 
     /**
      * проверка на соударение с левой стеной
@@ -483,23 +478,23 @@ public class GameLevel extends GameObject{
     	
     	if (ball.getNextLeft() <= PlayField.left)
         {
-            ball.reflectVertical(new Point(PlayField.left + 1, ball.getPoint().y));
+            ball.reflectVertical(new PointF(PlayField.left + 1, ball.getPoint().y));
             return true;
         }
         else if (ball.getNextRight() >= PlayField.right)
         {
-        	ball.reflectVertical(new Point(PlayField.right - ball.getWidth() - 1, ball.getPoint().y));
+        	ball.reflectVertical(new PointF(PlayField.right - ball.getWidth() - 1, ball.getPoint().y));
         	return true;
         }
     	
     	if (ball.getNextTop() <= PlayField.top)
 	    {
-	        ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.top + 1));
+	        ball.reflectHorizontal(new PointF(ball.getPoint().x, PlayField.top + 1));
 	        return true;
 	    }
 	    else if (ball.getNextBottom() >= PlayField.bottom)
 	    {
-	    	ball.reflectHorizontal(new Point(ball.getPoint().x, PlayField.bottom - ball.getHeight() - 1));
+	    	ball.reflectHorizontal(new PointF(ball.getPoint().x, PlayField.bottom - ball.getHeight() - 1));
 	    	return true;
 	    }
 		return false;
@@ -507,7 +502,7 @@ public class GameLevel extends GameObject{
     
     /** условие прохождения уровня */
     protected void victory() {
-    	Point r = new Point();
+    	PointF r = new PointF();
     	r.x = mfinish.getCenter().x - mball.getCenter().x;
     	r.y = mfinish.getCenter().y - mball.getCenter().y;
     	

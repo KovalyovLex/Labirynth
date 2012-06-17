@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:keepScreenOn="true" >
 
-    <com.flexymind.labirynth.screens.GameView
+    <com.flexymind.labirynth.screens.game.OpenGL.GLGameView
         android:id="@+id/game"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

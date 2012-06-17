@@ -3,7 +3,7 @@ package com.flexymind.labirynth.screens.choicelevel;
 import java.util.Vector;
 
 import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.screens.GameScreen;
+import com.flexymind.labirynth.screens.game.GameScreen;
 import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
 import com.flexymind.labirynth.storage.Settings;
