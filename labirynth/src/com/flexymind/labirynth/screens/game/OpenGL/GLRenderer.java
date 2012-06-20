@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.storage.LevelStorage;
+import com.flexymind.labirynth.storage.Settings;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -74,7 +75,12 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 		//GLU.gluPerspective(gl, 45.0f, (float) width / (float) height, 10,
 		//		1200.0f);
 		
-		gl.glFrustumf(-400, 400, -240, 240, 600, 1200.0f);
+		gl.glOrthof(	-Settings.getCurrentXRes() / 2,
+						Settings.getCurrentXRes() / 2,
+						-Settings.getCurrentYRes() / 2, 
+						Settings.getCurrentYRes() / 2, 
+						200, 
+						1200.0f);
 		
 		gl.glMatrixMode(GL10.GL_MODELVIEW); // Select The Modelview Matrix
 		gl.glLoadIdentity(); // Reset The Modelview Matrix

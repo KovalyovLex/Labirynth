@@ -43,6 +43,8 @@ public class StartScreen extends Activity implements OnClickListener {
 		
 		Settings.GenerateSettings(display.getWidth(), display.getHeight());
 
+		Settings.setOrientation(display.getRotation());
+		
 		// Кнопка "Start"
 		Button startButton = (Button) findViewById(R.id.StartButton);
 		startButton.setOnClickListener(this);

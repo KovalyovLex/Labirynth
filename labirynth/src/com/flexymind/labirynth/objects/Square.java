@@ -9,6 +9,8 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.flexymind.labirynth.storage.Settings;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,12 +27,12 @@ import android.util.Log;
  */
 public class Square {
 	
-	private final PointF zeroPoint = new PointF(-400, 240);
+	private final PointF zeroPoint = new PointF(-Settings.getCurrentXRes() / 2, Settings.getCurrentYRes() / 2);
 	
 	/** прозрачность квадрата */
 	private float opacity = 1f;
 	
-	private float standartVert[] = { 
+	private static final float standartVert[] = { 
 			-1.0f,	-1.0f,	0.0f, // V1 - bottom left
 			-1.0f,	1.0f,	0.0f, // V2 - top left
 			1.0f,	-1.0f,	0.0f, // V3 - bottom right
@@ -204,14 +206,14 @@ public class Square {
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 		
 		// set squre size to bitmap size
-		vertices[0] *= bitmap.getWidth() / 2f;
-		vertices[1] *= bitmap.getHeight() / 2f;
-		vertices[3] *= bitmap.getWidth() / 2f;
-		vertices[4] *= bitmap.getHeight() / 2f;
-		vertices[6] *= bitmap.getWidth() / 2f;
-		vertices[7] *= bitmap.getHeight() / 2f;
-		vertices[9] *= bitmap.getWidth() / 2f;
-		vertices[10] *= bitmap.getHeight() / 2f;
+		vertices[0] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[1] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
+		vertices[3] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[4] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
+		vertices[6] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[7] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
+		vertices[9] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[10] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
 		
 		// fill the vertexBuffer with the vertices
 		vertexBuffer.put(vertices);
@@ -233,9 +235,6 @@ public class Square {
 		openGL = gl;
 		
 		Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-		
-		//Log.v("bitmap Width", Integer.toString(bitmap.getWidth()));
-		//Log.v("bitmap Height", Integer.toString(bitmap.getHeight()));
 		
 		thiscount = count++;
 		
@@ -261,16 +260,16 @@ public class Square {
         }
 		
         gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
-        
+
 		// set squre size to bitmap size
-		vertices[0] *= bitmap.getWidth() / 2f;
-		vertices[1] *= bitmap.getHeight() / 2f;
-		vertices[3] *= bitmap.getWidth() / 2f;
-		vertices[4] *= bitmap.getHeight() / 2f;
-		vertices[6] *= bitmap.getWidth() / 2f;
-		vertices[7] *= bitmap.getHeight() / 2f;
-		vertices[9] *= bitmap.getWidth() / 2f;
-		vertices[10] *= bitmap.getHeight() / 2f;
+		vertices[0] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[1] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
+		vertices[3] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[4] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
+		vertices[6] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[7] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
+		vertices[9] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
+		vertices[10] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
 
 		// fill the vertexBuffer with the vertices
 		vertexBuffer.put(vertices);

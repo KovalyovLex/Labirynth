@@ -62,11 +62,14 @@ public class GameLevel extends GameObject{
 		//инициализируем параметры, переданные с помощью конструктора
 		super(gl, mBackGr);
 		
-		mSquare.setSize(480, 800);
+		mSquare.setSize(Settings.getCurrentYRes(), Settings.getCurrentXRes());
 		
 		isFinished = false;
 		
-        mplayField = new Rect(left, top, 800 - left, 480 - top);
+		top *= Settings.getScaleFactorY();
+		left *= Settings.getScaleFactorX();
+		
+        mplayField = new Rect(left, top, Settings.getCurrentXRes() - left, Settings.getCurrentYRes() - top);
         
 		mball   = ball;
 		mfinish = finish;

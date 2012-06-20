@@ -3,6 +3,8 @@
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.flexymind.labirynth.storage.Settings;
+
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 
@@ -18,8 +20,13 @@ public class FINISH extends GameObject{
 					int finDiam) {
 		super(gl, image);
 		mPoint = point;
-        this.mHeight = this.mWidth = finDiam;
-        mSquare.setSize(finDiam, finDiam);
+		mPoint.x *= Settings.getScaleFactorX();
+        mPoint.y *= Settings.getScaleFactorY();
+		float min = (Settings.getScaleFactorX() < Settings.getScaleFactorY()) ? (float)Settings.getScaleFactorX() : (float)Settings.getScaleFactorY();
+        
+		this.mHeight = this.mWidth = (int)(finDiam * min);
+        
+		mSquare.setSize(finDiam * min, finDiam * min);
         mSquare.setLeftTop(mPoint);
 	}
 	

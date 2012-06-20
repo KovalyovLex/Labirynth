@@ -2,6 +2,7 @@
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.flexymind.labirynth.storage.Settings;
 import com.flexymind.labirynth.storage.SettingsStorage;
 
 import android.graphics.PointF;
@@ -72,6 +73,10 @@ public class Ball extends GameObject
     /** Углы наклона */
     private static float[] tiltAngles = new float[3];
     
+    /** true если приложение запущено на телефоне */
+    private static boolean isPhone = true;
+    
+    
     /** Объект для прослушки сенсоров */
     public static SensorManager sMan = null;
     
@@ -85,7 +90,10 @@ public class Ball extends GameObject
 	public Ball(GL10 gl, Drawable image, PointF pos, int diam, SensorManager sensMan)
     {
         super(gl, image);
-        mSquare.setSize(diam, diam);
+        
+        float min = (Settings.getScaleFactorX() < Settings.getScaleFactorY()) ? (float)Settings.getScaleFactorX() : (float)Settings.getScaleFactorY();
+        
+        mSquare.setSize(diam * min, diam * min);
         
         Ball.sMan = sensMan;
         
@@ -94,6 +102,8 @@ public class Ball extends GameObject
         mSpeed = new PointF (NULL_SPEED.x, NULL_SPEED.y);
         
         mPoint = pos;
+        mPoint.x *= Settings.getScaleFactorX();
+        mPoint.y *= Settings.getScaleFactorY();
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
         
@@ -104,6 +114,8 @@ public class Ball extends GameObject
         mNextPoint.y += mSpeed.y;
         
         this.mHeight = this.mWidth = diam;
+        
+        isPhone = Settings.isPhoneDevice();
         
         nullacelleration = SettingsStorage.getAcellPosition();
     }
@@ -184,13 +196,13 @@ public class Ball extends GameObject
 			mSpeed.y *= fricCoef;
 
 			//изменение скорости в зависимости от разрешения экрана
-			// for asus prime o_0
-			//mSpeed.x += 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[0];
-	        //mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
-	        
-	        // for other normal devices
-	        mSpeed.x -= 0.01 * sensAccel * macelleration[1];
-	        mSpeed.y -= 0.01 * sensAccel * macelleration[0];
+			if (isPhone){
+				mSpeed.x -= 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[1];
+		        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[0];
+			}else{
+				mSpeed.x += 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[0];
+		        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
+			}
 	        
 	        //mSpeed.x = (int) (ScreenSettings.ScaleFactorX * (0.005 * (9.81 * Math.cos(tiltAngles[2]))));	//ускорение с сенсора в м/с^2 переводим к ускорению за период 20мс
 	        //mSpeed.y = (int) (ScreenSettings.ScaleFactorY * (0.005 * (9.81 * Math.cos(tiltAngles.y))));
