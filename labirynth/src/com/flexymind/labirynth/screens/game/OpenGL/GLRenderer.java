@@ -105,4 +105,8 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 		gl.glDisable(GL10.GL_DITHER);
 	}
+	
+	public void destroyLevel(){
+		level.destoyLevel();
+	}
 }

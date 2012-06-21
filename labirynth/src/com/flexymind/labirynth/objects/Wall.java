@@ -2,8 +2,6 @@
 
 import javax.microedition.khronos.opengles.GL10;
 
-import com.flexymind.labirynth.storage.Settings;
-
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,7 +42,7 @@ public class Wall extends GameObject{
 					PointF third,
 					PointF shift,
 					float softness){
-		super(gl, new BitmapDrawable(mBackG));
+		super(first, second, third, gl, new BitmapDrawable(mBackG));
 		
 		this.softness = softness;
 		
@@ -57,11 +55,6 @@ public class Wall extends GameObject{
 		
 		leftUp.x = mPoint.x - shift.x;
 		leftUp.y = mPoint.y - shift.y;
-		leftUp.x *= Settings.getScaleFactorX();
-		leftUp.y *= Settings.getScaleFactorY();
-		
-		mPoint.x *= Settings.getScaleFactorX();
-		mPoint.y *= Settings.getScaleFactorY();
 		
 		mSquare.setLeftTop(leftUp);
         

@@ -19,9 +19,6 @@ import com.flexymind.labirynth.objects.FINISH;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -248,9 +245,10 @@ public class LevelStorage {
 						}
 						xml.next();
 					}
-					Drawable texture = context.getResources().getDrawable(R.drawable.stenka2);
+					Drawable texture = context.getResources().getDrawable(R.drawable.wall);
 					
 					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
+					/*
 					bmp = Bitmap.createScaledBitmap(bmp, (int)(Math.sqrt((x2-x3)*(x2-x3)+(y2-y3)*(y2-y3))), (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)), true);
 					
 					int max = bmp.getHeight() > bmp.getWidth() ? bmp.getHeight() : bmp.getWidth();
@@ -302,18 +300,19 @@ public class LevelStorage {
 					p.setFilterBitmap(true);
 					
 					canv.drawBitmap(bmp, matrix, p);
-
-					bmp.recycle();
 					
+					*/
 					// загрузка стены с текстурой stenka
 					twall = new Wall(	gl,
-										textbmp,
-										new PointF(x1, y1), 
-										new PointF(x2, y2), 
-										new PointF(x3, y3),
-										shift,
+										bmp,
+										new PointF(x1 * (float)Settings.getScaleFactorX(), y1 * (float)Settings.getScaleFactorY()), 
+										new PointF(x2 * (float)Settings.getScaleFactorX(), y2 * (float)Settings.getScaleFactorY()), 
+										new PointF(x3 * (float)Settings.getScaleFactorX(), y3 * (float)Settings.getScaleFactorY()),
+										new PointF(0, 0),
 										0.70f);
 					walls.add(twall);
+					
+					//bmp.recycle();
 				}else if (FINISH.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();

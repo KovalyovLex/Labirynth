@@ -21,6 +21,10 @@ public class GLGameView extends GLSurfaceView{
 		super.onResume();
 	}
 	
+	public void onDestroy(){
+		render.destroyLevel();
+	}
+	
 	public void setGameLevelName(String gameLeveName) {
 		render = new GLRenderer(this.getContext(), gameLeveName);
 		this.setRenderer(render);

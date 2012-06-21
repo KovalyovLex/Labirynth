@@ -53,7 +53,13 @@ public class GameScreen extends Activity {
 		gameView.onResume();
 		super.onResume();
 	}
-        
+    
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		gameView.onDestroy();
+	}
+	
     @Override
     public void onConfigurationChanged(Configuration newConfig) { 
     	super.onConfigurationChanged(newConfig);

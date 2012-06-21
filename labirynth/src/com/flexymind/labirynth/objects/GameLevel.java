@@ -516,4 +516,19 @@ public class GameLevel extends GameObject{
     		}
     	}
     }
+    
+    protected void onDestroy()
+    {
+    	super.onDestroy();
+    	mfinish.onDestroy();
+    	mball.onDestroy();
+        for(int i=0;i < Walls.size();i++){
+        	Walls.elementAt(i).onDestroy();
+        } 
+    }
+    
+    public void destoyLevel(){
+    	onDestroy();
+    	Square.resetCount();
+    }
 }

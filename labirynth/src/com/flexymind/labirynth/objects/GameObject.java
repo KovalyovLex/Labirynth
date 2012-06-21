@@ -35,6 +35,22 @@ public abstract class GameObject {
         refreshSize();
     }
     
+    /**
+     * Конструктор построение квадрата по 3 точкам 
+	 * @param p1 - left up point
+	 * @param p2 - left bottom point
+	 * @param p3 - right bottom point
+     * @param image Изображение, которое будет обозначать данный объект
+     * @param gl OpenGL обьект для рисования
+     */
+    public GameObject(PointF p1, PointF p2, PointF p3, GL10 gl, Drawable image)
+    {
+    	mSquare = new Square(p1, p2, p3);
+    	mSquare.loadGLTexture(gl, image);
+        mPoint = new PointF(0, 0);
+        refreshSize();
+    }
+    
     /** Перемещение опорной точки */
     protected void updatePoint() { }
     
@@ -102,6 +118,11 @@ public abstract class GameObject {
     
     public Square getSquare(){
     	return mSquare;
+    }
+    
+    protected void onDestroy()
+    {
+    	mSquare.onDestroy();
     }
     
 }

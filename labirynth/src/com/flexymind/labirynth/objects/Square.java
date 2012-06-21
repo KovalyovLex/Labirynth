@@ -29,9 +29,6 @@ public class Square {
 	
 	private final PointF zeroPoint = new PointF(-Settings.getCurrentXRes() / 2, Settings.getCurrentYRes() / 2);
 	
-	/** прозрачность квадрата */
-	private float opacity = 1f;
-	
 	private static final float standartVert[] = { 
 			-1.0f,	-1.0f,	0.0f, // V1 - bottom left
 			-1.0f,	1.0f,	0.0f, // V2 - top left
@@ -65,7 +62,13 @@ public class Square {
 	
 	private int thiscount = 0;
 	
+	/** Square width & height */
+	private float width, height;
+	
 	private GL10 openGL = null;
+	
+	/** прозрачность квадрата */
+	private float opacity = 1f;
 	
 	public Square() {
 		// a float has 4 bytes so we allocate for each coordinate 4 bytes
@@ -86,14 +89,63 @@ public class Square {
 		textureBuffer = byteBuffer.asFloatBuffer();
 		textureBuffer.put(texture);
 		textureBuffer.position(0);
+		
+		height = width = 2;
 	}
 
+	/** построение квадрата по 3 точкам 
+	 * @param p1 - left up point
+	 * @param p2 - left bottom point
+	 * @param p3 - right bottom point
+	 */
+	public Square(PointF p1, PointF p2, PointF p3) {
+		// width = |p3-p2|
+		// height = |p2-p1|
+		PointF tvec = new PointF(p3.x - p2.x, p3.y - p2.y);
+		width = (float)Math.sqrt(tvec.x * tvec.x + tvec.y * tvec.y);
+		tvec.x = p2.x - p1.x;
+		tvec.y = p2.y - p1.y;
+		height = (float)Math.sqrt(tvec.x * tvec.x + tvec.y * tvec.y);
+		
+		vertices[0] = p2.x + zeroPoint.x;
+		vertices[1] = -p2.y + zeroPoint.y;
+		vertices[2] = 0;
+		vertices[3] = p1.x + zeroPoint.x;
+		vertices[4] = -p1.y + zeroPoint.y;
+		vertices[5] = 0;
+		vertices[6] = p3.x + zeroPoint.x;
+		vertices[7] = -p3.y + zeroPoint.y;
+		vertices[8] = 0;
+		vertices[9] = p1.x + p3.x - p2.x + zeroPoint.x;
+		vertices[10] = -p1.y - p3.y + p2.y + zeroPoint.y;
+		vertices[11] = 0;
+		
+		// a float has 4 bytes so we allocate for each coordinate 4 bytes
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
+		byteBuffer.order(ByteOrder.nativeOrder());
+
+		// allocates the memory from the byte buffer
+		vertexBuffer = byteBuffer.asFloatBuffer();
+
+		// fill the vertexBuffer with the vertices
+		vertexBuffer.put(vertices);
+
+		// set the cursor position to the beginning of the buffer
+		vertexBuffer.position(0);
+
+		byteBuffer = ByteBuffer.allocateDirect(texture.length * 4);
+		byteBuffer.order(ByteOrder.nativeOrder());
+		textureBuffer = byteBuffer.asFloatBuffer();
+		textureBuffer.put(texture);
+		textureBuffer.position(0);
+	}
+	
 	public int getWidth(){
-		return (int)(vertices[6] - vertices[0]);
+		return (int)(width);
 	}
 	
 	public int getHeight(){
-		return (int)(vertices[4] - vertices[1]);
+		return (int)(height);
 	}
 	
 	public void moveTo(PointF vec){
@@ -133,6 +185,8 @@ public class Square {
 	 * @param width - new Width
 	 */
 	public void setSize(float height, float width){
+		this.height = height;
+		this.width = width;
 		// set squre size to bitmap size
 		vertices[0] = standartVert[0] * width / 2f;
 		vertices[1] = standartVert[1] * height / 2f;
@@ -206,20 +260,7 @@ public class Square {
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 		
 		// set squre size to bitmap size
-		vertices[0] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[1] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		vertices[3] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[4] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		vertices[6] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[7] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		vertices[9] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[10] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		
-		// fill the vertexBuffer with the vertices
-		vertexBuffer.put(vertices);
-
-		// set the cursor position to the beginning of the buffer
-		vertexBuffer.position(0);
+		//setSize(bitmap.getHeight() * (float)Settings.getScaleFactorY(), bitmap.getWidth() * (float)Settings.getScaleFactorX());
 		
 		// Clean up
 		bitmap.recycle();
@@ -262,23 +303,10 @@ public class Square {
         gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 
 		// set squre size to bitmap size
-		vertices[0] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[1] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		vertices[3] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[4] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		vertices[6] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[7] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-		vertices[9] *= bitmap.getWidth() * Settings.getScaleFactorX() / 2f;
-		vertices[10] *= bitmap.getHeight() * Settings.getScaleFactorY() / 2f;
-
-		// fill the vertexBuffer with the vertices
-		vertexBuffer.put(vertices);
-
-		// set the cursor position to the beginning of the buffer
-		vertexBuffer.position(0);
+        //setSize(bitmap.getHeight() * (float)Settings.getScaleFactorY(), bitmap.getWidth() * (float)Settings.getScaleFactorX());
 		
 		// Clean up
-		bitmap.recycle();
+		//bitmap.recycle();
 	}
 	
 	/** The draw method for the square with the GL context */
@@ -304,6 +332,11 @@ public class Square {
             Log.e("OpenGL error", GLU.gluErrorString(err));
         }
 		
+		//Log.v("Vector v1",Integer.toString((int)(vertices[0])) + " " + Integer.toString((int)(vertices[1])));
+		//Log.v("Vector v2",Integer.toString((int)(vertices[3])) + " " + Integer.toString((int)(vertices[4])));
+		//Log.v("Vector v3",Integer.toString((int)(vertices[6])) + " " + Integer.toString((int)(vertices[7])));
+		//Log.v("Vector v4",Integer.toString((int)(vertices[9])) + " " + Integer.toString((int)(vertices[10])));
+        
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 	}
 	
