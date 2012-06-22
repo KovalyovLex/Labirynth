@@ -2,8 +2,11 @@ package com.flexymind.labirynth.screens.game;
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.game.OpenGL.GLGameView;
+import com.flexymind.labirynth.screens.start.StartScreen;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -11,11 +14,13 @@ import android.widget.FrameLayout;
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
 	
-	public static final String LEVELNAME = "name of level";
 	public static final String LEVELID = "id of level";
 	public static final String LEVELCHOOSEACTION = "levelchoose Action";
 	
-	GLGameView gameView;
+	private static final int NULLID = -666;
+	private static int gameID = NULLID;
+	private static Context context = null;
+	private GLGameView gameView;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,9 +40,12 @@ public class GameScreen extends Activity {
         Bundle b = getIntent().getExtras();
         if (   LEVELCHOOSEACTION.equals(getIntent().getAction()) 
         	&& b != null 
-        	&& b.containsKey(LEVELNAME)) {
-        	
-        	gameView.setGameLevelName(b.getString(LEVELNAME));
+        	&& b.containsKey(LEVELID)) {
+        	gameID = b.getInt(LEVELID);
+        }
+        
+        if (gameID != NULLID){
+            gameView.setGameLevelID(gameID);
         }
     }
 	
@@ -65,4 +73,17 @@ public class GameScreen extends Activity {
     	super.onConfigurationChanged(newConfig);
     }
 
+    public static void startNextLevel(){
+    	if (gameID != NULLID){
+    		gameID++;
+    		if(StartScreen.startActivity != null){
+    			StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+    			if (context != null){
+    				Intent intent = new Intent();
+        			intent.setClass(context, GameScreen.class);
+        			StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
+    			}
+    		}
+    	}
+    }
 }

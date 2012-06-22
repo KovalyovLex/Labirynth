@@ -22,18 +22,18 @@ public class FINISH extends GameObject{
 		mPoint = point;
 		mPoint.x *= Settings.getScaleFactorX();
         mPoint.y *= Settings.getScaleFactorY();
+        
 		float min = (Settings.getScaleFactorX() < Settings.getScaleFactorY()) ? (float)Settings.getScaleFactorX() : (float)Settings.getScaleFactorY();
         
-		this.mHeight = this.mWidth = (int)(finDiam * min);
-        
 		mSquare.setSize(finDiam * min, finDiam * min);
-        mSquare.setLeftTop(mPoint);
+        refreshSize();
+		mSquare.setLeftTop(mPoint);
 	}
 	
     /** Перемещение объекта */
     public void onUpdate() { }
 	
-    public int finDiam(){
+    public float finDiam(){
 		return this.mHeight;
     }
     

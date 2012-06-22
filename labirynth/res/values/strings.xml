@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Labirynth Maze</string>
+    <string name="app_name">Labyrinth</string>
     <string name="start_title">Start Game</string>
     <string name="settings_title">Settings</string>
     <string name="exit_title">Exit</string>

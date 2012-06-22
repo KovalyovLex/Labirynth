@@ -2,8 +2,6 @@
 <levels>
 	<level name="First level">
     	
-	    <isFree>true</isFree>
-	    
 	    <drawable>level1mini</drawable>
 	    
     	<ball>
@@ -59,8 +57,6 @@
 	
 	<level name="Second level">
     	
-	    <isFree>false</isFree>
-	    
 	    <drawable>level2mini</drawable>
 	    
     	<ball>
@@ -115,8 +111,6 @@
 	
 	<level name="Third level">
     	
-	    <isFree>false</isFree>
-	    
 	    <drawable>level3mini</drawable>
 	    
     	<ball>
@@ -198,8 +192,6 @@
 	
 	<level name="Test level">
     	
-	    <isFree>true</isFree>
-	    
 	    <drawable>level1mini</drawable>
 	    
     	<ball>

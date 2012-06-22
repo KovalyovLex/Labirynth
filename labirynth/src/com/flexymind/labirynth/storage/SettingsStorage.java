@@ -8,7 +8,7 @@ public class SettingsStorage {
 	//////////////////////////////////////////////////
 	/////		Константы для настроек			//////
 	//////////////////////////////////////////////////
-	private static final String STORAGE = "Labirynth settings";
+	private static final String STORAGE = "Labyrinth settings";
 	private static final String ACCELX = "accelX";
 	private static final String ACCELY = "accelY";
 	private static final String ACCELZ = "accelZ";

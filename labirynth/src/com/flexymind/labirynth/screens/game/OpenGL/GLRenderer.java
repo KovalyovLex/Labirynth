@@ -3,13 +3,21 @@ package com.flexymind.labirynth.screens.game.OpenGL;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.objects.GameLevel;
+import com.flexymind.labirynth.screens.game.GameScreen;
+import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
 import com.flexymind.labirynth.storage.Settings;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class GLRenderer implements GLSurfaceView.Renderer{
 	public static final int FPS = 60;
@@ -32,6 +40,12 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 		gameLevelString = gamelevel;
 	}
 	
+	public GLRenderer(Context context, int gamelevelID){
+		LevelStorage lvlstor = new LevelStorage(context);
+		gameLevelString = lvlstor.getLevelNames().get(gamelevelID);
+		this.context = context;
+	}
+	
 	public void onDrawFrame(GL10 gl) {
 		
 		drawTick = SystemClock.elapsedRealtime() - lastDrawTime;
@@ -42,6 +56,54 @@ public class GLRenderer implements GLSurfaceView.Renderer{
     	}
     	
     	level.onUpdate();
+    	
+    	if (level.getIsFinished()){
+    		// start activity with finish menu
+			
+			StartScreen.startActivity.runOnUiThread(new Runnable(){
+
+				public void run() {
+		    		final Dialog dialog = new Dialog(context);
+		    		
+					dialog.setContentView(R.layout.finishmenu);
+					dialog.setTitle("You WIN!");
+
+					TextView text = (TextView) dialog.findViewById(R.id.score);
+					text.setText(String.format("Your score -  %d", (int)level.getScore()));
+
+					Button dialogButtonRestart = (Button) dialog.findViewById(R.id.dialogButtonRestart);
+					// if button is clicked, close the custom dialog
+					dialogButtonRestart.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							GameScreen.startNextLevel();
+							dialog.dismiss();
+						}
+					});
+
+					Button dialogButtonLevels = (Button) dialog.findViewById(R.id.dialogButtonLevels);
+					// if button is clicked, close the custom dialog
+					dialogButtonLevels.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							if (StartScreen.startActivity != null){
+								StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+							}
+						}
+					});
+
+					Button dialogButtonQuit = (Button) dialog.findViewById(R.id.dialogButtonQuit);
+					// if button is clicked, close the custom dialog
+					dialogButtonQuit.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							if (StartScreen.startActivity != null){
+								StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+								StartScreen.startActivity.finishActivity(StartScreen.ID_CHOISELEVELSCREEN);
+							}
+						}
+					});
+					dialog.show();
+				}
+			});
+    	}
     	
 		// clear Screen and Depth Buffer
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

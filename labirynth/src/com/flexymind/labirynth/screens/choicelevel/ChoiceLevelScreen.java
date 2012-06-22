@@ -6,6 +6,7 @@ import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.game.GameScreen;
 import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
+import com.flexymind.labirynth.storage.ScoreStorage;
 import com.flexymind.labirynth.storage.Settings;
 
 import android.app.Activity;
@@ -59,7 +60,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		{
 			Intent intent = new Intent(this, GameScreen.class);
 			Bundle bundle = new Bundle();
-			bundle.putString(GameScreen.LEVELNAME, names.elementAt(buttnum));
+			bundle.putInt(GameScreen.LEVELID, buttnum);
 			intent.putExtras(bundle);
 			intent.setAction(GameScreen.LEVELCHOOSEACTION);
 			if (StartScreen.startActivity != null){
@@ -119,6 +120,8 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 
 		levelslay.removeAllViews();
 		
+		ScoreStorage scorstor = new ScoreStorage(this);
+		
 		for (int i = 0; i < names.size(); i++){
 			newnameOfLvl = new TextView(this);
 			newbutton = new ImageButton(this);
@@ -126,7 +129,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			
 			newbulllay.setOrientation(LinearLayout.VERTICAL);
 			
-			access.addElement(lvlstor.isFree(names.get(i)));
+			access.addElement(scorstor.isOpen(i));
 			newbutton.setId(id + i);
 			newbutton.setOnClickListener(this);
 			newbutton.setBackgroundDrawable(lvlstor.getPrevPictireByName(names.get(i)));

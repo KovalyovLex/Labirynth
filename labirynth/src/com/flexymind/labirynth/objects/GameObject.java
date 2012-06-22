@@ -14,10 +14,10 @@ public abstract class GameObject {
     protected PointF mPoint;
  
     /** Высота изображения */
-    protected int mHeight;
+    protected float mHeight;
  
     /** Ширина изображения */
-    protected int mWidth;
+    protected float mWidth;
  
     /** Изображение */
     protected Square mSquare;
@@ -54,7 +54,7 @@ public abstract class GameObject {
     /** Перемещение опорной точки */
     protected void updatePoint() { }
     
-    public void refreshSize()
+    protected void refreshSize()
     {
     	mWidth = mSquare.getWidth();
         mHeight = mSquare.getHeight();

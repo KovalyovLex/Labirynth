@@ -31,4 +31,10 @@ public class GLGameView extends GLSurfaceView{
 		this.setRenderMode(RENDERMODE_CONTINUOUSLY);
 	}
 
+	public void setGameLevelID(int gameID) {
+		render = new GLRenderer(this.getContext(), gameID);
+		this.setRenderer(render);
+		this.setRenderMode(RENDERMODE_CONTINUOUSLY);
+	}
+
 }

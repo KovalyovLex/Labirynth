@@ -34,7 +34,6 @@ public class LevelStorage {
 	private static final String BALL		= "ball";
 	private static final String WALL		= "wall";
 	private static final String FINISH		= "finish";
-	private static final String FREE		= "isFree";
 	private static final String DRAWABLE	= "drawable";
 	private static final String PROP_DIAM 	= "D";
 	private static final String PROP_X1		= "X1";
@@ -48,7 +47,6 @@ public class LevelStorage {
 	private static final String ATTR_NAME	= "name";
 	
 	private Map<String,String> drawablenames = new HashMap<String,String>();
-	private Map<String,Boolean> frees = new HashMap<String,Boolean>();
 	private Vector<String> names = new Vector<String>();
 	
 	private Context context;
@@ -79,9 +77,6 @@ public class LevelStorage {
 					}
 					xml.next();
 					while(xml.getDepth() > deep){
-						if (FREE.equals(xml.getName())){
-							frees.put(name, new Boolean(xml.nextText()));
-						}
 						if (DRAWABLE.equals(xml.getName())){
 							drawablenames.put(name, xml.nextText());
 						}
@@ -126,18 +121,6 @@ public class LevelStorage {
 		}
 
 		return pic;
-	}
-	
-	/**
-	 * возвращает доступность уровня
-	 * @param name - название уровня
-	 * @return true если уровень доступен, false в другом случае
-	 */
-	public boolean isFree(String name){
-		if (frees.containsKey(name)){
-			return frees.get(name);
-		}
-		return false;
 	}
 	
 	/**

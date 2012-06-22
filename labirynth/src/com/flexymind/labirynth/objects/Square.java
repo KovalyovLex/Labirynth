@@ -140,12 +140,12 @@ public class Square {
 		textureBuffer.position(0);
 	}
 	
-	public int getWidth(){
-		return (int)(width);
+	public float getWidth(){
+		return width;
 	}
 	
-	public int getHeight(){
-		return (int)(height);
+	public float getHeight(){
+		return height;
 	}
 	
 	public void moveTo(PointF vec){

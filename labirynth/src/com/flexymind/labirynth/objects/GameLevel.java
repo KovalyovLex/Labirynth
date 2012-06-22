@@ -25,26 +25,23 @@ public class GameLevel extends GameObject{
 	private FINISH mfinish;
 	
 	private static boolean isFinished;
-
+	private boolean pause;
+	
 	/**Эталонные значения, относительно которых происходит масшатабирование*/
-	private int left = 9;
-	private int top  = 9;
+	private int left = 17;
+	private int top  = 17;
 	private Rect mplayField = null;
 
-	private final int preShowFrame = 60; // вначле игры уровень показывается 60 кадров
+	private final long preShowFrame = 60; // вначле игры уровень показывается 60 кадров
 	private boolean hidewall = true;
-	private int frameShowed = 0; // переменная для отсчёта кадров
+	private long frameShowed = 0; // переменная для отсчёта кадров
 	private long startTime = 0; // время начала раунда в секундах
 	
-	private float scorePF = 1.5f; // понижение очков за кадр
+	private float scorePF = 1.5f; // понижение очков за кадр (90 очков в секунду)
 	private float score = 10000; // Стартовое значение очков
 	private float scorePWall = 100; // понижение очков за удар об стену
 	
 	Paint mPaintScore = new Paint(); // Для отрисовки очков
-	
-    /**Игровое поле */
-	//private Rect mplayField = new Rect(65,30,720,415);        // 480x800 optimization
-    //private Rect mplayField = new Rect(105,50,1175,705);		//1280x800 optimization
 
     Vector <Wall> Walls;
     
@@ -62,7 +59,10 @@ public class GameLevel extends GameObject{
 		//инициализируем параметры, переданные с помощью конструктора
 		super(gl, mBackGr);
 		
+		pause = false;
+		
 		mSquare.setSize(Settings.getCurrentYRes(), Settings.getCurrentXRes());
+		refreshSize();
 		
 		isFinished = false;
 		
@@ -94,6 +94,11 @@ public class GameLevel extends GameObject{
     	isFinished = isFin;
     }
     
+    /** Set & unset pause */
+    public void onPause() {
+    	pause = !pause;
+    }
+    
     public float getScore() {
     	return score;
     }
@@ -101,36 +106,38 @@ public class GameLevel extends GameObject{
     @Override
     /** Отрисовка объектов на игровом поле */
     public void onDraw(GL10 gl)
-    {	
-		// Point to our buffers
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+    {
+    	if (!pause){
+    		// Point to our buffers
+    		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		
-    	mSquare.draw(gl);
-    	mfinish.onDraw(gl);
-    	mball.onDraw(gl);
-        for(int i=0;i < Walls.size();i++){
-        	Walls.elementAt(i).onDraw(gl);
-        }       
+    		mSquare.draw(gl);
+    		mfinish.onDraw(gl);
+    		mball.onDraw(gl);
+        	for(int i=0;i < Walls.size();i++){
+        		Walls.elementAt(i).onDraw(gl);
+        	}
 
-		// Disable the client state before leaving
-		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+			// Disable the client state before leaving
+			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
         
-        /*
-        canvas.drawText(Integer.toString((int)score),
-        		(float)(Settings.getCurrentXRes()) / 2,
-        		(float) (30 * Settings.getScaleFactorY()),
-        		mPaintScore);
-        */
+        	/*
+        	canvas.drawText(Integer.toString((int)score),
+        					(float)(Settings.getCurrentXRes()) / 2,
+        					(float) (30 * Settings.getScaleFactorY()),
+        					mPaintScore);
+         	*/
         
-        // debug отрисовка краев рамки
-        //Paint mPaint = new Paint();
-        //mPaint.setColor(Color.MAGENTA);
-        //mPaint.setStrokeWidth(2);
-        //mPaint.setStyle(Style.STROKE);
-        //canvas.drawRect(mplayField, mPaint);
+        	// debug отрисовка краев рамки
+        	//Paint mPaint = new Paint();
+        	//mPaint.setColor(Color.MAGENTA);
+        	//mPaint.setStrokeWidth(2);
+        	//mPaint.setStyle(Style.STROKE);
+        	//canvas.drawRect(mplayField, mPaint);
+    	}
     }
     
     @Override
@@ -452,7 +459,7 @@ public class GameLevel extends GameObject{
      * @param p2 - вторая точка
      * @param cord_p1 - точка пред. состояния
      * @param cord_p2 - точка след. состояния
-     * @return <code>float[2] Point</code> - x и y координаты точки пересечения или <code>null</code> если нет такой точки 
+     * @return <code>PointF Point</code> - x и y координаты точки пересечения или <code>null</code> если нет такой точки 
      */
     private PointF getIntersectionPoint(PointF p1, PointF p2, PointF cord_p1, PointF cord_p2){
     	float	x1 = p1.x,

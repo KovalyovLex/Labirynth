@@ -21,7 +21,8 @@ import android.util.Log;
 
 public class Ball extends GameObject
 {
-    private static final PointF NULL_SPEED = new PointF(0, 0);
+    private static final PointF NULL_SPEED = new PointF(-10 * (float)Settings.getScaleFactorX(),
+    													10 * (float)Settings.getScaleFactorY());
 	
     /** Скорость шарика */
     private PointF mSpeed;
@@ -94,9 +95,10 @@ public class Ball extends GameObject
         float min = (Settings.getScaleFactorX() < Settings.getScaleFactorY()) ? (float)Settings.getScaleFactorX() : (float)Settings.getScaleFactorY();
         
         mSquare.setSize(diam * min, diam * min);
-        
+        refreshSize();
+        mSquare.setLeftTop(mPoint);
+
         Ball.sMan = sensMan;
-        
         registerListeners();
         
         mSpeed = new PointF (NULL_SPEED.x, NULL_SPEED.y);
@@ -106,14 +108,10 @@ public class Ball extends GameObject
         mPoint.y *= Settings.getScaleFactorY();
         mPoint.x -= diam / 2;
         mPoint.y -= diam / 2;
-        
-        mSquare.setLeftTop(mPoint);
-        
+                
         mNextPoint = new PointF(mPoint.x, mPoint.y);
         mNextPoint.x += mSpeed.x;
         mNextPoint.y += mSpeed.y;
-        
-        this.mHeight = this.mWidth = diam;
         
         isPhone = Settings.isPhoneDevice();
         
@@ -250,16 +248,16 @@ public class Ball extends GameObject
     }
     
     /** Верхняя граница объекта на следующем шаге */
-    public int getNextTop() { return (int)mNextPoint.y; }
+    public float getNextTop() { return mNextPoint.y; }
 
     /** Нижняя граница объекта на следующем шаге */
-    public int getNextBottom() { return (int)mNextPoint.y + mHeight; }
+    public float getNextBottom() { return mNextPoint.y + mHeight; }
 
     /** Левая граница объекта на следующем шаге */
-    public int getNextLeft() { return (int)mNextPoint.x; }
+    public float getNextLeft() { return mNextPoint.x; }
 
     /** Правая граница объекта на следующем шаге */
-    public int getNextRight() { return (int)mNextPoint.x + mWidth; }
+    public float getNextRight() { return mNextPoint.x + mWidth; }
 
     /** Центральная точка объекта на следующем шаге */
     public PointF getNextCenter() { return new PointF(mNextPoint.x + mWidth / 2, mNextPoint.y + mHeight / 2); }
@@ -335,7 +333,7 @@ public class Ball extends GameObject
 	 * @param newpos новая позиция центра шара
 	 */
 	public void reflectWallV2(Wall wall, float softness, PointF newpos){
-		Log.v("reflect V1","ball");
+		Log.v("reflect V2","ball");
 		
 		float project;
 		PointF vec2 = new PointF(	wall.getPoint3().x - wall.getPoint2().x,
