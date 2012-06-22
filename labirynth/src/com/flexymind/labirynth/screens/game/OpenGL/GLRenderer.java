@@ -34,6 +34,7 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 	
 	private Context context = null;
 	
+	private boolean firsttime = true;
 	
 	public GLRenderer(Context context, String gamelevel){
 		this.context = context;
@@ -57,9 +58,10 @@ public class GLRenderer implements GLSurfaceView.Renderer{
     	
     	level.onUpdate();
     	
-    	if (level.getIsFinished()){
+    	if (level.getIsFinished() && firsttime){
     		// start activity with finish menu
-			
+    		firsttime = false;
+    		
 			StartScreen.startActivity.runOnUiThread(new Runnable(){
 
 				public void run() {

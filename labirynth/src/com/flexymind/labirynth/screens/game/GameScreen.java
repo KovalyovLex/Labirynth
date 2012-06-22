@@ -47,6 +47,8 @@ public class GameScreen extends Activity {
         if (gameID != NULLID){
             gameView.setGameLevelID(gameID);
         }
+        
+        context = this.getApplicationContext();
     }
 	
 	@Override
