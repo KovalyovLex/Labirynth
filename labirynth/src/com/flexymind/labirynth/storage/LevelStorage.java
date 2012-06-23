@@ -38,10 +38,8 @@ public class LevelStorage {
 	private static final String PROP_DIAM 	= "D";
 	private static final String PROP_X1		= "X1";
 	private static final String PROP_X2		= "X2";
-	private static final String PROP_X3		= "X3";
 	private static final String PROP_Y1		= "Y1";
 	private static final String PROP_Y2		= "Y2";
-	private static final String PROP_Y3		= "Y3";
 	private static final String PROP_X		= "X";
 	private static final String PROP_Y		= "Y";
 	private static final String ATTR_NAME	= "name";
@@ -86,10 +84,8 @@ public class LevelStorage {
 			}
 			
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			xml.close();
@@ -146,10 +142,8 @@ public class LevelStorage {
 			}
 			
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			xml.close();
@@ -175,8 +169,6 @@ public class LevelStorage {
 			y2		= 0,
 			d		= 0,
 			deep	= 0,
-			x3		= 0,
-			y3		= 0,
 			finX	= 0,
 			finY	= 0,
 			finDiam = 0;
@@ -220,82 +212,20 @@ public class LevelStorage {
 						if (PROP_Y2.equals(xml.getName())){
 							y2 = new Integer(xml.nextText());
 						}
-						if (PROP_X3.equals(xml.getName())){
-							x3 = new Integer(xml.nextText());
-						}
-						if (PROP_Y3.equals(xml.getName())){
-							y3 = new Integer(xml.nextText());
-						}
 						xml.next();
 					}
 					Drawable texture = context.getResources().getDrawable(R.drawable.wall);
 					
 					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
-					/*
-					bmp = Bitmap.createScaledBitmap(bmp, (int)(Math.sqrt((x2-x3)*(x2-x3)+(y2-y3)*(y2-y3))), (int)Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)), true);
-					
-					int max = bmp.getHeight() > bmp.getWidth() ? bmp.getHeight() : bmp.getWidth();
-					
-					Bitmap textbmp = Bitmap.createBitmap(max, max, Bitmap.Config.ARGB_8888);
-					Canvas canv = new Canvas(textbmp);
-					
-					Paint p = new Paint();
-					
-					// угол поворота текстуры
-					float angle, centang;
-					int x = - y1 + y2;
-					int y = x1 - x2;
-					
-					PointF	shift	= new PointF((max - bmp.getWidth() ) / 2, (max - bmp.getHeight()) / 2);
-					float shiftleng;
-					PointF cent = new PointF(max / 2, max / 2);
-					
-					shift.x -= cent.x;
-					shift.y -= cent.y;
-					shiftleng = (float)Math.sqrt((shift.x)*(shift.x)+(shift.y)*(shift.y));
-					
-					// угол поворота вектора от центра до point1
-					centang = (float)Math.acos( shift.x / shiftleng);
-					if (shift.y < 0){
-						centang = 2 * (float)Math.PI - centang;
-					}
-					// угол поворота текстуры
-					angle = (float)Math.acos( x / Math.sqrt(x * x + y * y));
-					if (y < 0){
-						angle = 2 * (float)Math.PI - angle;
-					}
-					centang += angle;
-					angle *= 360f / 2 / (float)Math.PI;
-					
-					shift.x = (int)(shiftleng * Math.cos(centang));
-					shift.y = (int)(shiftleng * Math.sin(centang));
-					
-					// расстояние до точки p1
-					shift.x += cent.x;
-					shift.y += cent.y;
-					
-					Matrix 	matrix	= new Matrix();
 
-					matrix.setTranslate( (max - bmp.getWidth()) / 2, (max - bmp.getHeight()) / 2);
-					matrix.postRotate(angle, max / 2, max / 2);
-
-					p = new Paint();
-					p.setFilterBitmap(true);
-					
-					canv.drawBitmap(bmp, matrix, p);
-					
-					*/
 					// загрузка стены с текстурой stenka
 					twall = new Wall(	gl,
 										bmp,
 										new PointF(x1 * (float)Settings.getScaleFactorX(), y1 * (float)Settings.getScaleFactorY()), 
-										new PointF(x2 * (float)Settings.getScaleFactorX(), y2 * (float)Settings.getScaleFactorY()), 
-										new PointF(x3 * (float)Settings.getScaleFactorX(), y3 * (float)Settings.getScaleFactorY()),
-										new PointF(0, 0),
+										new PointF(x2 * (float)Settings.getScaleFactorX(), y2 * (float)Settings.getScaleFactorY()),
 										0.70f);
 					walls.add(twall);
 					
-					//bmp.recycle();
 				}else if (FINISH.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();
@@ -323,10 +253,8 @@ public class LevelStorage {
 			}
 			
 		} catch (XmlPullParserException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
 			xml.close();

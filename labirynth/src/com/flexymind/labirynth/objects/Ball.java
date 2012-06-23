@@ -280,82 +280,12 @@ public class Ball extends GameObject
 		super.setCenterX(value);
 		mPoint.x = value - mHeight / 2;
 	}
-
-    /**
-	 * отражение от стены в направлении v1 (Point2 - Point1)
-	 * @param wall стена
-	 * @param softness мягкость стены (0..1)
-	 * @param newpos новая позиция центра шара
-	 */
-    public void reflectWallV1(Wall wall, float softness, PointF newpos){
-    	Log.v("reflect V1","ball");
-    	
-		float project;
-		PointF vec1 = new PointF(	wall.getPoint2().x - wall.getPoint1().x,
-									wall.getPoint2().y - wall.getPoint1().y);
-		
-		float length = (float)Math.sqrt(vec1.x*vec1.x+vec1.y*vec1.y);
-		
-		vec1.x /= length;
-		vec1.y /= length;
-		
-		project = vec1.x * mSpeed.x + vec1.y * mSpeed.y;
-		mSpeed.x -= (1 + softness) * project * vec1.x;
-		mSpeed.y -= (1 + softness) * project * vec1.y;
-
-		project = vec1.x * (newpos.x - mPoint.x - mWidth / 2f) + vec1.y * (newpos.y - mPoint.y - mHeight / 2f);
-		mPoint.x = newpos.x - mWidth / 2f - project * vec1.x;
-		mPoint.y = newpos.y - mHeight / 2f - project * vec1.y;
-
-        mSquare.setLeftTop(mPoint);
-        
-		mNextPoint.x = mPoint.x + mSpeed.x;
-		mNextPoint.y = mPoint.y + mSpeed.y;
-		
-		wall.showWall();
-	}
-    
-	/**
-	 * отражение от стены в направлении v2 (Point3 - Point2)
-	 * @param wall стена
-	 * @param softness мягкость стены (0..1)
-	 * @param newpos новая позиция центра шара
-	 */
-	public void reflectWallV2(Wall wall, float softness, PointF newpos){
-		Log.v("reflect V2","ball");
-		
-		float project;
-		PointF vec2 = new PointF(	wall.getPoint3().x - wall.getPoint2().x,
-									wall.getPoint3().y - wall.getPoint2().y);
-		
-		float length = (float)Math.sqrt(vec2.x*vec2.x+vec2.y*vec2.y);
-		
-		vec2.x /= length;
-		vec2.y /= length;
-		
-		project = vec2.x * mSpeed.x + vec2.y * mSpeed.y;
-		mSpeed.x -= (1 + softness) * project * vec2.x;
-		mSpeed.y -= (1 + softness) * project * vec2.y;
-
-		project = vec2.x * (newpos.x - mPoint.x - mWidth / 2f) + vec2.y * (newpos.y - mPoint.y - mHeight / 2f);
-		mPoint.x = newpos.x - mWidth / 2f - project * vec2.x;
-		mPoint.y = newpos.y - mHeight / 2f - project * vec2.y;
-
-        mSquare.setLeftTop(mPoint);
-		
-		mNextPoint.x = mPoint.x + mSpeed.x;
-		mNextPoint.y = mPoint.y + mSpeed.y;
-		
-		wall.showWall();
-	}
 	
     /** Отражение мячика от вертикали 
      * @param newPoint точка шара после соударения
      * */
     public void reflectVertical(PointF newPoint)
-    {
-    	Log.v("reflect Vertical","ball");
-    	
+    {   	
     	mPoint.x = newPoint.x;
     	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
@@ -367,13 +297,33 @@ public class Ball extends GameObject
         mNextPoint.y += mSpeed.y;
     }
 
+    /** Отражение мячика от вертикали 
+     * @param newPoint - точка шара после соударения
+     * @param wall - стена об которую произошел удар
+     * */
+    public void reflectVertical(Wall wall, PointF newPoint)
+    {
+    	Log.v("reflect Vertical","ball");
+    	
+    	mPoint.x = newPoint.x;
+    	mPoint.y = newPoint.y;
+    	mNextPoint.x = newPoint.x;
+    	mNextPoint.y = newPoint.y;
+    	
+    	mSpeed.x = -mSpeed.x * wall.getSoftness();
+    	mSpeed.y *= wall.getSoftness();
+    	
+    	mNextPoint.x += mSpeed.x;
+        mNextPoint.y += mSpeed.y;
+        
+        wall.showWall();
+    }
+    
     /** Отражение мячика от горизонтали 
      * @param newPoint точка шара после соударения
      * */
     public void reflectHorizontal(PointF newPoint)
     {
-    	Log.v("reflect Horizontal","ball");
-    	
     	mPoint.x = newPoint.x;
     	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
@@ -385,4 +335,24 @@ public class Ball extends GameObject
         mNextPoint.y += mSpeed.y;
     }
 
+    /** Отражение мячика от горизонтали 
+     * @param newPoint - точка шара после соударения
+     * @param wall - стена об которую произошел удар
+     * */
+    public void reflectHorizontal(Wall wall, PointF newPoint)
+    {
+    	mPoint.x = newPoint.x;
+    	mPoint.y = newPoint.y;
+    	mNextPoint.x = newPoint.x;
+    	mNextPoint.y = newPoint.y;
+    	
+    	mSpeed.y = -mSpeed.y * wall.getSoftness();
+    	mSpeed.y *= wall.getSoftness();
+    	
+    	mNextPoint.x += mSpeed.x;
+        mNextPoint.y += mSpeed.y;
+        
+        wall.showWall();
+    }
+    
 }

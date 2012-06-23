@@ -43,7 +43,7 @@ public class GameLevel extends GameObject{
 	
 	Paint mPaintScore = new Paint(); // Для отрисовки очков
 
-    Vector <Wall> Walls;
+    Vector <Wall> walls;
     
     /**
      * Конструктор 
@@ -73,7 +73,7 @@ public class GameLevel extends GameObject{
         
 		mball   = ball;
 		mfinish = finish;
-		Walls   = walls;
+		this.walls   = walls;
 		
 		mball.onUpdate();
 		mfinish.onUpdate();
@@ -115,8 +115,8 @@ public class GameLevel extends GameObject{
     		mSquare.draw(gl);
     		mfinish.onDraw(gl);
     		mball.onDraw(gl);
-        	for(int i=0;i < Walls.size();i++){
-        		Walls.elementAt(i).onDraw(gl);
+        	for(int i=0;i < walls.size();i++){
+        		walls.elementAt(i).onDraw(gl);
         	}
 
 			// Disable the client state before leaving
@@ -152,17 +152,20 @@ public class GameLevel extends GameObject{
     		mfinish.onUpdate();
     		if (hidewall){
     			hidewall = false;
-    			for(int i = 0; i < Walls.size();i++){
-        			Walls.elementAt(i).hideWall();
+    			for(int i = 0; i < walls.size();i++){
+        			walls.elementAt(i).hideWall();
         		}
     			Calendar calendar = Calendar.getInstance();
     			startTime = calendar.getTimeInMillis() / 1000;
     		}
-    		for(int i = 0; i < Walls.size(); i++){
-    			Walls.elementAt(i).onUpdate();
+    		for(int i = 0; i < walls.size(); i++){
+    			walls.elementAt(i).onUpdate();
     		}
+    		
+    		collisionsCheck();
+    		
     		int i = 0;
-    		while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
+    		while (collisionWithField(mball, mplayField) & i < 5){
     			i++;
     		}
     		if (i > 0){
@@ -206,7 +209,7 @@ public class GameLevel extends GameObject{
     			vecV1 = new PointF(),
     			vecV2 = new PointF(),
     			vecV3 = new PointF(),
-    			vecV4 = new PointF(), // vec_v_i вектор от pi до пересечения c вектором скорости
+    			vecV4 = new PointF(), // vec_v_i вектор от pi стены до точки пересечения вектора стены Vi c вектором скорости
     			intersectPV1 = new PointF(), 
     			intersectPV2 = new PointF(),
     			intersectPV3 = new PointF(),
@@ -216,22 +219,22 @@ public class GameLevel extends GameObject{
     	
     	boolean collision = false;
     	
-        for(int i = 0; i < Walls.size();i++){
+        for(int i = 0; i < walls.size();i++){
         	
-        	twall = Walls.elementAt(i);
+        	twall = walls.elementAt(i);
         	
-        	p1.x = twall.getPoint1().x;
-        	p1.y = twall.getPoint1().y;
+        	p1.x = twall.getPoint1().x - mball.mWidth / 2f;
+        	p1.y = twall.getPoint1().y - mball.mHeight / 2f;
         	
-        	p2.x = twall.getPoint2().x;
-        	p2.y = twall.getPoint2().y;
+        	p2.x = p1.x;
+        	p2.y = twall.getPoint2().y + mball.mHeight / 2f;
 
-        	p3.x = twall.getPoint3().x;
-        	p3.y = twall.getPoint3().y;
+        	p3.x = twall.getPoint2().x + mball.mWidth / 2f;
+        	p3.y = p2.y;
         	
-        	p4.x = p1.x + p3.x - p2.x;
-        	p4.y = p1.y + p3.y - p2.y;
-        	
+        	p4.x = p2.x;
+        	p4.y = p1.y;
+
         	v1.x = p2.x - p1.x;
         	v1.y = p2.y - p1.y;
         	
@@ -240,38 +243,7 @@ public class GameLevel extends GameObject{
         	
 			v3.x = p4.x - p1.x;
 			v3.y = p4.y - p1.y;
-			
-			v4.x = p3.x - p4.x;
-			v4.y = p3.y - p4.y;
-			
-			p1.x -=	mball.mWidth / 2f * v3.x /(float)(Math.sqrt(scalMul(v3,v3))) + 
-						mball.mHeight / 2f * v1.x /(float)(Math.sqrt(scalMul(v1,v1)));
-        	p1.y -= 	mball.mWidth / 2f * v3.y /(float)(Math.sqrt(scalMul(v3,v3))) + 
-						mball.mHeight / 2f * v1.y /(float)(Math.sqrt(scalMul(v1,v1)));
-        	
-        	p2.x +=	mball.mHeight / 2f * v1.x /(float)(Math.sqrt(scalMul(v1,v1))) -
-        				mball.mWidth / 2f * v2.x /(float)(Math.sqrt(scalMul(v2,v2)));
-        	p2.y +=	mball.mHeight / 2f * v1.y /(float)(Math.sqrt(scalMul(v1,v1))) -
-    					mball.mWidth / 2f * v2.y /(float)(Math.sqrt(scalMul(v2,v2)));
-        	
-        	p3.x +=	mball.mWidth / 2f * v2.x /(float)(Math.sqrt(scalMul(v2,v2))) + 
-						mball.mHeight / 2f * v4.x /(float)(Math.sqrt(scalMul(v4,v4)));
-        	p3.y +=	mball.mWidth / 2f * v2.y /(float)(Math.sqrt(scalMul(v2,v2))) + 
-						mball.mHeight / 2f * v4.y /(float)(Math.sqrt(scalMul(v4,v4)));
-			
-        	p4.x = p1.x + p3.x - p2.x;
-        	p4.y = p1.y + p3.y - p2.y;
-        	
-        	// переропределение векторов
-        	v1.x = p2.x - p1.x;
-        	v1.y = p2.y - p1.y;
-        	
-        	v2.x = p3.x - p2.x;
-			v2.y = p3.y - p2.y;
-        	
-			v3.x = p4.x - p1.x;
-			v3.y = p4.y - p1.y;
-			
+
 			v4.x = p3.x - p4.x;
 			v4.y = p3.y - p4.y;
         	
@@ -317,12 +289,12 @@ public class GameLevel extends GameObject{
         		if (intersectPV2 != null && checkIntersect(vecV2, vec2, v2, speed)){
         			if (scalMul(vec1,vec1) > scalMul(vec2,vec2)){
         				// удар об стенку v2
-            			mball.reflectWallV1(twall,twall.getSoftness(), intersectPV2);
+            			//mball.reflectWallV1(twall,twall.getSoftness(), intersectPV2);
             			collision = true;
             			continue;
         			}else{
         				// удар об стенку v1
-            			mball.reflectWallV2(twall,twall.getSoftness(), intersectPV1);
+        				mball.reflectVertical(twall,intersectPV1);
             			collision = true;
             			continue;
         			}
@@ -331,12 +303,12 @@ public class GameLevel extends GameObject{
         		if (intersectPV3 != null && checkIntersect(vecV3, vec3, v3, speed)){
         			if (scalMul(vec1,vec1) > scalMul(vec3,vec3)){
         				// удар об стенку v3
-            			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
+            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
             			collision = true;
             			continue;
         			}else{
         				// удар об стенку v1
-            			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV1);
+        				mball.reflectVertical(twall,intersectPV1);
             			collision = true;
             			continue;
         			}
@@ -345,19 +317,19 @@ public class GameLevel extends GameObject{
         		if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
         			if (scalMul(vec1,vec1) > scalMul(vec4,vec4)){
         				// удар об стенку v4
-            			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV4);
+        				mball.reflectVertical(twall,intersectPV4);
             			collision = true;
             			continue;
         			}else{
         				// удар об стенку v1
-            			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV1);
+        				mball.reflectVertical(twall,intersectPV1);
             			collision = true;
             			continue;
         			}
         		}
         		
         		// двойных ударов нет
-    			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV1);
+        		mball.reflectVertical(twall,intersectPV1);
     			collision = true;
     			continue;
         	}
@@ -368,12 +340,12 @@ public class GameLevel extends GameObject{
         		if (intersectPV3 != null && checkIntersect(vecV3, vec3, v3, speed)){
         			if (scalMul(vec2,vec2) > scalMul(vec3,vec3)){
         				// удар об стенку v3
-            			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
+            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
             			collision = true;
             			continue;
         			}else{
         				// удар об стенку v2
-            			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
+            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
             			collision = true;
             			continue;
         			}
@@ -382,19 +354,19 @@ public class GameLevel extends GameObject{
         		if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
         			if (scalMul(vec2,vec2) > scalMul(vec4,vec4)){
         				// удар об стенку v4
-            			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV4);
+        				mball.reflectVertical(twall,intersectPV4);
             			collision = true;
             			continue;
         			}else{
         				// удар об стенку v2
-            			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
+            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
             			collision = true;
             			continue;
         			}
         		}
         		
         		// двойных ударов нет
-    			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
+    			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
     			collision = true;
     			continue;
         	}
@@ -405,19 +377,19 @@ public class GameLevel extends GameObject{
         		if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
         			if (scalMul(vec3,vec3) > scalMul(vec4,vec4)){
         				// удар об стенку v4
-            			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV4);
+            			mball.reflectVertical(twall,intersectPV4);
             			collision = true;
             			continue;
         			}else{
         				// удар об стенку v3
-            			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
+            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
             			collision = true;
             			continue;
         			}
         		}
         		
         		// двойных ударов нет
-    			mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
+    			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
     			collision = true;
     			continue;
         	}
@@ -425,16 +397,12 @@ public class GameLevel extends GameObject{
         	// проверка удара об правую стенку
         	if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
         		// двойных ударов нет
-    			mball.reflectWallV2(twall,twall.getSoftness(),intersectPV4);
+        		mball.reflectVertical(twall,intersectPV4);
     			collision = true;
     			continue;
         	}
         }
     	return collision;
-    }
-
-    private float scalMul(PointF p1, PointF p2){
-    	return p1.x * p2.x + p1.y * p2.y;
     }
 
     /**
@@ -483,6 +451,10 @@ public class GameLevel extends GameObject{
     	return new PointF( xi, yi );
     }
     
+    private float scalMul(PointF p1, PointF p2){
+    	return p1.x * p2.x + p1.y * p2.y;
+    }
+    
     /** Функция, описывающая столкновения шарика с ограничивающими стенками */
     private boolean collisionWithField (Ball ball, Rect PlayField){
     	
@@ -529,8 +501,8 @@ public class GameLevel extends GameObject{
     	super.onDestroy();
     	mfinish.onDestroy();
     	mball.onDestroy();
-        for(int i=0;i < Walls.size();i++){
-        	Walls.elementAt(i).onDestroy();
+        for(int i=0;i < walls.size();i++){
+        	walls.elementAt(i).onDestroy();
         } 
     }
     

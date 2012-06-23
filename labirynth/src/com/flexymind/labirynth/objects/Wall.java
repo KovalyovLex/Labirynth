@@ -8,12 +8,10 @@ import android.graphics.drawable.BitmapDrawable;
 
 public class Wall extends GameObject{
 
-	// показывать стену 30 кадров
+	// показывать стену 60 кадров
 	private final int SHOWTIME = 60;
 	
-	private PointF 	secPoint	= new PointF(),
-					thirdPoint	= new PointF(),
-					leftUp		= new PointF();
+	private PointF 	secPoint	= new PointF();
 	
 	private float softness = 1;
 	
@@ -27,36 +25,28 @@ public class Wall extends GameObject{
 	private int frameWasShow = 0;
 
 	/**
-	 * Конструктор для текстур которые можно поворачивать
+	 * Конструктор для стен прямоугольных стен (только горизонтальные или вертикальные)
 	 * @param mBackG Текстура
 	 * @param first Point 1
 	 * @param second Point 2
-	 * @param third Point 3
-	 * @param shift расстояние от верхнего левого угла до Point1
 	 * @param softness мягкость стены
 	 */
 	public Wall(	GL10 gl,
 					Bitmap mBackG,
 					PointF first,
 					PointF second,
-					PointF third,
-					PointF shift,
 					float softness){
-		super(first, second, third, gl, new BitmapDrawable(mBackG));
+		super(first, second, gl, new BitmapDrawable(mBackG));
 		
 		this.softness = softness;
 		
 		mPoint		= first;
-		thirdPoint	= third;
 		secPoint	= second;
 		
 		mWidth = mBackG.getWidth();
 		mHeight = mBackG.getHeight();
 		
-		leftUp.x = mPoint.x - shift.x;
-		leftUp.y = mPoint.y - shift.y;
-		
-		mSquare.setLeftTop(leftUp);
+		mSquare.setLeftTop(mPoint);
         
 		mSquare.setOpacity(1.0f);
 	}
@@ -75,14 +65,6 @@ public class Wall extends GameObject{
 	 */
 	public PointF getPoint2(){
 		return secPoint;
-	}
-	
-	/**
-	 * Возвращает значение 3 точки
-	 * @return point 3
-	 */
-	public PointF getPoint3(){
-		return thirdPoint;
 	}
 	
 	/**

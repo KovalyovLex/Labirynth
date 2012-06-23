@@ -38,14 +38,13 @@ public abstract class GameObject {
     /**
      * Конструктор построение квадрата по 3 точкам 
 	 * @param p1 - left up point
-	 * @param p2 - left bottom point
-	 * @param p3 - right bottom point
+	 * @param p2 - right bottom point
      * @param image Изображение, которое будет обозначать данный объект
      * @param gl OpenGL обьект для рисования
      */
-    public GameObject(PointF p1, PointF p2, PointF p3, GL10 gl, Drawable image)
+    public GameObject(PointF p1, PointF p2, GL10 gl, Drawable image)
     {
-    	mSquare = new Square(p1, p2, p3);
+    	mSquare = new Square(p1, p2);
     	mSquare.loadGLTexture(gl, image);
         mPoint = new PointF(0, 0);
         refreshSize();

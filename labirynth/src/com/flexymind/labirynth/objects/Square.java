@@ -93,31 +93,27 @@ public class Square {
 		height = width = 2;
 	}
 
-	/** построение квадрата по 3 точкам 
+	/** построение квадрата по 2 точкам 
 	 * @param p1 - left up point
-	 * @param p2 - left bottom point
-	 * @param p3 - right bottom point
+	 * @param p2 - right bottom point
 	 */
-	public Square(PointF p1, PointF p2, PointF p3) {
-		// width = |p3-p2|
-		// height = |p2-p1|
-		PointF tvec = new PointF(p3.x - p2.x, p3.y - p2.y);
-		width = (float)Math.sqrt(tvec.x * tvec.x + tvec.y * tvec.y);
-		tvec.x = p2.x - p1.x;
-		tvec.y = p2.y - p1.y;
-		height = (float)Math.sqrt(tvec.x * tvec.x + tvec.y * tvec.y);
+	public Square(PointF p1, PointF p2) {
+		// width = |p2.x-p1.x|
+		// height = |p2.y-p1.y|
+		width = (float)Math.abs(p2.x - p1.x);
+		height = (float)Math.abs(p2.y - p1.y);
 		
-		vertices[0] = p2.x + zeroPoint.x;
+		vertices[0] = p1.x + zeroPoint.x;
 		vertices[1] = -p2.y + zeroPoint.y;
 		vertices[2] = 0;
 		vertices[3] = p1.x + zeroPoint.x;
 		vertices[4] = -p1.y + zeroPoint.y;
 		vertices[5] = 0;
-		vertices[6] = p3.x + zeroPoint.x;
-		vertices[7] = -p3.y + zeroPoint.y;
+		vertices[6] = p2.x + zeroPoint.x;
+		vertices[7] = -p2.y + zeroPoint.y;
 		vertices[8] = 0;
-		vertices[9] = p1.x + p3.x - p2.x + zeroPoint.x;
-		vertices[10] = -p1.y - p3.y + p2.y + zeroPoint.y;
+		vertices[9] = p2.x + zeroPoint.x;
+		vertices[10] = -p1.y + zeroPoint.y;
 		vertices[11] = 0;
 		
 		// a float has 4 bytes so we allocate for each coordinate 4 bytes
