@@ -187,7 +187,7 @@ public class GameLevel extends GameObject{
     	return calendar.getTimeInMillis() / 1000 - startTime;
     }
     
-    /** Функция, описывающая столкновения объектов шар и станки между собой */
+    /** Функция, описывающая столкновения объектов шар и стенки между собой */
     private boolean collisionsCheck()
     {
     	PointF  p1 = new PointF(),
@@ -244,20 +244,20 @@ public class GameLevel extends GameObject{
 			v4.x = p3.x - p4.x;
 			v4.y = p3.y - p4.y;
 			
-			p1.x -=	mball.mWidth / 2f * v3.x /(int)(Math.sqrt(scalMul(v3,v3))) + 
-						mball.mHeight / 2f * v1.x /(int)(Math.sqrt(scalMul(v1,v1)));
-        	p1.y -= 	mball.mWidth / 2f * v3.y /(int)(Math.sqrt(scalMul(v3,v3))) + 
-						mball.mHeight / 2f * v1.y /(int)(Math.sqrt(scalMul(v1,v1)));
+			p1.x -=	mball.mWidth / 2f * v3.x /(float)(Math.sqrt(scalMul(v3,v3))) + 
+						mball.mHeight / 2f * v1.x /(float)(Math.sqrt(scalMul(v1,v1)));
+        	p1.y -= 	mball.mWidth / 2f * v3.y /(float)(Math.sqrt(scalMul(v3,v3))) + 
+						mball.mHeight / 2f * v1.y /(float)(Math.sqrt(scalMul(v1,v1)));
         	
-        	p2.x +=	mball.mHeight / 2f * v1.x /(int)(Math.sqrt(scalMul(v1,v1))) -
-        				mball.mWidth / 2f * v2.x /(int)(Math.sqrt(scalMul(v2,v2)));
-        	p2.y +=	mball.mHeight / 2f * v1.y /(int)(Math.sqrt(scalMul(v1,v1))) -
-    					mball.mWidth / 2f * v2.y /(int)(Math.sqrt(scalMul(v2,v2)));
+        	p2.x +=	mball.mHeight / 2f * v1.x /(float)(Math.sqrt(scalMul(v1,v1))) -
+        				mball.mWidth / 2f * v2.x /(float)(Math.sqrt(scalMul(v2,v2)));
+        	p2.y +=	mball.mHeight / 2f * v1.y /(float)(Math.sqrt(scalMul(v1,v1))) -
+    					mball.mWidth / 2f * v2.y /(float)(Math.sqrt(scalMul(v2,v2)));
         	
-        	p3.x +=	mball.mWidth / 2f * v2.x /(int)(Math.sqrt(scalMul(v2,v2))) + 
-						mball.mHeight / 2f * v4.x /(int)(Math.sqrt(scalMul(v4,v4)));
-        	p3.y +=	mball.mWidth / 2f * v2.y /(int)(Math.sqrt(scalMul(v2,v2))) + 
-						mball.mHeight / 2f * v4.y /(int)(Math.sqrt(scalMul(v4,v4)));
+        	p3.x +=	mball.mWidth / 2f * v2.x /(float)(Math.sqrt(scalMul(v2,v2))) + 
+						mball.mHeight / 2f * v4.x /(float)(Math.sqrt(scalMul(v4,v4)));
+        	p3.y +=	mball.mWidth / 2f * v2.y /(float)(Math.sqrt(scalMul(v2,v2))) + 
+						mball.mHeight / 2f * v4.y /(float)(Math.sqrt(scalMul(v4,v4)));
 			
         	p4.x = p1.x + p3.x - p2.x;
         	p4.y = p1.y + p3.y - p2.y;
@@ -275,38 +275,38 @@ public class GameLevel extends GameObject{
 			v4.x = p3.x - p4.x;
 			v4.y = p3.y - p4.y;
         	
-        	intersectPV1 = getIntersectionPoint(p1, p2, mball.getCenterf(), mball.getNextCenterf());
-        	intersectPV2 = getIntersectionPoint(p2, p3, mball.getCenterf(), mball.getNextCenterf());
-        	intersectPV3 = getIntersectionPoint(p1, p4, mball.getCenterf(), mball.getNextCenterf());
-        	intersectPV4 = getIntersectionPoint(p4, p3, mball.getCenterf(), mball.getNextCenterf());
+        	intersectPV1 = getIntersectionPoint(p1, p2, mball.getCenter(), mball.getNextCenter());
+        	intersectPV2 = getIntersectionPoint(p2, p3, mball.getCenter(), mball.getNextCenter());
+        	intersectPV3 = getIntersectionPoint(p1, p4, mball.getCenter(), mball.getNextCenter());
+        	intersectPV4 = getIntersectionPoint(p4, p3, mball.getCenter(), mball.getNextCenter());
         	
-        	speed.x = mball.getNextCenterf().x - mball.getCenterf().x;
-        	speed.y = mball.getNextCenterf().y - mball.getCenterf().y;
+        	speed.x = mball.getNextCenter().x - mball.getCenter().x;
+        	speed.y = mball.getNextCenter().y - mball.getCenter().y;
         	
         	if (intersectPV1 != null){
-        		vec1.x = intersectPV1.x - mball.getCenterf().x;
-        		vec1.y = intersectPV1.y - mball.getCenterf().y;
+        		vec1.x = intersectPV1.x - mball.getCenter().x;
+        		vec1.y = intersectPV1.y - mball.getCenter().y;
         		vecV1.x = intersectPV1.x - p1.x;
         		vecV1.y = intersectPV1.y - p1.y;
         	}
         	
         	if (intersectPV2 != null){
-        		vec2.x = intersectPV2.x - mball.getCenterf().x;
-				vec2.y = intersectPV2.y - mball.getCenterf().y;
+        		vec2.x = intersectPV2.x - mball.getCenter().x;
+				vec2.y = intersectPV2.y - mball.getCenter().y;
         		vecV2.x = intersectPV2.x - p2.x;
         		vecV2.y = intersectPV2.y - p2.y;
         	}
         	
         	if (intersectPV3 != null){
-        		vec3.x = intersectPV3.x - mball.getCenterf().x;
-				vec3.y = intersectPV3.y - mball.getCenterf().y;
+        		vec3.x = intersectPV3.x - mball.getCenter().x;
+				vec3.y = intersectPV3.y - mball.getCenter().y;
         		vecV3.x = intersectPV3.x - p1.x;
         		vecV3.y = intersectPV3.y - p1.y;
         	}
         	
         	if (intersectPV4 != null){
-        		vec4.x = intersectPV4.x - mball.getCenterf().x;
-				vec4.y = intersectPV4.y - mball.getCenterf().y;
+        		vec4.x = intersectPV4.x - mball.getCenter().x;
+				vec4.y = intersectPV4.y - mball.getCenter().y;
         		vecV4.x = intersectPV4.x - p4.x;
         		vecV4.y = intersectPV4.y - p4.y;
         	}
@@ -446,10 +446,10 @@ public class GameLevel extends GameObject{
      * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
      */
     private boolean checkIntersect(PointF vec_v_1, PointF vec1, PointF v1, PointF speed){
-    	return ( scalMul(vec_v_1,v1) < scalMul(v1,v1) 
-    		  && scalMul(vec_v_1,v1) > 0
-    		  && scalMul(vec1,speed) < scalMul(speed,speed)
-    		  && scalMul(vec1,speed) > 0 );
+    	return ( scalMul(vec_v_1,v1) <= scalMul(v1,v1) 
+    		  && scalMul(vec_v_1,v1) >= 0
+    		  && scalMul(vec1,speed) <= scalMul(speed,speed)
+    		  && scalMul(vec1,speed) >= 0 );
     }
     
     /**

@@ -265,20 +265,9 @@ public class Ball extends GameObject
     /** Верхняя левая точка объекта на следующем шаге */
     public PointF getNextPoint() { return new PointF(mNextPoint.x, mNextPoint.y); }
 	
-	public PointF getCenterf(){
+	public PointF getCenter(){
 		return new PointF(mPoint.x + mWidth / 2f, mPoint.y + mHeight / 2f);
 	}
-	
-    /** Возвращает следующее положение центра шара */
-    public PointF getNextCenterf()
-    {
-    	return new PointF(mNextPoint.x + mWidth / 2f, mNextPoint.y + mHeight / 2f);
-    }
-    
-    public PointF getSpeedCenterf()
-    {
-    	return new PointF(mSpeed.x,mSpeed.y);
-    }
     
     @Override
 	protected void setCenterY(float value){

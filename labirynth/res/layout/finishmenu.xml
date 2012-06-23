@@ -11,15 +11,14 @@
         android:layout_gravity="center_horizontal"
         android:textColor="#FFF" 
         />
-    
+    
     <Button
         android:id="@+id/dialogButtonRestart"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/restart"
-        android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
-        />
+        android:layout_marginTop="5dp"
+        android:text="@string/next" />
     
     <Button
         android:id="@+id/dialogButtonLevels"

@@ -8,7 +8,7 @@
     <string name="levelname">Name of Level</string>
     <string name="quit">Quit</string>
     <string name="levels">Levels</string>
-    <string name="restart">Restart</string>
+    <string name="next">Next level</string>
 
     <string name="settingsSensivity">Sensitivity of the accelerometer</string>
 

@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -87,6 +88,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 	public void addButtons() {
 		
 		LinearLayout levelslay = (LinearLayout)findViewById(R.id.levelsLayout);
+		ViewGroup.LayoutParams levelparams = levelslay.getLayoutParams();
 		
 		TextView newnameOfLvl;
 		ImageButton newbutton;
@@ -115,6 +117,8 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			rlparams.height = (int)(Settings.getScaleFactorY() * rlparams.height);
 			rlparams.width = (int)(Settings.getScaleFactorX() * rlparams.width);
 			
+			Log.v("height", Integer.toString(rlparams.height));
+			
 			parent.addView(hscroll,rlparams);
 		}
 
@@ -141,7 +145,7 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			newbulllay.addView(newnameOfLvl);
 			newbulllay.addView(newbutton,buttonparams);
 			
-			levelslay.addView(newbulllay);
+			levelslay.addView(newbulllay, levelparams);
 		}
 	}
 	
