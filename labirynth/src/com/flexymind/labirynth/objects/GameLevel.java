@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import com.flexymind.labirynth.storage.Settings;
 
@@ -267,7 +266,9 @@ public class GameLevel extends GameObject{
         		vecV1.x = intersectPV1.x - p1.x;
         		vecV1.y = intersectPV1.y - p1.y;
         		vectcont.add(new IntersectVectorContainer(	vec1, 
-        				new PointF(intersectPV1.x - mball.mWidth / 2f, intersectPV1.y - mball.mHeight / 2f) ,
+        				new PointF(intersectPV1.x - mball.mWidth / 2f, intersectPV1.y - mball.mHeight / 2f),
+        				vecV1,
+        				v1,
         				false));
         	}
         	
@@ -278,6 +279,8 @@ public class GameLevel extends GameObject{
         		vecV2.y = intersectPV2.y - p2.y;
         		vectcont.add(new IntersectVectorContainer(	vec2, 
         				new PointF(intersectPV2.x - mball.mWidth / 2f, intersectPV2.y - mball.mHeight / 2f) ,
+        				vecV2,
+        				v2,
         				true));
         	}
         	
@@ -288,6 +291,8 @@ public class GameLevel extends GameObject{
         		vecV3.y = intersectPV3.y - p1.y;
         		vectcont.add(new IntersectVectorContainer(	vec3, 
         				new PointF(intersectPV3.x - mball.mWidth / 2f, intersectPV3.y - mball.mHeight / 2f) ,
+        				vecV3,
+        				v3,
         				true));
         	}
         	
@@ -298,6 +303,8 @@ public class GameLevel extends GameObject{
         		vecV4.y = intersectPV4.y - p4.y;
         		vectcont.add(new IntersectVectorContainer(	vec4, 
         				new PointF(intersectPV4.x - mball.mWidth / 2f, intersectPV4.y - mball.mHeight / 2f) ,
+        				vecV4,
+        				v4,
         				false));
         	}
         	
@@ -328,6 +335,27 @@ public class GameLevel extends GameObject{
         	}else{
         		// Next Point not inside the wall, check for fast overflight
         		
+        		if (vectcont.size() > 0){
+        			IntersectVectorContainer minLen;
+        		
+        			minLen = vectcont.get(0);
+        			// находим вектор минимальной длинны
+        			for (int n = 1; n < vectcont.size(); n++){
+        				if (minLen.getPowerLength() > vectcont.get(n).getPowerLength()){
+        					minLen = vectcont.get(n);
+        				}
+        			}
+
+        			// проверка что точка пересечения находится на отрезке соединяющем настоящую и следующую точки траектории
+        			if (checkIntersect(minLen.getVectV(), minLen.getVector(), minLen.getV(), speed)){
+        				
+        				if (minLen.isHorizontReflection()){
+        					mball.reflectHorizontal(twall, minLen.getNextPosVector());
+        				}else{
+        					mball.reflectVertical(twall, minLen.getNextPosVector());
+        				}
+        			}
+        		}
         	}
         }
     	return collision;
@@ -336,19 +364,31 @@ public class GameLevel extends GameObject{
     private class IntersectVectorContainer{
     	private boolean horiz;
     	private PointF vect;
+    	private PointF vecV;
     	private PointF nextvect;
+    	private PointF v;
+    	
     	/**
     	 * Конструктор контейнера
     	 * @param vec - вектор от положения шара до положения стены.
+    	 * @param vecV - вектор от точки p стены до точки пересечения вектора стены c вектором скорости.
     	 * @param nextPosVec - вектор от положения шара до положения стены.
-    	 * @param horizont - <code>true</code> в случае горизонтальной стены
+    	 * @param v - вектор направления стены.
+    	 * @param horizont - <code>true</code> в случае горизонтальной стены.
     	 */
-    	public IntersectVectorContainer(PointF vec, PointF nextPosVec, boolean horizont){
+    	public IntersectVectorContainer(PointF vec,
+    									PointF nextPosVec,
+    									PointF vecV,
+    									PointF v,
+    									boolean horizont){
     		vect = vec;
+    		this.vecV = vecV;
     		horiz = horizont;
     		nextvect = nextPosVec;
+    		this.v = v;
     	}
     	
+    	/** горизонтальная стена */
     	public boolean isHorizontReflection(){
     		return horiz;
     	}
@@ -357,12 +397,24 @@ public class GameLevel extends GameObject{
     		return vect.x * vect.x + vect.y * vect.y;
     	}
     	
+    	/** вектор от положения шара до положения стены */
     	public PointF getVector(){
     		return vect;
     	}
     	
+    	/** вектор от положения шара до положения стены */
     	public PointF getNextPosVector(){
     		return nextvect;
+    	}
+    	
+    	/** вектор от точки p стены до точки пересечения вектора стены c вектором скорости */
+    	public PointF getVectV(){
+    		return vecV;
+    	}
+    	
+    	/** вектор направления стены */
+    	public PointF getV(){
+    		return v;
     	}
     }
     
@@ -375,9 +427,9 @@ public class GameLevel extends GameObject{
      * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
      */
     private boolean checkIntersect(PointF vec_v_1, PointF vec1, PointF v1, PointF speed){
-    	return ( scalMul(vec_v_1,v1) < scalMul(v1,v1) 
+    	return ( scalMul(vec_v_1,v1) <= scalMul(v1,v1) 
     		  && scalMul(vec_v_1,v1) >= 0
-    		  && scalMul(vec1,speed) < scalMul(speed,speed)
+    		  && scalMul(vec1,speed) <= scalMul(speed,speed)
     		  && scalMul(vec1,speed) >= 0 );
     }
     

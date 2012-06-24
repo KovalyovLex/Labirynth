@@ -9,3 +9,5 @@
 *.ap_
 
 ./labirynth/bin/*
+
+*.DS_Store

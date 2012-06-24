@@ -11,7 +11,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 /**
  * Класс Шарик
@@ -303,8 +302,6 @@ public class Ball extends GameObject
      * */
     public void reflectVertical(Wall wall, PointF newPoint)
     {
-    	Log.v("reflect Vertical","ball");
-    	
     	mPoint.x = newPoint.x;
     	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
@@ -341,8 +338,6 @@ public class Ball extends GameObject
      * */
     public void reflectHorizontal(Wall wall, PointF newPoint)
     {
-    	Log.v("reflect Horizontal","ball");
-    	
     	mPoint.x = newPoint.x;
     	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
