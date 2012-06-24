@@ -1,5 +1,6 @@
 ﻿package com.flexymind.labirynth.objects;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Vector;
 
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.flexymind.labirynth.storage.Settings;
 
@@ -217,9 +219,13 @@ public class GameLevel extends GameObject{
     	
     	Wall 	twall;
     	
+    	ArrayList<IntersectVectorContainer> vectcont = new ArrayList<IntersectVectorContainer>();
+    	
     	boolean collision = false;
     	
         for(int i = 0; i < walls.size();i++){
+        	
+        	vectcont.clear();
         	
         	twall = walls.elementAt(i);
         	
@@ -232,7 +238,7 @@ public class GameLevel extends GameObject{
         	p3.x = twall.getPoint2().x + mball.mWidth / 2f;
         	p3.y = p2.y;
         	
-        	p4.x = p2.x;
+        	p4.x = p3.x;
         	p4.y = p1.y;
 
         	v1.x = p2.x - p1.x;
@@ -260,6 +266,9 @@ public class GameLevel extends GameObject{
         		vec1.y = intersectPV1.y - mball.getCenter().y;
         		vecV1.x = intersectPV1.x - p1.x;
         		vecV1.y = intersectPV1.y - p1.y;
+        		vectcont.add(new IntersectVectorContainer(	vec1, 
+        				new PointF(intersectPV1.x - mball.mWidth / 2f, intersectPV1.y - mball.mHeight / 2f) ,
+        				false));
         	}
         	
         	if (intersectPV2 != null){
@@ -267,6 +276,9 @@ public class GameLevel extends GameObject{
 				vec2.y = intersectPV2.y - mball.getCenter().y;
         		vecV2.x = intersectPV2.x - p2.x;
         		vecV2.y = intersectPV2.y - p2.y;
+        		vectcont.add(new IntersectVectorContainer(	vec2, 
+        				new PointF(intersectPV2.x - mball.mWidth / 2f, intersectPV2.y - mball.mHeight / 2f) ,
+        				true));
         	}
         	
         	if (intersectPV3 != null){
@@ -274,6 +286,9 @@ public class GameLevel extends GameObject{
 				vec3.y = intersectPV3.y - mball.getCenter().y;
         		vecV3.x = intersectPV3.x - p1.x;
         		vecV3.y = intersectPV3.y - p1.y;
+        		vectcont.add(new IntersectVectorContainer(	vec3, 
+        				new PointF(intersectPV3.x - mball.mWidth / 2f, intersectPV3.y - mball.mHeight / 2f) ,
+        				true));
         	}
         	
         	if (intersectPV4 != null){
@@ -281,130 +296,76 @@ public class GameLevel extends GameObject{
 				vec4.y = intersectPV4.y - mball.getCenter().y;
         		vecV4.x = intersectPV4.x - p4.x;
         		vecV4.y = intersectPV4.y - p4.y;
+        		vectcont.add(new IntersectVectorContainer(	vec4, 
+        				new PointF(intersectPV4.x - mball.mWidth / 2f, intersectPV4.y - mball.mHeight / 2f) ,
+        				false));
         	}
         	
-        	// проверка удара об левую стенку
-        	if (intersectPV1 != null && checkIntersect(vecV1, vec1, v1, speed)){
-        		// проверка двойных ударов
-        		if (intersectPV2 != null && checkIntersect(vecV2, vec2, v2, speed)){
-        			if (scalMul(vec1,vec1) > scalMul(vec2,vec2)){
-        				// удар об стенку v2
-            			//mball.reflectWallV1(twall,twall.getSoftness(), intersectPV2);
-            			collision = true;
-            			continue;
+        	// узнаём где находится следующая точка
+        	if (mball.getNextCenter().y >= p1.y &&
+        		mball.getNextCenter().y <= p3.y &&
+        		mball.getNextCenter().x <= p3.x &&
+        		mball.getNextCenter().x >= p1.x){
+        		// Next Point inside the wall, hit from wall
+        		
+        		if (vectcont.size() > 0){
+        			IntersectVectorContainer minLen;
+        		
+        			minLen = vectcont.get(0);
+        			// находим вектор минимальной длинны
+        			for (int n = 1; n < vectcont.size(); n++){
+        				if (minLen.getPowerLength() > vectcont.get(n).getPowerLength()){
+        					minLen = vectcont.get(n);
+        				}
+        			}
+        			
+        			if (minLen.isHorizontReflection()){
+        				mball.reflectHorizontal(twall, minLen.getNextPosVector());
         			}else{
-        				// удар об стенку v1
-        				mball.reflectVertical(twall,intersectPV1);
-            			collision = true;
-            			continue;
+        				mball.reflectVertical(twall, minLen.getNextPosVector());
         			}
         		}
+        	}else{
+        		// Next Point not inside the wall, check for fast overflight
         		
-        		if (intersectPV3 != null && checkIntersect(vecV3, vec3, v3, speed)){
-        			if (scalMul(vec1,vec1) > scalMul(vec3,vec3)){
-        				// удар об стенку v3
-            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
-            			collision = true;
-            			continue;
-        			}else{
-        				// удар об стенку v1
-        				mball.reflectVertical(twall,intersectPV1);
-            			collision = true;
-            			continue;
-        			}
-        		}
-        		
-        		if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
-        			if (scalMul(vec1,vec1) > scalMul(vec4,vec4)){
-        				// удар об стенку v4
-        				mball.reflectVertical(twall,intersectPV4);
-            			collision = true;
-            			continue;
-        			}else{
-        				// удар об стенку v1
-        				mball.reflectVertical(twall,intersectPV1);
-            			collision = true;
-            			continue;
-        			}
-        		}
-        		
-        		// двойных ударов нет
-        		mball.reflectVertical(twall,intersectPV1);
-    			collision = true;
-    			continue;
-        	}
-        	
-        	// проверка удара об нижнюю стенку
-        	if (intersectPV2 != null && checkIntersect(vecV2, vec2, v2, speed)){
-        		// проверка двойных ударов     		
-        		if (intersectPV3 != null && checkIntersect(vecV3, vec3, v3, speed)){
-        			if (scalMul(vec2,vec2) > scalMul(vec3,vec3)){
-        				// удар об стенку v3
-            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
-            			collision = true;
-            			continue;
-        			}else{
-        				// удар об стенку v2
-            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
-            			collision = true;
-            			continue;
-        			}
-        		}
-        		
-        		if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
-        			if (scalMul(vec2,vec2) > scalMul(vec4,vec4)){
-        				// удар об стенку v4
-        				mball.reflectVertical(twall,intersectPV4);
-            			collision = true;
-            			continue;
-        			}else{
-        				// удар об стенку v2
-            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
-            			collision = true;
-            			continue;
-        			}
-        		}
-        		
-        		// двойных ударов нет
-    			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV2);
-    			collision = true;
-    			continue;
-        	}
-        	
-        	// проверка удара об верхнюю стенку
-        	if (intersectPV3 != null && checkIntersect(vecV3, vec3, v3, speed)){
-        		// проверка двойных ударов
-        		if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
-        			if (scalMul(vec3,vec3) > scalMul(vec4,vec4)){
-        				// удар об стенку v4
-            			mball.reflectVertical(twall,intersectPV4);
-            			collision = true;
-            			continue;
-        			}else{
-        				// удар об стенку v3
-            			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
-            			collision = true;
-            			continue;
-        			}
-        		}
-        		
-        		// двойных ударов нет
-    			//mball.reflectWallV1(twall,twall.getSoftness(),intersectPV3);
-    			collision = true;
-    			continue;
-        	}
-        	
-        	// проверка удара об правую стенку
-        	if (intersectPV4 != null && checkIntersect(vecV4, vec4, v4, speed)){
-        		// двойных ударов нет
-        		mball.reflectVertical(twall,intersectPV4);
-    			collision = true;
-    			continue;
         	}
         }
     	return collision;
     }
 
+    private class IntersectVectorContainer{
+    	private boolean horiz;
+    	private PointF vect;
+    	private PointF nextvect;
+    	/**
+    	 * Конструктор контейнера
+    	 * @param vec - вектор от положения шара до положения стены.
+    	 * @param nextPosVec - вектор от положения шара до положения стены.
+    	 * @param horizont - <code>true</code> в случае горизонтальной стены
+    	 */
+    	public IntersectVectorContainer(PointF vec, PointF nextPosVec, boolean horizont){
+    		vect = vec;
+    		horiz = horizont;
+    		nextvect = nextPosVec;
+    	}
+    	
+    	public boolean isHorizontReflection(){
+    		return horiz;
+    	}
+    	
+    	public float getPowerLength(){
+    		return vect.x * vect.x + vect.y * vect.y;
+    	}
+    	
+    	public PointF getVector(){
+    		return vect;
+    	}
+    	
+    	public PointF getNextPosVector(){
+    		return nextvect;
+    	}
+    }
+    
     /**
      * проверка на соударение с левой стеной
      * @param vec_v_1 - вектор пересечения со стенкой
@@ -414,9 +375,9 @@ public class GameLevel extends GameObject{
      * @return <code>true</code> если соударение произошло, <code>false</code> во всех остальных случаях
      */
     private boolean checkIntersect(PointF vec_v_1, PointF vec1, PointF v1, PointF speed){
-    	return ( scalMul(vec_v_1,v1) <= scalMul(v1,v1) 
+    	return ( scalMul(vec_v_1,v1) < scalMul(v1,v1) 
     		  && scalMul(vec_v_1,v1) >= 0
-    		  && scalMul(vec1,speed) <= scalMul(speed,speed)
+    		  && scalMul(vec1,speed) < scalMul(speed,speed)
     		  && scalMul(vec1,speed) >= 0 );
     }
     
@@ -430,7 +391,7 @@ public class GameLevel extends GameObject{
      * @return <code>PointF Point</code> - x и y координаты точки пересечения или <code>null</code> если нет такой точки 
      */
     private PointF getIntersectionPoint(PointF p1, PointF p2, PointF cord_p1, PointF cord_p2){
-    	float	x1 = p1.x,
+    	double	x1 = p1.x,
     			x2 = p2.x,
     			y1 = p1.y,
     			y2 = p2.y,
@@ -439,16 +400,16 @@ public class GameLevel extends GameObject{
     			y3 = cord_p1.y,
     			y4 = cord_p2.y;
     	
-    	float d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+    	double d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
     	
     	if (d == 0) {
     		return null;
     	}
 
-    	float xi = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/d;
-    	float yi = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/d;
+    	double xi = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/d;
+    	double yi = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/d;
 
-    	return new PointF( xi, yi );
+    	return new PointF( (float)xi, (float)yi );
     }
     
     private float scalMul(PointF p1, PointF p2){

@@ -341,6 +341,8 @@ public class Ball extends GameObject
      * */
     public void reflectHorizontal(Wall wall, PointF newPoint)
     {
+    	Log.v("reflect Horizontal","ball");
+    	
     	mPoint.x = newPoint.x;
     	mPoint.y = newPoint.y;
     	mNextPoint.x = newPoint.x;
