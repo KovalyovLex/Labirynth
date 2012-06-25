@@ -31,6 +31,10 @@ import android.hardware.SensorManager;
 public class LevelStorage {
 
 	private static final String LEVEL		= "level";
+	private static final String SCORE		= "score";
+	private static final String SCORE1STAR	= "sc1star";
+	private static final String SCORE2STAR	= "sc2star";
+	private static final String SCORE3STAR	= "sc3star";
 	private static final String BALL		= "ball";
 	private static final String WALL		= "wall";
 	private static final String FINISH		= "finish";
@@ -42,6 +46,7 @@ public class LevelStorage {
 	private static final String PROP_Y2		= "Y2";
 	private static final String PROP_X		= "X";
 	private static final String PROP_Y		= "Y";
+	private static final String PROP_SOFT	= "Y";
 	private static final String ATTR_NAME	= "name";
 	
 	private Map<String,String> drawablenames = new HashMap<String,String>();
@@ -171,6 +176,11 @@ public class LevelStorage {
 		Wall twall     = null;
 		Ball tball     = null;
 		FINISH tfinish = null;
+		float softness = 0.7f;
+		int score	= 0,
+			sc1Star	= 0,
+			sc2Star	= 0,
+			sc3Star	= 0;
 		int x1		= 0,
 			x2		= 0,
 			y1		= 0,
@@ -183,6 +193,18 @@ public class LevelStorage {
 		
 		try {
 			while (xml.next() != XmlPullParser.END_DOCUMENT){
+				if (SCORE.equals(xml.getName())){
+					score = new Integer(xml.nextText());
+				}
+				if (SCORE1STAR.equals(xml.getName())){
+					sc1Star = new Integer(xml.nextText());
+				}
+				if (SCORE2STAR.equals(xml.getName())){
+					sc2Star = new Integer(xml.nextText());
+				}
+				if (SCORE3STAR.equals(xml.getName())){
+					sc3Star = new Integer(xml.nextText());
+				}
 				if (BALL.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();
@@ -204,37 +226,8 @@ public class LevelStorage {
 										new PointF(x1, y1), 
 										d,
 										(SensorManager)context.getSystemService(Context.SENSOR_SERVICE));
-				}else if (WALL.equals(xml.getName())){
-					deep = xml.getDepth();
-					xml.next();
-					while(xml.getDepth() > deep){
-						if (PROP_X1.equals(xml.getName())){
-							x1 = new Integer(xml.nextText());
-						}
-						if (PROP_Y1.equals(xml.getName())){
-							y1 = new Integer(xml.nextText());
-						}
-						if (PROP_X2.equals(xml.getName())){
-							x2 = new Integer(xml.nextText());
-						}
-						if (PROP_Y2.equals(xml.getName())){
-							y2 = new Integer(xml.nextText());
-						}
-						xml.next();
-					}
-					Drawable texture = context.getResources().getDrawable(R.drawable.wall);
-					
-					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
-
-					// загрузка стены с текстурой stenka
-					twall = new Wall(	gl,
-										bmp,
-										new PointF(x1 * (float)Settings.getScaleFactorX(), y1 * (float)Settings.getScaleFactorY()), 
-										new PointF(x2 * (float)Settings.getScaleFactorX(), y2 * (float)Settings.getScaleFactorY()),
-										0.70f);
-					walls.add(twall);
-					
-				}else if (FINISH.equals(xml.getName())){
+				}
+				if (FINISH.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();
 					while(xml.getDepth() > deep){
@@ -255,6 +248,41 @@ public class LevelStorage {
 											new PointF(finX, finY), 
 											finDiam);
 				}
+				if (WALL.equals(xml.getName())){
+					softness = 0.7f;
+					deep = xml.getDepth();
+					xml.next();
+					while(xml.getDepth() > deep){
+						if (PROP_X1.equals(xml.getName())){
+							x1 = new Integer(xml.nextText());
+						}
+						if (PROP_Y1.equals(xml.getName())){
+							y1 = new Integer(xml.nextText());
+						}
+						if (PROP_X2.equals(xml.getName())){
+							x2 = new Integer(xml.nextText());
+						}
+						if (PROP_Y2.equals(xml.getName())){
+							y2 = new Integer(xml.nextText());
+						}
+						if (PROP_SOFT.equals(xml.getName())){
+							softness = new Float(xml.nextText());
+						}
+						xml.next();
+					}
+					Drawable texture = context.getResources().getDrawable(R.drawable.wall);
+					
+					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
+
+					// загрузка стены с текстурой stenka
+					twall = new Wall(	gl,
+										bmp,
+										new PointF(x1 * (float)Settings.getScaleFactorX(), y1 * (float)Settings.getScaleFactorY()), 
+										new PointF(x2 * (float)Settings.getScaleFactorX(), y2 * (float)Settings.getScaleFactorY()),
+										softness);
+					walls.add(twall);
+					
+				}
 				if ( LEVEL.equals(xml.getName()) ){
 					break;
 				}
@@ -273,6 +301,13 @@ public class LevelStorage {
 								tfinish,
 								gl,
 								context.getResources().getDrawable(R.drawable.flexy3));
+		
+		if (score 	!= 0 &&
+			sc1Star	!= 0 &&
+			sc2Star	!= 0 &&
+			sc3Star	!= 0){
+			game.setScoreSystem(score, sc1Star, sc2Star, sc3Star);
+		}
 		
 		return game;
 	}

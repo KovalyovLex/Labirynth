@@ -4,9 +4,11 @@
     	
 	    <drawable>level1mini</drawable>
 	    
-	    <score></score>
+	    <score>9000</score>
 	    
-	    <sc1star></sc1star>
+	    <sc1star>6000</sc1star>
+	    <sc2star>7500</sc2star>
+	    <sc3star>8500</sc3star>
 	    
     	<ball>
     	    <X>170</X>
@@ -25,6 +27,7 @@
     	    <Y1>75</Y1> 
     	    <X2>220</X2>
     	    <Y2>255</Y2>
+    	    <softness>0.1</softness>
     	</wall>
     	
     	<wall>
@@ -32,6 +35,7 @@
     	    <Y1>75</Y1> 
     	    <X2>420</X2>
     	    <Y2>255</Y2>
+    	    <softness>0.2</softness>
     	</wall>
     	
     	<wall>
@@ -39,6 +43,7 @@
     	    <Y1>240</Y1> 
     	    <X2>320</X2>
     	    <Y2>430</Y2>
+    	    <softness>0.7</softness>
     	</wall>
     	
     	<wall>
@@ -46,6 +51,7 @@
     	    <Y1>240</Y1> 
     	    <X2>520</X2>
     	    <Y2>430</Y2>
+    	    <softness>0.9</softness>
     	</wall>
     	
 
@@ -54,6 +60,12 @@
 	<level name="Second level">
     	
 	    <drawable>level2mini</drawable>
+	    
+	    <score>9000</score>
+	    
+	    <sc1star>6000</sc1star>
+	    <sc2star>7500</sc2star>
+	    <sc3star>8500</sc3star>
 	    
     	<ball>
     	    <X>100</X>
@@ -100,6 +112,12 @@
 	<level name="Third level">
     	
 	    <drawable>level3mini</drawable>
+	    
+	    <score>9000</score>
+	    
+	    <sc1star>6000</sc1star>
+	    <sc2star>7500</sc2star>
+	    <sc3star>8500</sc3star>
 	    
     	<ball>
     	    <X>100</X>
