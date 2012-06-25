@@ -121,6 +121,9 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 					if (GameScreen.getLastGameID() < LevelStorage.getNumOfLevels()){
 						dialogButtonRestart.setOnClickListener(new OnClickListener() {
 							public void onClick(View v) {
+								if (StartScreen.startActivity != null){
+									StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+								}
 								GameScreen.startNextLevel();
 								dialog.dismiss();
 							}
@@ -134,6 +137,9 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 					dialogButtonRestart.setText(StartScreen.startActivity.getString(R.string.restart));
 					dialogButtonRestart.setOnClickListener(new OnClickListener() {
 						public void onClick(View v) {
+							if (StartScreen.startActivity != null){
+								StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+							}
 							GameScreen.restartLevel();
 							dialog.dismiss();
 						}
@@ -210,6 +216,8 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 	}
 	
 	public void destroyLevel(){
-		level.destoyLevel();
+		if (level != null){
+			level.destoyLevel();
+		}
 	}
 }

@@ -71,6 +71,12 @@ public class GameScreen extends Activity {
 		gameView.onDestroy();
 	}
 	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		gameView.onDestroy();
+	}
+	
     @Override
     public void onConfigurationChanged(Configuration newConfig) { 
     	super.onConfigurationChanged(newConfig);

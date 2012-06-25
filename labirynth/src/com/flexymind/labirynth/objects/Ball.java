@@ -2,6 +2,9 @@
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.flexymind.labirynth.R;
+import com.flexymind.labirynth.FXs.SoundEngine;
+import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.Settings;
 import com.flexymind.labirynth.storage.SettingsStorage;
 
@@ -20,44 +23,53 @@ import android.hardware.SensorManager;
 
 public class Ball extends GameObject
 {
-    private static final PointF NULL_SPEED = new PointF(-10 * (float)Settings.getScaleFactorX(),
+    private static final PointF NULL_SPEED = new PointF(10 * (float)Settings.getScaleFactorX(),
     													10 * (float)Settings.getScaleFactorY());
-	
+	// максимальное значение скорости, для которого громкость 1.
+    private static final PointF MAX_SPEED = new PointF(	7 * (float)Settings.getScaleFactorX(),
+														7 * (float)Settings.getScaleFactorY());
+    
     /** Скорость шарика */
-    private PointF mSpeed;
+    private PointF	mSpeed;
     
     /**Вращение шарика в лунке */
-    private boolean spin = false;
+    private boolean	spin = false;
     
     /**Центр лунки */
-    private PointF   center;
+    private PointF	center;
     
     /**Направление закручавания шарика в лунке, true - увеличивается угол*/
-    private boolean rigthSpin = true;
+    private boolean	rigthSpin = true;
     
     /**шаг по времени с каждым обновлением экрана*/
-    private float  dt = 0.1f;
+    private float	dt = 0.1f;
     
     /**Число оборотов шара, перед тем как он попадет в лунку*/
-    private float  numberSpin = 2.5f;
+    private float	numberSpin = 2.5f;
     
     /** угол вращения в лунке */
-    private float  angle;
+    private float	angle;
     
     /** Диаметр лунки */
     private int     diam;
     
     /** время в формуле вращения */
-    private float t = 1;
+    private float	t = 1;
     
     /** Коэффициент трения об пол */
-    private float fricCoef = 0.95f;
+    private float	fricCoef = 0.95f;
     
-    private float sensAccel = SettingsStorage.getSensivity();
+    private float	sensAccel = SettingsStorage.getSensivity();
     
     /** Координаты левого верхнего угла шарика на следующем шаге */
-    private PointF mNextPoint;
+    private PointF	mNextPoint;
     
+    /** устройство для воспроизведения звука качения */
+	private SoundEngine mSoundEngine = null;
+	
+	/** значение громкости качения шара */
+	private float	soundVolume = 0;
+	
     /** Ускорение шарика */
     private static float[] macelleration = new float[3];
     
@@ -75,8 +87,7 @@ public class Ball extends GameObject
     
     /** true если приложение запущено на телефоне */
     private static boolean isPhone = true;
-    
-    
+
     /** Объект для прослушки сенсоров */
     public static SensorManager sMan = null;
     
@@ -115,6 +126,11 @@ public class Ball extends GameObject
         isPhone = Settings.isPhoneDevice();
         
         nullacelleration = SettingsStorage.getAcellPosition();
+        
+        mSoundEngine = new SoundEngine(StartScreen.startActivity);
+        mSoundEngine.addSound(1, R.raw.roll_stone_wood);
+        mSoundEngine.playLoopedSound(1);
+        soundVolume = 0;
     }
 	
 	/** Прослушка акселерометра */
@@ -170,7 +186,7 @@ public class Ball extends GameObject
      * Функция, определяющая последующее положение шарика
      */
 	protected void updatePoint()
-    {	
+    {
 		if (spin) {
 			
 			t += dt;
@@ -210,7 +226,23 @@ public class Ball extends GameObject
 	        mNextPoint.x += mSpeed.x;
 	        mNextPoint.y += mSpeed.y;
 		}
+		
+		soundVolume = scalMul(mSpeed,mSpeed) / scalMul(MAX_SPEED,MAX_SPEED);
+		
+		if (soundVolume > 1f){
+			soundVolume = 1f;
+		}
     }
+	
+	public void onDraw(GL10 gl){
+		super.onDraw(gl);
+		mSoundEngine.setPlayedStreamVolume(soundVolume);
+	}
+	
+	public void mutePlaySound(){
+		soundVolume = 0;
+		mSoundEngine.setPlayedStreamVolume(soundVolume);
+	}
 	
 	/**
 	 * Начало вращения в лунке
@@ -350,6 +382,12 @@ public class Ball extends GameObject
         mNextPoint.y += mSpeed.y;
         
         wall.showWall();
+    }
+    
+    protected void onDestroy()
+    {
+    	super.onDestroy();
+    	mSoundEngine.releaseSounds();
     }
     
 }

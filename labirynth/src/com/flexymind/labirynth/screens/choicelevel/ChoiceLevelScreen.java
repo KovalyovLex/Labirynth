@@ -41,7 +41,6 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.choicelevel);
 
 		Display display = getWindowManager().getDefaultDisplay();
 
@@ -50,7 +49,11 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		lvlstor = new LevelStorage(this);
 		
 		names = lvlstor.getLevelNames();
-		
+	}
+	
+	protected void onResume(){
+		super.onResume();
+		setContentView(R.layout.choicelevel);
 		addButtons();
 	}
 	
@@ -131,8 +134,10 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			
 			newbulllay.setOrientation(LinearLayout.VERTICAL);
 			
-			Drawable miniature = lvlstor.getPrevPictireByName(names.get(i));
-			Canvas canv = new Canvas(((BitmapDrawable)miniature).getBitmap());
+			Bitmap bOriginal = ((BitmapDrawable)lvlstor.getPrevPictireByName(names.get(i))).getBitmap();
+			Bitmap miniature = bOriginal.copy(Bitmap.Config.ARGB_8888, true);
+			
+			Canvas canv = new Canvas(miniature);
 			ScoreStorage scorStor = new ScoreStorage(this);
 			Drawable text = null;
 			if (scorStor.isOpen(i)){
@@ -142,8 +147,8 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 					text = getResources().getDrawable(R.drawable.level1star);
 					text.setBounds(	0,
 									0,
-									((BitmapDrawable)miniature).getBitmap().getWidth(),
-									((BitmapDrawable)miniature).getBitmap().getHeight());
+									miniature.getWidth(),
+									miniature.getHeight());
 					text.draw(canv);
 				}
 				if (scorStor.getNumOfStars(i) == 2){
@@ -151,8 +156,8 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 					text = getResources().getDrawable(R.drawable.level2star);
 					text.setBounds(	0,
 									0,
-									((BitmapDrawable)miniature).getBitmap().getWidth(),
-									((BitmapDrawable)miniature).getBitmap().getHeight());
+									miniature.getWidth(),
+									miniature.getHeight());
 					text.draw(canv);
 				}
 				if (scorStor.getNumOfStars(i) == 3){
@@ -160,8 +165,8 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 					text = getResources().getDrawable(R.drawable.level3star);
 					text.setBounds(	0,
 									0,
-									((BitmapDrawable)miniature).getBitmap().getWidth(),
-									((BitmapDrawable)miniature).getBitmap().getHeight());
+									miniature.getWidth(),
+									miniature.getHeight());
 					text.draw(canv);
 				}
 			}else{
@@ -169,15 +174,15 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 				text = getResources().getDrawable(R.drawable.levelblocked);
 				text.setBounds(	0,
 								0,
-								((BitmapDrawable)miniature).getBitmap().getWidth(),
-								((BitmapDrawable)miniature).getBitmap().getHeight());
+								miniature.getWidth(),
+								miniature.getHeight());
 				text.draw(canv);
 			}
 			
 			access.addElement(scorstor.isOpen(i));
 			newbutton.setId(id + i);
 			newbutton.setOnClickListener(this);
-			newbutton.setBackgroundDrawable(miniature);
+			newbutton.setBackgroundDrawable(new BitmapDrawable(miniature));
 			
 			newnameOfLvl.setText(names.get(i));
 			newnameOfLvl.setGravity(Gravity.CENTER_HORIZONTAL);

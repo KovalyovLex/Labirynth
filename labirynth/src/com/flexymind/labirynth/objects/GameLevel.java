@@ -12,6 +12,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.flexymind.labirynth.FXs.Vibration;
+import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.Settings;
 
 
@@ -46,9 +48,9 @@ public class GameLevel extends GameObject{
 	private float scoreFor3Star = score * 0.85f;
 	
 	private Paint mPaintScore = new Paint(); // Для отрисовки очков
-
 	private Vector <Wall> walls;
-    
+    private Vibration mVibration = null;
+	
     /**
      * Конструктор 
      * @param Vector <Wall> walls Все стены данного уровня
@@ -82,12 +84,15 @@ public class GameLevel extends GameObject{
 		mball.onUpdate();
 		mfinish.onUpdate();
 		
+		mball.mutePlaySound();
+		
 		mPaintScore = new Paint();
         mPaintScore.setAntiAlias(true);
         mPaintScore.setTextSize((int)(20 * Settings.getScaleFactorY()));
         mPaintScore.setColor(Color.WHITE);
         mPaintScore.setTextAlign(Paint.Align.CENTER);
         
+        mVibration = new Vibration(StartScreen.startActivity);
 	}
     
     /**
@@ -136,44 +141,35 @@ public class GameLevel extends GameObject{
     /** Отрисовка объектов на игровом поле */
     public void onDraw(GL10 gl)
     {
-    	if (!pause){
-    		// Point to our buffers
-    		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+    	// Point to our buffers
+    	gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		
-    		mSquare.draw(gl);
-    		mfinish.onDraw(gl);
-    		mball.onDraw(gl);
-        	for(int i=0;i < walls.size();i++){
-        		walls.elementAt(i).onDraw(gl);
-        	}
+    	mSquare.draw(gl);
+    	mfinish.onDraw(gl);
+    	mball.onDraw(gl);
+        for(int i=0;i < walls.size();i++){
+        	walls.elementAt(i).onDraw(gl);
+        }
 
-			// Disable the client state before leaving
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-			gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
+		// Disable the client state before leaving
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
         
-        	/*
-        	canvas.drawText(Integer.toString((int)score),
-        					(float)(Settings.getCurrentXRes()) / 2,
-        					(float) (30 * Settings.getScaleFactorY()),
-        					mPaintScore);
-         	*/
-        
-        	// debug отрисовка краев рамки
-        	//Paint mPaint = new Paint();
-        	//mPaint.setColor(Color.MAGENTA);
-        	//mPaint.setStrokeWidth(2);
-        	//mPaint.setStyle(Style.STROKE);
-        	//canvas.drawRect(mplayField, mPaint);
-    	}
+        /*
+        canvas.drawText(Integer.toString((int)score),
+        				(float)(Settings.getCurrentXRes()) / 2,
+        				(float) (30 * Settings.getScaleFactorY()),
+        				mPaintScore);
+        */
     }
     
     @Override
     /** Перемещение объекта */
     public void onUpdate()
     {
-    	if (frameShowed > preShowFrame){
+    	if (!pause && frameShowed > preShowFrame){
     		if(!mball.isSpinning()) {
     			score -= scorePF;
     		}
@@ -198,6 +194,8 @@ public class GameLevel extends GameObject{
     		if (i > 0){
     			// вычитаем очки за удар об стену или ограничивающие стенки
     			score -= scorePWall;
+    			// вибро сигнал
+    			mVibration.singleVibration();
     		}
     		victory();
     	}else{

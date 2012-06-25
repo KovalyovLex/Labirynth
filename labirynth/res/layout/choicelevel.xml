@@ -45,7 +45,7 @@
                     android:layout_width="350px"
                     android:layout_height="300px"
                     android:layout_marginBottom="0px"
-                    android:src="@drawable/level1mini" />
+                    android:src="@drawable/level1" />
 
             </LinearLayout>
         </LinearLayout>
