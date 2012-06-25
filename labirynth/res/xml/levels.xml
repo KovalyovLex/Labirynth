@@ -2,7 +2,7 @@
 <levels>
 	<level name="First level">
     	
-	    <drawable>level1mini</drawable>
+	    <drawable>level1</drawable>
 	    
 	    <score>9000</score>
 	    
@@ -59,7 +59,7 @@
 	
 	<level name="Second level">
     	
-	    <drawable>level2mini</drawable>
+	    <drawable>level4</drawable>
 	    
 	    <score>9000</score>
 	    
@@ -111,7 +111,7 @@
 	
 	<level name="Third level">
     	
-	    <drawable>level3mini</drawable>
+	    <drawable>level5</drawable>
 	    
 	    <score>9000</score>
 	    

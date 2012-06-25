@@ -13,10 +13,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -117,8 +117,6 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			rlparams.height = (int)(Settings.getScaleFactorY() * rlparams.height);
 			rlparams.width = (int)(Settings.getScaleFactorX() * rlparams.width);
 			
-			Log.v("height", Integer.toString(rlparams.height));
-			
 			parent.addView(hscroll,rlparams);
 		}
 
@@ -133,10 +131,53 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 			
 			newbulllay.setOrientation(LinearLayout.VERTICAL);
 			
+			Drawable miniature = lvlstor.getPrevPictireByName(names.get(i));
+			Canvas canv = new Canvas(((BitmapDrawable)miniature).getBitmap());
+			ScoreStorage scorStor = new ScoreStorage(this);
+			Drawable text = null;
+			if (scorStor.isOpen(i)){
+				// draw 1 or 2 or 3 or null stars
+				if (scorStor.getNumOfStars(i) == 1){
+					// draw 1 star
+					text = getResources().getDrawable(R.drawable.level1star);
+					text.setBounds(	0,
+									0,
+									((BitmapDrawable)miniature).getBitmap().getWidth(),
+									((BitmapDrawable)miniature).getBitmap().getHeight());
+					text.draw(canv);
+				}
+				if (scorStor.getNumOfStars(i) == 2){
+					// draw 2 star
+					text = getResources().getDrawable(R.drawable.level2star);
+					text.setBounds(	0,
+									0,
+									((BitmapDrawable)miniature).getBitmap().getWidth(),
+									((BitmapDrawable)miniature).getBitmap().getHeight());
+					text.draw(canv);
+				}
+				if (scorStor.getNumOfStars(i) == 3){
+					// draw 3 star
+					text = getResources().getDrawable(R.drawable.level3star);
+					text.setBounds(	0,
+									0,
+									((BitmapDrawable)miniature).getBitmap().getWidth(),
+									((BitmapDrawable)miniature).getBitmap().getHeight());
+					text.draw(canv);
+				}
+			}else{
+				// draw locked texture
+				text = getResources().getDrawable(R.drawable.levelblocked);
+				text.setBounds(	0,
+								0,
+								((BitmapDrawable)miniature).getBitmap().getWidth(),
+								((BitmapDrawable)miniature).getBitmap().getHeight());
+				text.draw(canv);
+			}
+			
 			access.addElement(scorstor.isOpen(i));
 			newbutton.setId(id + i);
 			newbutton.setOnClickListener(this);
-			newbutton.setBackgroundDrawable(lvlstor.getPrevPictireByName(names.get(i)));
+			newbutton.setBackgroundDrawable(miniature);
 			
 			newnameOfLvl.setText(names.get(i));
 			newnameOfLvl.setGravity(Gravity.CENTER_HORIZONTAL);
