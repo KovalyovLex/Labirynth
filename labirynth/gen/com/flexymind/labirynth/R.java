@@ -72,6 +72,7 @@ public final class R {
         public static final int levels=0x7f050006;
         public static final int next=0x7f050007;
         public static final int quit=0x7f050005;
+        public static final int restart=0x7f05000b;
         public static final int settingsSensivity=0x7f050008;
         public static final int settings_title=0x7f050002;
         public static final int start_title=0x7f050001;

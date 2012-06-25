@@ -3,6 +3,7 @@ package com.flexymind.labirynth.screens.game;
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.game.OpenGL.GLGameView;
 import com.flexymind.labirynth.screens.start.StartScreen;
+import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -75,9 +76,28 @@ public class GameScreen extends Activity {
     	super.onConfigurationChanged(newConfig);
     }
 
+    public static void restartLevel(){
+    	if (gameID != NULLID){
+    		if(StartScreen.startActivity != null){
+    			StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+    			if (context != null){
+    				Intent intent = new Intent();
+        			intent.setClass(context, GameScreen.class);
+        			StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
+    			}
+    		}
+    	}
+    }
+    
+    /**
+     * Запускает следующий уровень в игре, если был запущен последний, то будет запущен первый
+     */
     public static void startNextLevel(){
     	if (gameID != NULLID){
     		gameID++;
+    		if (gameID >= LevelStorage.getNumOfLevels()){
+    			gameID = 0;
+    		}
     		if(StartScreen.startActivity != null){
     			StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
     			if (context != null){

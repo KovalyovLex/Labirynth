@@ -62,49 +62,7 @@ public class GLRenderer implements GLSurfaceView.Renderer{
     		// start activity with finish menu
     		firsttime = false;
     		
-			StartScreen.startActivity.runOnUiThread(new Runnable(){
-
-				public void run() {
-		    		final Dialog dialog = new Dialog(context);
-		    		
-					dialog.setContentView(R.layout.finishmenu);
-					dialog.setTitle("You WIN!");
-
-					TextView text = (TextView) dialog.findViewById(R.id.score);
-					text.setText(String.format("Your score -  %d", (int)level.getScore()));
-
-					Button dialogButtonRestart = (Button) dialog.findViewById(R.id.dialogButtonRestart);
-					// if button is clicked, close the custom dialog
-					dialogButtonRestart.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							GameScreen.startNextLevel();
-							dialog.dismiss();
-						}
-					});
-
-					Button dialogButtonLevels = (Button) dialog.findViewById(R.id.dialogButtonLevels);
-					// if button is clicked, close the custom dialog
-					dialogButtonLevels.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							if (StartScreen.startActivity != null){
-								StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
-							}
-						}
-					});
-
-					Button dialogButtonQuit = (Button) dialog.findViewById(R.id.dialogButtonQuit);
-					// if button is clicked, close the custom dialog
-					dialogButtonQuit.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							if (StartScreen.startActivity != null){
-								StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
-								StartScreen.startActivity.finishActivity(StartScreen.ID_CHOISELEVELSCREEN);
-							}
-						}
-					});
-					dialog.show();
-				}
-			});
+    		showFinishMenu();
     	}
     	
 		// clear Screen and Depth Buffer
@@ -127,6 +85,67 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 		gl.glFlush();
 	}
 
+	/**
+	 * запускает финишное меню
+	 */
+	private void showFinishMenu(){
+		StartScreen.startActivity.runOnUiThread(new Runnable(){
+
+			public void run() {
+	    		final Dialog dialog = new Dialog(context);
+	    		
+				dialog.setContentView(R.layout.finishmenu);
+				dialog.setTitle("You WIN!");
+				dialog.setCancelable(false);
+				
+				TextView text = (TextView) dialog.findViewById(R.id.score);
+				text.setText(String.format("Your score -  %d \nYour get stars: %d", (int)level.getScore(), level.getNumOfStars()));
+				
+				Button dialogButtonRestart = (Button) dialog.findViewById(R.id.dialogButtonRestart);
+				
+				if (level.getNumOfStars() > 0){
+					// if button is clicked, close the custom dialog
+					dialogButtonRestart.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							GameScreen.startNextLevel();
+							dialog.dismiss();
+						}
+					});
+				}else{
+					dialogButtonRestart.setText(StartScreen.startActivity.getString(R.string.restart));
+					dialogButtonRestart.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							GameScreen.restartLevel();
+							dialog.dismiss();
+						}
+					});
+				}
+
+				Button dialogButtonLevels = (Button) dialog.findViewById(R.id.dialogButtonLevels);
+				// if button is clicked, close the custom dialog
+				dialogButtonLevels.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						if (StartScreen.startActivity != null){
+							StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+						}
+					}
+				});
+
+				Button dialogButtonQuit = (Button) dialog.findViewById(R.id.dialogButtonQuit);
+				// if button is clicked, close the custom dialog
+				dialogButtonQuit.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						if (StartScreen.startActivity != null){
+							StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
+							StartScreen.startActivity.finishActivity(StartScreen.ID_CHOISELEVELSCREEN);
+						}
+					}
+				});
+				dialog.show();
+			}
+		});
+	}
+	
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		if (height == 0) { // Prevent A Divide By Zero By
 			height = 1; // Making Height Equal One

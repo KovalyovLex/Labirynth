@@ -4,6 +4,10 @@
     	
 	    <drawable>level1mini</drawable>
 	    
+	    <score></score>
+	    
+	    <sc1star></sc1star>
+	    
     	<ball>
     	    <X>170</X>
     	    <Y>170</Y>

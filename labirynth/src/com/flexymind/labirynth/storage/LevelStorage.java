@@ -46,13 +46,14 @@ public class LevelStorage {
 	
 	private Map<String,String> drawablenames = new HashMap<String,String>();
 	private Vector<String> names = new Vector<String>();
-	
+	private static int numNames;
 	private Context context;
 	
 	/** 
 	 * Конструктор класса
 	 */
 	public LevelStorage(Context cont){
+		numNames = 0;
 		context = cont;
 		parseXML();
 	}
@@ -90,7 +91,14 @@ public class LevelStorage {
 		}finally{
 			xml.close();
 		}
-		
+		numNames = names.size();
+	}
+	
+	/**
+	 * @return количество уровней в базе данных
+	 */
+	public static int getNumOfLevels(){
+		return numNames;
 	}
 	
 	/**

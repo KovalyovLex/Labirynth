@@ -33,7 +33,7 @@ public class GameLevel extends GameObject{
 	private int top  = 17;
 	private Rect mplayField = null;
 
-	private final long preShowFrame = 60; // вначле игры уровень показывается 60 кадров
+	private final long preShowFrame = 60; // вначле игры уровень показывается 60 кадров (1 секунда)
 	private boolean hidewall = true;
 	private long frameShowed = 0; // переменная для отсчёта кадров
 	private long startTime = 0; // время начала раунда в секундах
@@ -41,6 +41,10 @@ public class GameLevel extends GameObject{
 	private float scorePF = 1.5f; // понижение очков за кадр (90 очков в секунду)
 	private float score = 10000; // Стартовое значение очков
 	private float scorePWall = 100; // понижение очков за удар об стену
+	private float scoreFor1Star = score * 0.5f;
+	private float scoreFor2Star = score * 0.7f;
+	private float scoreFor3Star = score * 0.85f;
+	
 	
 	Paint mPaintScore = new Paint(); // Для отрисовки очков
 
@@ -86,6 +90,31 @@ public class GameLevel extends GameObject{
         mPaintScore.setTextAlign(Paint.Align.CENTER);
         
 	}
+    
+    /**
+     * Задаёт значения для очков уровня
+     * @param firstScore - значение очков в начальный момент времени
+     * @param score1S - количество очков для 1 звезды
+     * @param score2S - количество очков для 2 звезд
+     * @param score3S - количество очков для 3 звезд
+     */
+    public void setScoreSystem(float firstScore, float score1S, float score2S, float score3S){
+    	score = firstScore;
+    	scoreFor1Star = score1S;
+    	scoreFor2Star = score2S;
+    	scoreFor3Star = score3S;
+    }
+    
+    public int getNumOfStars(){
+    	int i = 0;
+    	float[] scores = {scoreFor1Star, scoreFor2Star, scoreFor3Star};
+    	for (; i < 3; i++){
+    		if (score < scores[i]){
+    			break;
+    		}
+    	}
+    	return i;
+    }
     
     public boolean getIsFinished() {
     	return isFinished;
@@ -163,10 +192,8 @@ public class GameLevel extends GameObject{
     			walls.elementAt(i).onUpdate();
     		}
     		
-    		collisionsCheck();
-    		
     		int i = 0;
-    		while (collisionWithField(mball, mplayField) & i < 5){
+    		while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
     			i++;
     		}
     		if (i > 0){
@@ -419,7 +446,7 @@ public class GameLevel extends GameObject{
     }
     
     /**
-     * проверка на соударение с левой стеной
+     * проверка на соударение со стеной
      * @param vec_v_1 - вектор пересечения со стенкой
      * @param vec1 - вектор пересечения скорости со стенкой (от предыдущего положения шара до точки пересечения со стенкой)
      * @param v1 - вектор, задаюший стенку
