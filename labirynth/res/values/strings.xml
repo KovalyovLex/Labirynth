@@ -15,4 +15,6 @@
     <string name="calibrate">Calibrating the accelerometer</string>
     <string name="blockedLevel">This level is blocked!</string>
     <string name="restart">Restart</string>
+    <string name="finishWinTitle">You WIN !</string>
+    <string name="finistLooseTitle">Sorry, you loose, try again</string>
 </resources>

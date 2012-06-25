@@ -76,6 +76,17 @@ public class GameScreen extends Activity {
     	super.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * возвращает ID последнего запущенного уровня
+     * @return ID
+     */
+    public static int getLastGameID(){
+    	return gameID;
+    }
+    
+    /**
+     * Перезапускает уровень игры
+     */
     public static void restartLevel(){
     	if (gameID != NULLID){
     		if(StartScreen.startActivity != null){

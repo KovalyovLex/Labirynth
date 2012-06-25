@@ -45,10 +45,9 @@ public class GameLevel extends GameObject{
 	private float scoreFor2Star = score * 0.7f;
 	private float scoreFor3Star = score * 0.85f;
 	
-	
-	Paint mPaintScore = new Paint(); // Для отрисовки очков
+	private Paint mPaintScore = new Paint(); // Для отрисовки очков
 
-    Vector <Wall> walls;
+	private Vector <Wall> walls;
     
     /**
      * Конструктор 

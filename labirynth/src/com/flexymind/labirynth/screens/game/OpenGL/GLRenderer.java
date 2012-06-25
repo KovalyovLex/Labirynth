@@ -8,6 +8,7 @@ import com.flexymind.labirynth.objects.GameLevel;
 import com.flexymind.labirynth.screens.game.GameScreen;
 import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
+import com.flexymind.labirynth.storage.ScoreStorage;
 import com.flexymind.labirynth.storage.Settings;
 
 import android.app.Dialog;
@@ -95,7 +96,6 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 	    		final Dialog dialog = new Dialog(context);
 	    		
 				dialog.setContentView(R.layout.finishmenu);
-				dialog.setTitle("You WIN!");
 				dialog.setCancelable(false);
 				
 				TextView text = (TextView) dialog.findViewById(R.id.score);
@@ -104,14 +104,33 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 				Button dialogButtonRestart = (Button) dialog.findViewById(R.id.dialogButtonRestart);
 				
 				if (level.getNumOfStars() > 0){
-					// if button is clicked, close the custom dialog
-					dialogButtonRestart.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							GameScreen.startNextLevel();
-							dialog.dismiss();
-						}
-					});
+					// level complete, open next level
+					ScoreStorage scorStor = new ScoreStorage(StartScreen.startActivity.getApplicationContext());
+					scorStor.saveLastId(GameScreen.getLastGameID());
+					if (level.getScore() > scorStor.getScore(GameScreen.getLastGameID())){
+						// save new greater score
+						scorStor.saveScore((int)level.getScore(), GameScreen.getLastGameID());
+					}
+					if (level.getNumOfStars() > scorStor.getNumOfStars(GameScreen.getLastGameID())){
+						// save new greater number of stars
+						scorStor.saveNumOfStars(level.getNumOfStars(), GameScreen.getLastGameID());
+					}
+					
+					dialog.setTitle(StartScreen.startActivity.getString(R.string.finishWinTitle));
+					
+					if (GameScreen.getLastGameID() < LevelStorage.getNumOfLevels()){
+						dialogButtonRestart.setOnClickListener(new OnClickListener() {
+							public void onClick(View v) {
+								GameScreen.startNextLevel();
+								dialog.dismiss();
+							}
+						});
+					}else{
+						// last level completed! Need to show congratulations menu!
+					}
 				}else{
+					dialog.setTitle(StartScreen.startActivity.getString(R.string.finistLooseTitle));
+					
 					dialogButtonRestart.setText(StartScreen.startActivity.getString(R.string.restart));
 					dialogButtonRestart.setOnClickListener(new OnClickListener() {
 						public void onClick(View v) {
@@ -141,6 +160,7 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 						}
 					}
 				});
+				
 				dialog.show();
 			}
 		});

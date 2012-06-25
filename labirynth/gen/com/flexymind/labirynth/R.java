@@ -68,6 +68,8 @@ public final class R {
         public static final int blockedLevel=0x7f05000a;
         public static final int calibrate=0x7f050009;
         public static final int exit_title=0x7f050003;
+        public static final int finishWinTitle=0x7f05000c;
+        public static final int finistLooseTitle=0x7f05000d;
         public static final int levelname=0x7f050004;
         public static final int levels=0x7f050006;
         public static final int next=0x7f050007;
