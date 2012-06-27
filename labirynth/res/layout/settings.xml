@@ -5,7 +5,7 @@
     android:background="@drawable/flexy3big"
     android:orientation="horizontal"
     android:padding="8dip" >
-
+
     <LinearLayout
         android:id="@+id/settButtLayout"
         android:layout_width="wrap_content"
@@ -15,6 +15,18 @@
         android:layout_marginBottom="25px"
         android:layout_marginLeft="15px"
         android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/vibrIntText"
+            android:layout_width="350px"
+            android:layout_height="wrap_content"
+            android:text="@string/vibrointensity"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <SeekBar
+            android:id="@+id/SeekBar01"
+            android:layout_width="350px"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/sensText"

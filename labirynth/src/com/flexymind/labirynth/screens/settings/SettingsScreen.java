@@ -1,6 +1,7 @@
 package com.flexymind.labirynth.screens.settings;
 
 import com.flexymind.labirynth.R;
+import com.flexymind.labirynth.FXs.Vibration;
 import com.flexymind.labirynth.storage.Settings;
 import com.flexymind.labirynth.storage.SettingsStorage;
 
@@ -22,7 +23,7 @@ import android.widget.TextView;
 public class SettingsScreen extends Activity implements OnClickListener{
 
 	private final int MAXSENS = 100;
-	
+	private Vibration mVibration;
 	private static SensorManager sensMan = null;
 	
 	// Для калибровки акселерометра
@@ -37,9 +38,11 @@ public class SettingsScreen extends Activity implements OnClickListener{
 		sensMan = (SensorManager) this.getSystemService(SENSOR_SERVICE);
 		
 		addButtons();
+		
+		mVibration = new Vibration(this);
 	}
 	
-	private class BarChangeListener implements SeekBar.OnSeekBarChangeListener {
+	private class AccelSensBarChangeListener implements SeekBar.OnSeekBarChangeListener {
 
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
@@ -60,23 +63,54 @@ public class SettingsScreen extends Activity implements OnClickListener{
 		
 	}
 	
+	private class VibroIntBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+
+		public void onProgressChanged(SeekBar seekBar, int progress,
+				boolean fromUser) {
+			if (progress > 0){
+				SettingsStorage.saveVibroInt(progress / MAXSENS);
+				mVibration.setIntensity(progress / MAXSENS);
+			}else{
+				SettingsStorage.saveVibroInt(1 / MAXSENS);
+				mVibration.setIntensity(1 / MAXSENS);
+			}
+			mVibration.singleVibration();
+		}
+
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			
+		}
+
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			
+		}
+		
+	}
+	
 	public void addButtons() {
 
 		Button calibrButton = (Button) findViewById(R.id.accelCalibr);
 		SeekBar bar = (SeekBar)findViewById(R.id.seekBar1);
+		SeekBar bar1 = (SeekBar)findViewById(R.id.SeekBar01);
 		TextView text = (TextView)findViewById(R.id.sensText);
+		TextView text1 = (TextView)findViewById(R.id.vibrIntText);
 		
+		bar1.setMax(MAXSENS);
+		bar1.setProgress((int)SettingsStorage.getSensivity() * 10);
 		bar.setMax(MAXSENS);
 		bar.setProgress((int)SettingsStorage.getSensivity() * 10);
 		
-		bar.setOnSeekBarChangeListener(new BarChangeListener());
+		bar.setOnSeekBarChangeListener(new AccelSensBarChangeListener());
+		bar1.setOnSeekBarChangeListener(new VibroIntBarChangeListener());
 		calibrButton.setOnClickListener(this);
 		
 		LinearLayout lay = (LinearLayout)findViewById(R.id.settButtLayout);
 		
 		LinearLayout.LayoutParams buttonparams = (LinearLayout.LayoutParams)calibrButton.getLayoutParams();
 		ViewGroup.LayoutParams barparams = (ViewGroup.LayoutParams)bar.getLayoutParams();
+		ViewGroup.LayoutParams bar1params = (ViewGroup.LayoutParams)bar1.getLayoutParams();
 		ViewGroup.LayoutParams textparams = (ViewGroup.LayoutParams)text.getLayoutParams();
+		ViewGroup.LayoutParams text1params = (ViewGroup.LayoutParams)text1.getLayoutParams();
 		
 		if (Settings.getAutoScale()) {
 			
@@ -90,8 +124,14 @@ public class SettingsScreen extends Activity implements OnClickListener{
 			barparams.height = (int)(Settings.getScaleFactorY() * barparams.height);
 			barparams.width  = (int)(Settings.getScaleFactorX() * barparams.width);
 			
+			bar1params.height = (int)(Settings.getScaleFactorY() * bar1params.height);
+			bar1params.width  = (int)(Settings.getScaleFactorX() * bar1params.width);
+			
 			textparams.height = (int)(Settings.getScaleFactorY() * textparams.height);
 			textparams.width  = (int)(Settings.getScaleFactorX() * textparams.width);
+			
+			text1params.height = (int)(Settings.getScaleFactorY() * text1params.height);
+			text1params.width  = (int)(Settings.getScaleFactorX() * text1params.width);
 			
 			RelativeLayout parent = (RelativeLayout)lay.getParent();
 			RelativeLayout.LayoutParams rlparams = (RelativeLayout.LayoutParams)lay.getLayoutParams();
@@ -106,6 +146,8 @@ public class SettingsScreen extends Activity implements OnClickListener{
 			
 			lay.addView(text, textparams);
 			lay.addView(bar, barparams);
+			lay.addView(text1, text1params);
+			lay.addView(bar1, bar1params);
 			lay.addView(calibrButton, buttonparams);
 			
 			parent.removeAllViews();

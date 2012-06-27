@@ -17,4 +17,5 @@
     <string name="restart">Restart</string>
     <string name="finishWinTitle">You WIN !</string>
     <string name="finistLooseTitle">Sorry, you loose, try again</string>
-</resources>
+
+    <string name="vibrointensity">Intensity of vibration</string></resources>

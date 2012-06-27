@@ -45,7 +45,6 @@ public abstract class GameObject {
     public GameObject(PointF p1, PointF p2, GL10 gl, Drawable image)
     {
     	mSquare = new Square(p1, p2);
-    	mSquare.loadGLTexture(gl, image);
         mPoint = new PointF(0, 0);
         refreshSize();
     }

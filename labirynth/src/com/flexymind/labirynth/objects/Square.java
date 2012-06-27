@@ -56,7 +56,7 @@ public class Square {
 	};
 
 	/** The texture pointer */
-	private static int[] textures = new int[99];
+	private static int[] textures = new int[30];
 	
 	private static int count = 0;
 	
@@ -255,9 +255,6 @@ public class Square {
 		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 		
-		// set squre size to bitmap size
-		//setSize(bitmap.getHeight() * (float)Settings.getScaleFactorY(), bitmap.getWidth() * (float)Settings.getScaleFactorX());
-		
 		// Clean up
 		bitmap.recycle();
 	}
@@ -297,12 +294,9 @@ public class Square {
         }
 		
         gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
-
-		// set squre size to bitmap size
-        //setSize(bitmap.getHeight() * (float)Settings.getScaleFactorY(), bitmap.getWidth() * (float)Settings.getScaleFactorX());
-		
+        
 		// Clean up
-		//bitmap.recycle();
+		bitmap.recycle();
 	}
 	
 	/** The draw method for the square with the GL context */
@@ -327,18 +321,28 @@ public class Square {
         if (err != 0) {
             Log.e("OpenGL error", GLU.gluErrorString(err));
         }
-		
-		//Log.v("Vector v1",Integer.toString((int)(vertices[0])) + " " + Integer.toString((int)(vertices[1])));
-		//Log.v("Vector v2",Integer.toString((int)(vertices[3])) + " " + Integer.toString((int)(vertices[4])));
-		//Log.v("Vector v3",Integer.toString((int)(vertices[6])) + " " + Integer.toString((int)(vertices[7])));
-		//Log.v("Vector v4",Integer.toString((int)(vertices[9])) + " " + Integer.toString((int)(vertices[10])));
         
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 	}
 	
+	/**
+	 * set count for textures, that was previously loaded
+	 * @param count - count
+	 */
+	protected void setThisCount(int count){
+		thiscount = count;
+	}
+	
+	/**
+	 * get count for textures, that was previously loaded
+	 */
+	protected int getCount(){
+		return thiscount;
+	}
+	
 	protected void onDestroy()
     {
-    	if (openGL != null){
+    	if (openGL != null && textures[thiscount] != 0){
     		openGL.glDeleteTextures(1, textures, thiscount);
     		textures[thiscount] = 0;
     		openGL.glFlush();

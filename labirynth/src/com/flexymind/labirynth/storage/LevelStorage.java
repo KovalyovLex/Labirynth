@@ -18,9 +18,7 @@ import com.flexymind.labirynth.objects.FINISH;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
-import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 
@@ -271,12 +269,10 @@ public class LevelStorage {
 						xml.next();
 					}
 					Drawable texture = context.getResources().getDrawable(R.drawable.wall);
-					
-					Bitmap bmp = ((BitmapDrawable)texture).getBitmap();
 
 					// загрузка стены с текстурой stenka
 					twall = new Wall(	gl,
-										bmp,
+										texture,
 										new PointF(x1 * (float)Settings.getScaleFactorX(), y1 * (float)Settings.getScaleFactorY()), 
 										new PointF(x2 * (float)Settings.getScaleFactorX(), y2 * (float)Settings.getScaleFactorY()),
 										softness);

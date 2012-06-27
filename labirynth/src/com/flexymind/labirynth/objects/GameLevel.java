@@ -187,11 +187,7 @@ public class GameLevel extends GameObject{
     			walls.elementAt(i).onUpdate();
     		}
     		
-    		int i = 0;
-    		while (collisionWithField(mball, mplayField) | collisionsCheck() & i < 5){
-    			i++;
-    		}
-    		if (i > 0){
+    		if (collisionsCheck() | collisionWithField(mball, mplayField)){
     			// вычитаем очки за удар об стену или ограничивающие стенки
     			score -= scorePWall;
     			// вибро сигнал
@@ -355,6 +351,8 @@ public class GameLevel extends GameObject{
         			}else{
         				mball.reflectVertical(twall, minLen.getNextPosVector());
         			}
+        			
+        			collision = true;
         		}
         	}else{
         		// Next Point not inside the wall, check for fast overflight
@@ -378,6 +376,7 @@ public class GameLevel extends GameObject{
         				}else{
         					mball.reflectVertical(twall, minLen.getNextPosVector());
         				}
+        				collision = true;
         			}
         		}
         	}

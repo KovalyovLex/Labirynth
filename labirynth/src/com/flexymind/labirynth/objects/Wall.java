@@ -2,9 +2,10 @@
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 public class Wall extends GameObject{
 
@@ -23,6 +24,9 @@ public class Wall extends GameObject{
 	private float minalfa = 0.1f;
 	private float alpfa = minalfa;
 	private int frameWasShow = 0;
+	
+	/** count for loaded texture (1 texture for all walls) */
+	private static int countText = -1;
 
 	/**
 	 * Конструктор для стен прямоугольных стен (только горизонтальные или вертикальные)
@@ -32,19 +36,28 @@ public class Wall extends GameObject{
 	 * @param softness мягкость стены
 	 */
 	public Wall(	GL10 gl,
-					Bitmap mBackG,
+					Drawable mBackG,
 					PointF first,
 					PointF second,
 					float softness){
-		super(first, second, gl, new BitmapDrawable(mBackG));
+		super(first, second, gl, mBackG);
+		
+		Log.v("Count",Integer.toString(countText));
+		
+		if (countText == -1){
+			mSquare.loadGLTexture(gl, mBackG);
+			countText = mSquare.getCount();
+		}else{
+			mSquare.setThisCount(countText);
+		}
 		
 		this.softness = softness;
 		
 		mPoint		= first;
 		secPoint	= second;
 		
-		mWidth = mBackG.getWidth();
-		mHeight = mBackG.getHeight();
+		mWidth = ((BitmapDrawable)mBackG).getBitmap().getWidth();
+		mHeight = ((BitmapDrawable)mBackG).getBitmap().getHeight();
 		
 		mSquare.setLeftTop(mPoint);
         
@@ -132,5 +145,11 @@ public class Wall extends GameObject{
 	protected void hideWall(){
 		mSquare.setOpacity(0);
 	}
+	
+	protected void onDestroy()
+    {
+		super.onDestroy();
+    	countText = -1;
+    }
 	
 }

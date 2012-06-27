@@ -94,7 +94,7 @@ public class SoundEngine {
 	public void setPlayedStreamVolume(float volume){
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 
 				(int)(volume * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)),
-				AudioManager.FLAG_PLAY_SOUND);
+				AudioManager.FLAG_VIBRATE);
 	}
 	
 	/**
