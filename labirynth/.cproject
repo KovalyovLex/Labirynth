@@ -17,20 +17,22 @@
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.pathentry"/>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration buildProperties="" description="" id="com.android.toolchain.gcc.1391365151" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
+				<configuration artifactName="labirynth" buildProperties="" description="" id="com.android.toolchain.gcc.1391365151" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="com.android.toolchain.gcc.1391365151.1410343304" name="/" resourcePath="">
 						<toolChain id="com.android.toolchain.gcc.698623132" name="com.android.toolchain.gcc" superClass="com.android.toolchain.gcc">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.1069032370" name="Android Platform" osList="all" superClass="com.android.targetPlatform"/>
-							<builder id="com.android.builder.1077097689" keepEnvironmentInBuildfile="false" managedBuildOn="false" superClass="com.android.builder">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="libs"/>
-								</outputEntries>
-							</builder>
+							<builder arguments="" buildPath="${workspace_loc:/labirynth}" command="&quot;C:\Android\android-ndk-r8\ndk-build.cmd&quot;" id="com.android.builder.1077097689" keepEnvironmentInBuildfile="false" managedBuildOn="false" superClass="com.android.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.398645672" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="com.android.tool.compiler.g++.1448321558" name="Android G++" superClass="com.android.tool.compiler.g++">
+								<option id="gnu.cpp.compiler.option.include.paths.1608800309" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Android\android-ndk-r8\platforms\android-9\arch-arm\usr\include&quot;"/>
+								</option>
 								<inputType id="com.android.tool.compiler.g++.input.1528095681" superClass="com.android.tool.compiler.g++.input"/>
 							</tool>
 							<tool id="com.android.tool.compiler.c.1612395627" name="Android GCC" superClass="com.android.tool.compiler.c">
+								<option id="gnu.c.compiler.option.include.paths.878379775" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Android\android-ndk-r8\platforms\android-9\arch-arm\usr\include&quot;"/>
+								</option>
 								<inputType id="com.android.tool.compiler.c.input.1222255227" superClass="com.android.tool.compiler.c.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.1041636023" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
@@ -45,9 +47,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="jni"/>
-					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -300,6 +299,8 @@
 					</profile>
 				</scannerConfigBuildInfo>
 			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">

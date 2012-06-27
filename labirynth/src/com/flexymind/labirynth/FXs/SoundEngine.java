@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 
@@ -14,6 +15,7 @@ public class SoundEngine {
 	private  SoundPool mSoundPool;
 	private  HashMap<Integer,Integer> mSoundPoolMap;
 	private  AudioManager  mAudioManager;
+	private  MediaPlayer mMediaPlay;
 	private  Context mContext;
 	private  HashMap<Integer,Float> mVolumeMap;
 	private  boolean delayPlay = false;
@@ -41,6 +43,7 @@ public class SoundEngine {
 	    });
 		delayPlay = false;
 		delayLooped = false;
+		
 	}
 	
 	public void initialize(Context context)
