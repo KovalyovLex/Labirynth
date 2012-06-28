@@ -201,6 +201,7 @@ public class Ball extends GameObject
 				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / t * Math.sin(angle) );
 			} else {
 				GameLevel.setIsFinidhed(true);
+				soundVolume = 0;
 			}
 		}
 		else{

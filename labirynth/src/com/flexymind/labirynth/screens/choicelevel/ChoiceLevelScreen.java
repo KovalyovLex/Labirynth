@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -49,10 +50,13 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		lvlstor = new LevelStorage(this);
 		
 		names = lvlstor.getLevelNames();
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 	
 	protected void onResume(){
 		super.onResume();
+		access.clear();
 		setContentView(R.layout.choicelevel);
 		addButtons();
 	}

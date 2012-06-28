@@ -46,4 +46,11 @@ public class Vibration {
 		mVibrator.vibrate(pattern, -1);
 
 	}
+	
+	/**
+	 * return true if vibration support
+	 */
+	//public boolean supportVibration(){
+		//return mVibrator.hasVirtator();
+	//}
 }

@@ -9,7 +9,6 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class SoundEngine {
 
@@ -21,7 +20,7 @@ public class SoundEngine {
 	private  boolean delayPlay = false;
 	private  boolean delayLooped = false;
 	private  boolean stopPlaying = false;
-	private  int playTime = 4000; // 300 msec. to play sound effect
+	private  int playTime = 300; // 300 msec. to play sound effect
 	private  PlayTask muzPlay;
 	
 	public SoundEngine(Context context){
@@ -64,8 +63,6 @@ public class SoundEngine {
 				}
 				mLoadComplete.put(sampleId, true);
 				
-				Log.v("OnloadSoundId",Integer.toString(sampleId));
-				
 				if (delayPlay){
 					if (delayLooped){
 						playLoopedSound(sampleId);
@@ -89,7 +86,6 @@ public class SoundEngine {
 	{
 		int sampleId = mSoundPool.load(mContext, SoundID, 1);
 	    mSoundPoolMap.put(index, sampleId);
-	    Log.v("loadSoundId",Integer.toString(sampleId));
 	}
 	
 	/**
@@ -120,6 +116,7 @@ public class SoundEngine {
 				if (mVolumeMap.containsKey(index)){
 					streamVolume = mVolumeMap.get(index);
 				}
+				
 		    	mSoundPool.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
 			}
 		}
@@ -154,7 +151,6 @@ public class SoundEngine {
 			
 			while (!stopPlaying){
 				try {
-					//Log.v("SoundEngine","sleep");
 					Thread.sleep(playTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -166,10 +162,9 @@ public class SoundEngine {
 				}
 				if (mSoundPool != null){
 					mSoundPool.stop(mSoundPoolMap.get(ind));
+					mSoundPool.play(mSoundPoolMap.get(ind), streamVolume, streamVolume, 2, 0, 1f);
 					
-					Log.v("streamVolume",Integer.toString((int)(100 * streamVolume)));
-					
-					mSoundPool.play(mSoundPoolMap.get(ind), streamVolume, streamVolume, 1, -1, 1f);
+					//Log.v("streamVolume",Integer.toString((int)(100 * streamVolume)));
 				}
 			}
 			return null;

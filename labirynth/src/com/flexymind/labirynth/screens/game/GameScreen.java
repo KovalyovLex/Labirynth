@@ -5,6 +5,7 @@ import com.flexymind.labirynth.screens.game.OpenGL.GLGameView;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -27,6 +28,7 @@ public class GameScreen extends Activity {
             gameView.setGameLevelID(LoadingScreen.gameID);
         }
         
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 	
 	@Override
