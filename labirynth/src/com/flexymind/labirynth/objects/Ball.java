@@ -48,10 +48,10 @@ public class Ball extends GameObject
     private float	numberSpin = 2.5f;
     
     /** угол вращения в лунке */
-    private float	angle;
+    private float	angle = 0;
     
     /** Диаметр лунки */
-    private int     diam;
+    private int     diam = 0;
     
     /** время в формуле вращения */
     private float	t = 1;
@@ -236,12 +236,12 @@ public class Ball extends GameObject
 	
 	public void onDraw(GL10 gl){
 		super.onDraw(gl);
-		mSoundEngine.setPlayedStreamVolume(soundVolume);
+		mSoundEngine.setPlaySoundVolume(1,soundVolume);
 	}
 	
 	public void mutePlaySound(){
 		soundVolume = 0;
-		mSoundEngine.setPlayedStreamVolume(soundVolume);
+		mSoundEngine.setPlaySoundVolume(1,soundVolume);
 	}
 	
 	/**

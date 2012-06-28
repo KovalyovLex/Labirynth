@@ -5,7 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.objects.GameLevel;
-import com.flexymind.labirynth.screens.game.GameScreen;
+import com.flexymind.labirynth.screens.game.LoadingScreen;
 import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
 import com.flexymind.labirynth.storage.ScoreStorage;
@@ -76,9 +76,7 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 		gl.glTranslatef(0.0f, 0.0f, -600); // move INTO the screen
 											// is the same as moving the camera
 											// away
-											// gl.glScalef(0.5f, 0.5f, 0.5f); //
-											// scale the square to 50%
-		// otherwise it will be too large
+
 		if (level != null){
 			level.onDraw(gl);
 		}
@@ -90,6 +88,8 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 	 * запускает финишное меню
 	 */
 	private void showFinishMenu(){
+		Thread.dumpStack();
+		
 		StartScreen.startActivity.runOnUiThread(new Runnable(){
 
 			public void run() {
@@ -106,26 +106,26 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 				if (level.getNumOfStars() > 0){
 					// level complete, open next level
 					ScoreStorage scorStor = new ScoreStorage(StartScreen.startActivity.getApplicationContext());
-					scorStor.saveLastId(GameScreen.getLastGameID());
-					if (level.getScore() > scorStor.getScore(GameScreen.getLastGameID())){
+					scorStor.saveLastId(LoadingScreen.getLastGameID());
+					if (level.getScore() > scorStor.getScore(LoadingScreen.getLastGameID())){
 						// save new greater score
-						scorStor.saveScore((int)level.getScore(), GameScreen.getLastGameID());
+						scorStor.saveScore((int)level.getScore(), LoadingScreen.getLastGameID());
 					}
-					if (level.getNumOfStars() > scorStor.getNumOfStars(GameScreen.getLastGameID())){
+					if (level.getNumOfStars() > scorStor.getNumOfStars(LoadingScreen.getLastGameID())){
 						// save new greater number of stars
-						scorStor.saveNumOfStars(level.getNumOfStars(), GameScreen.getLastGameID());
+						scorStor.saveNumOfStars(level.getNumOfStars(), LoadingScreen.getLastGameID());
 					}
 					
 					dialog.setTitle(StartScreen.startActivity.getString(R.string.finishWinTitle));
 					
-					if (GameScreen.getLastGameID() < LevelStorage.getNumOfLevels()){
+					if (LoadingScreen.getLastGameID() < LevelStorage.getNumOfLevels()){
 						dialogButtonRestart.setOnClickListener(new OnClickListener() {
 							public void onClick(View v) {
 								if (StartScreen.startActivity != null){
 									StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
 								}
-								GameScreen.startNextLevel();
 								dialog.dismiss();
+								LoadingScreen.startNextLevel();
 							}
 						});
 					}else{
@@ -140,8 +140,8 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 							if (StartScreen.startActivity != null){
 								StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
 							}
-							GameScreen.restartLevel();
 							dialog.dismiss();
+							LoadingScreen.restartLevel();
 						}
 					});
 				}
@@ -198,7 +198,7 @@ public class GLRenderer implements GLSurfaceView.Renderer{
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		
         LevelStorage lvlstor = new LevelStorage(context);
-		
+        
 		level = lvlstor.loadGameLevelbyName(gl, gameLevelString);
 		
 		gl.glEnable(GL10.GL_TEXTURE_2D);            //Enable Texture Mapping ( NEW )

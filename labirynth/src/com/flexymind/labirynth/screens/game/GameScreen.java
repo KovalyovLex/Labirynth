@@ -2,12 +2,8 @@ package com.flexymind.labirynth.screens.game;
 
 import com.flexymind.labirynth.R;
 import com.flexymind.labirynth.screens.game.OpenGL.GLGameView;
-import com.flexymind.labirynth.screens.start.StartScreen;
-import com.flexymind.labirynth.storage.LevelStorage;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -15,22 +11,11 @@ import android.widget.FrameLayout;
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
 	
-	public static final String LEVELID = "id of level";
-	public static final String LEVELCHOOSEACTION = "levelchoose Action";
-	
-	private static final int NULLID = -666;
-	private static int gameID = NULLID;
-	private static Context context = null;
-	private GLGameView gameView;
+	private GLGameView gameView = null;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        if (getIntent() == null){
-        	finish();
-        	return;
-        }
         
         setContentView(R.layout.main);
         
@@ -38,43 +23,41 @@ public class GameScreen extends Activity {
         
         gameView = (GLGameView)rlay.getChildAt(0);
         
-        Bundle b = getIntent().getExtras();
-        if (   LEVELCHOOSEACTION.equals(getIntent().getAction()) 
-        	&& b != null 
-        	&& b.containsKey(LEVELID)) {
-        	gameID = b.getInt(LEVELID);
+        if (LoadingScreen.gameID != LoadingScreen.NULLID){
+            gameView.setGameLevelID(LoadingScreen.gameID);
         }
         
-        if (gameID != NULLID){
-            gameView.setGameLevelID(gameID);
-        }
-        
-        context = this.getApplicationContext();
     }
 	
 	@Override
     protected void onPause() {
-		gameView.onPause();
+		if (gameView != null){
+			gameView.onPause();
+		}
 		super.onPause();
 	}
 
 	
 	@Override
     protected void onResume() {
-		gameView.onResume();
+		if (gameView != null){
+			gameView.onResume();
+		}
 		super.onResume();
 	}
     
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		gameView.onDestroy();
+		finish();
 	}
 	
-	@Override
-	protected void onDestroy(){
-		super.onDestroy();
-		gameView.onDestroy();
+	protected void onStop(){
+		if (gameView != null){
+			gameView.onDestroy();
+			gameView = null;
+		}
+		super.onStop();
 	}
 	
     @Override
@@ -82,47 +65,4 @@ public class GameScreen extends Activity {
     	super.onConfigurationChanged(newConfig);
     }
 
-    /**
-     * возвращает ID последнего запущенного уровня
-     * @return ID
-     */
-    public static int getLastGameID(){
-    	return gameID;
-    }
-    
-    /**
-     * Перезапускает уровень игры
-     */
-    public static void restartLevel(){
-    	if (gameID != NULLID){
-    		if(StartScreen.startActivity != null){
-    			StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
-    			if (context != null){
-    				Intent intent = new Intent();
-        			intent.setClass(context, GameScreen.class);
-        			StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
-    			}
-    		}
-    	}
-    }
-    
-    /**
-     * Запускает следующий уровень в игре, если был запущен последний, то будет запущен первый
-     */
-    public static void startNextLevel(){
-    	if (gameID != NULLID){
-    		gameID++;
-    		if (gameID >= LevelStorage.getNumOfLevels()){
-    			gameID = 0;
-    		}
-    		if(StartScreen.startActivity != null){
-    			StartScreen.startActivity.finishActivity(StartScreen.ID_GAMESCREEN);
-    			if (context != null){
-    				Intent intent = new Intent();
-        			intent.setClass(context, GameScreen.class);
-        			StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
-    			}
-    		}
-    	}
-    }
 }

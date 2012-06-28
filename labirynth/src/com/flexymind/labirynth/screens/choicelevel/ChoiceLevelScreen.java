@@ -3,7 +3,7 @@ package com.flexymind.labirynth.screens.choicelevel;
 import java.util.Vector;
 
 import com.flexymind.labirynth.R;
-import com.flexymind.labirynth.screens.game.GameScreen;
+import com.flexymind.labirynth.screens.game.LoadingScreen;
 import com.flexymind.labirynth.screens.start.StartScreen;
 import com.flexymind.labirynth.storage.LevelStorage;
 import com.flexymind.labirynth.storage.ScoreStorage;
@@ -62,11 +62,11 @@ public class ChoiceLevelScreen extends Activity implements OnClickListener{
 		int buttnum = v.getId() - id;
 		if (access.get(buttnum))
 		{
-			Intent intent = new Intent(this, GameScreen.class);
+			Intent intent = new Intent(this, LoadingScreen.class);
 			Bundle bundle = new Bundle();
-			bundle.putInt(GameScreen.LEVELID, buttnum);
+			bundle.putInt(LoadingScreen.LEVELID, buttnum);
 			intent.putExtras(bundle);
-			intent.setAction(GameScreen.LEVELCHOOSEACTION);
+			intent.setAction(LoadingScreen.LEVELCHOOSEACTION);
 			if (StartScreen.startActivity != null){
 				StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
 			}

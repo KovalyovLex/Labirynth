@@ -256,7 +256,7 @@ public class Square {
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 		
 		// Clean up
-		bitmap.recycle();
+		//bitmap.recycle();
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class Square {
         gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
         
 		// Clean up
-		bitmap.recycle();
+		//bitmap.recycle();
 	}
 	
 	/** The draw method for the square with the GL context */
@@ -347,6 +347,7 @@ public class Square {
     		textures[thiscount] = 0;
     		openGL.glFlush();
     	}
+    	openGL = null;
     }
 	
 	protected static void resetCount(){

@@ -543,7 +543,10 @@ public class GameLevel extends GameObject{
     }
     
     public void destoyLevel(){
+    	//Log.v("GameLevel","destroyed");
+    	//Thread.dumpStack();
     	onDestroy();
     	Square.resetCount();
+    	isFinished = false;
     }
 }

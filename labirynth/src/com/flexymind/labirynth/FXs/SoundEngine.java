@@ -13,18 +13,20 @@ public class SoundEngine {
 
 	private  SoundPool mSoundPool;
 	private  HashMap<Integer,Integer> mSoundPoolMap;
-	private  AudioManager  mAudioManager;
 	private  Context mContext;
 	private  HashMap<Integer,Float> mVolumeMap;
+	private  HashMap<Integer,Boolean> mLoadComplete;
 	private  boolean delayPlay = false;
 	private  boolean delayLooped = false;
+	private  boolean stopPlaying = false;
+	private  int playTime = 200; // 200 msec. to play sound effect
 	
 	public SoundEngine(Context context){
 		mContext = context;
 		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
 	    mSoundPoolMap = new HashMap<Integer,Integer>();
-	    mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
 	    mVolumeMap = new HashMap<Integer,Float>();
+	    mLoadComplete = new HashMap<Integer,Boolean>();
 	    mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
 
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
@@ -48,12 +50,16 @@ public class SoundEngine {
 		mContext = context;
 		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
 	    mSoundPoolMap = new HashMap<Integer,Integer>();
-	    mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
 	    mVolumeMap = new HashMap<Integer,Float>();
+	    mLoadComplete = new HashMap<Integer,Boolean>();
 	    mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
 
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
+				if (mLoadComplete.containsKey(sampleId)){
+					mLoadComplete.remove(sampleId);
+				}
+				mLoadComplete.put(sampleId, true);
 				if (delayPlay){
 					if (delayLooped){
 						playLoopedSound(sampleId);
@@ -75,6 +81,7 @@ public class SoundEngine {
 	 */
 	public void addSound(int index, int SoundID)
 	{
+		mLoadComplete.put(index, false);
 	    mSoundPoolMap.put(index, mSoundPool.load(mContext, SoundID, 1));
 	}
 	
@@ -84,6 +91,9 @@ public class SoundEngine {
 	 * @param volume - volume of sound 0..1
 	 */
 	public void setPlaySoundVolume(int index, float volume){
+		if (mVolumeMap.containsKey(index)){
+			mVolumeMap.remove(index);
+		}
 		mVolumeMap.put(index, volume);
 	}
 	
@@ -91,11 +101,13 @@ public class SoundEngine {
 	 * set volume of played stream
 	 * @param volume - new volume of sound 0..1
 	 */
+	/*
 	public void setPlayedStreamVolume(float volume){
 		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 
 				(int)(volume * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)),
 				AudioManager.FLAG_VIBRATE);
 	}
+	*/
 	
 	/**
 	 * play preveously loaded sound
@@ -105,12 +117,14 @@ public class SoundEngine {
 	{
 		delayPlay	= true;
 		delayLooped	= false;
-		if (mSoundPoolMap.containsKey(index)){
-			float streamVolume = 1;
-			if (mVolumeMap.containsKey(index)){
-				streamVolume = mVolumeMap.get(index);
+		if (mLoadComplete.containsKey(index) && mLoadComplete.get(index)){
+			if (mSoundPoolMap.containsKey(index)){
+				float streamVolume = 1;
+				if (mVolumeMap.containsKey(index)){
+					streamVolume = mVolumeMap.get(index);
+				}
+		    	mSoundPool.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
 			}
-		    mSoundPool.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
 		}
 	}
 	
@@ -122,12 +136,33 @@ public class SoundEngine {
 	{
 		delayPlay	= true;
 		delayLooped	= true;
-		if (mSoundPoolMap.containsKey(index)){
-			float streamVolume = 1;
-			if (mVolumeMap.containsKey(index)){
-				streamVolume = mVolumeMap.get(index);
-			}
-			mSoundPool.play(mSoundPoolMap.get(index), streamVolume, streamVolume, 1, -1, 1f);
+		if (mLoadComplete.containsKey(index) && mLoadComplete.get(index)){
+			final int ind = index;
+			
+			Runnable muzPlay = new Runnable(){
+	
+				public void run() {
+					float streamVolume;
+					while (!stopPlaying){
+						if (mSoundPoolMap.containsKey(ind)){
+							streamVolume = 1;
+							if (mVolumeMap.containsKey(ind)){
+								streamVolume = mVolumeMap.get(ind);
+							}
+							mSoundPool.stop(mSoundPoolMap.get(ind));
+							mSoundPool.play(mSoundPoolMap.get(ind), streamVolume, streamVolume, 1, 0, 1f);
+						}
+						try {
+							Thread.sleep(playTime);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+			};
+			
+			muzPlay.run();
 		}
 	}
 	
@@ -137,6 +172,7 @@ public class SoundEngine {
 	 */
 	public void releaseSounds()
 	{
+		stopPlaying = true;
 		if (mSoundPool != null){
 			Collection<Integer> sounds = mSoundPoolMap.values();
 			Iterator<Integer> iter = sounds.iterator();

@@ -5,7 +5,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 public class Wall extends GameObject{
 
@@ -41,8 +40,6 @@ public class Wall extends GameObject{
 					PointF second,
 					float softness){
 		super(first, second, gl, mBackG);
-		
-		Log.v("Count",Integer.toString(countText));
 		
 		if (countText == -1){
 			mSquare.loadGLTexture(gl, mBackG);
