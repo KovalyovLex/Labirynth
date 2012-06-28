@@ -8,6 +8,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
+import android.os.AsyncTask;
+import android.util.Log;
 
 public class SoundEngine {
 
@@ -19,7 +21,8 @@ public class SoundEngine {
 	private  boolean delayPlay = false;
 	private  boolean delayLooped = false;
 	private  boolean stopPlaying = false;
-	private  int playTime = 200; // 200 msec. to play sound effect
+	private  int playTime = 4000; // 300 msec. to play sound effect
+	private  PlayTask muzPlay;
 	
 	public SoundEngine(Context context){
 		mContext = context;
@@ -60,6 +63,9 @@ public class SoundEngine {
 					mLoadComplete.remove(sampleId);
 				}
 				mLoadComplete.put(sampleId, true);
+				
+				Log.v("OnloadSoundId",Integer.toString(sampleId));
+				
 				if (delayPlay){
 					if (delayLooped){
 						playLoopedSound(sampleId);
@@ -81,8 +87,9 @@ public class SoundEngine {
 	 */
 	public void addSound(int index, int SoundID)
 	{
-		mLoadComplete.put(index, false);
-	    mSoundPoolMap.put(index, mSoundPool.load(mContext, SoundID, 1));
+		int sampleId = mSoundPool.load(mContext, SoundID, 1);
+	    mSoundPoolMap.put(index, sampleId);
+	    Log.v("loadSoundId",Integer.toString(sampleId));
 	}
 	
 	/**
@@ -98,18 +105,6 @@ public class SoundEngine {
 	}
 	
 	/**
-	 * set volume of played stream
-	 * @param volume - new volume of sound 0..1
-	 */
-	/*
-	public void setPlayedStreamVolume(float volume){
-		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 
-				(int)(volume * mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)),
-				AudioManager.FLAG_VIBRATE);
-	}
-	*/
-	
-	/**
 	 * play preveously loaded sound
 	 * @param index - individual index of loading sound
 	 */
@@ -117,8 +112,10 @@ public class SoundEngine {
 	{
 		delayPlay	= true;
 		delayLooped	= false;
-		if (mLoadComplete.containsKey(index) && mLoadComplete.get(index)){
-			if (mSoundPoolMap.containsKey(index)){
+		if (mSoundPoolMap.containsKey(index)){
+			if (	mLoadComplete.containsKey(mSoundPoolMap.get(index))
+				 && mLoadComplete.get(mSoundPoolMap.get(index))){
+				
 				float streamVolume = 1;
 				if (mVolumeMap.containsKey(index)){
 					streamVolume = mVolumeMap.get(index);
@@ -136,34 +133,49 @@ public class SoundEngine {
 	{
 		delayPlay	= true;
 		delayLooped	= true;
-		if (mLoadComplete.containsKey(index) && mLoadComplete.get(index)){
-			final int ind = index;
+		
+		if ( mSoundPoolMap.containsKey(index) ){
 			
-			Runnable muzPlay = new Runnable(){
-	
-				public void run() {
-					float streamVolume;
-					while (!stopPlaying){
-						if (mSoundPoolMap.containsKey(ind)){
-							streamVolume = 1;
-							if (mVolumeMap.containsKey(ind)){
-								streamVolume = mVolumeMap.get(ind);
-							}
-							mSoundPool.stop(mSoundPoolMap.get(ind));
-							mSoundPool.play(mSoundPoolMap.get(ind), streamVolume, streamVolume, 1, 0, 1f);
-						}
-						try {
-							Thread.sleep(playTime);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				
-			};
+			muzPlay = new PlayTask(index);
 			
-			muzPlay.run();
+			muzPlay.execute();
 		}
+	}
+	
+	private class PlayTask extends AsyncTask<Void,Void,Void>{
+		private int ind = 0;
+		
+		public PlayTask(int index){
+			ind = index;
+		}
+		
+		protected Void doInBackground(Void... params) {
+			float streamVolume;
+			
+			while (!stopPlaying){
+				try {
+					//Log.v("SoundEngine","sleep");
+					Thread.sleep(playTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+						
+				streamVolume = 1;
+				if (mVolumeMap.containsKey(ind)){
+					streamVolume = mVolumeMap.get(ind);
+				}
+				if (mSoundPool != null){
+					mSoundPool.stop(mSoundPoolMap.get(ind));
+					
+					Log.v("streamVolume",Integer.toString((int)(100 * streamVolume)));
+					
+					mSoundPool.play(mSoundPoolMap.get(ind), streamVolume, streamVolume, 1, -1, 1f);
+				}
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(Void result) { }
 	}
 	
 	/**
@@ -173,6 +185,9 @@ public class SoundEngine {
 	public void releaseSounds()
 	{
 		stopPlaying = true;
+		if (muzPlay != null && muzPlay.getStatus().equals(AsyncTask.Status.RUNNING)){
+			muzPlay.cancel(true);
+		}
 		if (mSoundPool != null){
 			Collection<Integer> sounds = mSoundPoolMap.values();
 			Iterator<Integer> iter = sounds.iterator();

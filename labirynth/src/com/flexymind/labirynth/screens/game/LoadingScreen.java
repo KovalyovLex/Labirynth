@@ -113,7 +113,10 @@ public class LoadingScreen extends Activity{
 		@Override
 		protected void onPostExecute(Void result) {
 			finish();
-			startActivity(new Intent(getApplicationContext(), GameScreen.class));
+			Intent intent = new Intent(getApplicationContext(), GameScreen.class);
+			if (StartScreen.startActivity != null){
+				StartScreen.startActivity.startActivityForResult(intent, StartScreen.ID_GAMESCREEN);
+			}
 		}
 	}
 }
