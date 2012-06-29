@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.widget.FrameLayout;
 
 public class GameScreen extends Activity {
     /** Called when the activity is first created. */
@@ -20,9 +19,7 @@ public class GameScreen extends Activity {
         
         setContentView(R.layout.main);
         
-        FrameLayout rlay = (FrameLayout)findViewById(R.id.gameLayout);
-        
-        gameView = (GLGameView)rlay.getChildAt(0);
+        gameView = (GLGameView)findViewById(R.id.game);
         
         if (LoadingScreen.gameID != LoadingScreen.NULLID){
             gameView.setGameLevelID(LoadingScreen.gameID);
