@@ -14,6 +14,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.FloatMath;
 
 /**
  * Класс Шарик
@@ -197,8 +198,8 @@ public class Ball extends GameObject
 				angle -= dt;
 			}
 			if (numberSpin * Math.PI * 2 > Math.abs(angle)) {
-				mPoint.x = center.x - mWidth / 2 + (int)(diam / 2 / t * Math.cos(angle) );
-				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / t * Math.sin(angle) );
+				mPoint.x = center.x - mWidth / 2 + (int)(diam / 2 / t * FloatMath.cos(angle) );
+				mPoint.y = center.y - mHeight / 2 + (int)(diam / 2 / t * FloatMath.sin(angle) );
 			} else {
 				GameLevel.setIsFinidhed(true);
 				soundVolume = 0;
@@ -211,9 +212,11 @@ public class Ball extends GameObject
 
 			//изменение скорости в зависимости от разрешения экрана
 			if (isPhone){
+				// запущено на телефоне
 				mSpeed.x -= 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[1];
 		        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[0];
 			}else{
+				// запущено на планшете
 				mSpeed.x += 0.01 * sensAccel * Settings.getScaleFactorX() * macelleration[0];
 		        mSpeed.y -= 0.01 * sensAccel * Settings.getScaleFactorY() * macelleration[1];
 			}
@@ -228,7 +231,7 @@ public class Ball extends GameObject
 	        mNextPoint.y += mSpeed.y;
 		}
 		
-		soundVolume = scalMul(mSpeed,mSpeed) / scalMul(MAX_SPEED,MAX_SPEED);
+		soundVolume = (float)(Math.log(5f * scalMul(mSpeed,mSpeed) / scalMul(MAX_SPEED,MAX_SPEED) + 1) / Math.log(6f));
 		
 		if (soundVolume > 1f){
 			soundVolume = 1f;
@@ -255,8 +258,8 @@ public class Ball extends GameObject
     	this.center = center;
     	PointF r = new PointF (	mPoint.x + mWidth / 2f - center.x,
     							mPoint.y + mHeight / 2f - center.y);
-    	float length = (float)Math.sqrt(scalMul(r,r));
-    	float lenV = (float)Math.sqrt(scalMul(mSpeed,mSpeed));
+    	float length = FloatMath.sqrt(scalMul(r,r));
+    	float lenV = FloatMath.sqrt(scalMul(mSpeed,mSpeed));
     	diam = (int)length;
     	r.x /= length;
     	r.y /= length;

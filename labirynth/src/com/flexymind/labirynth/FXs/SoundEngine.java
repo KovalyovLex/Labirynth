@@ -1,22 +1,19 @@
 package com.flexymind.labirynth.FXs;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.AsyncTask;
+import android.util.SparseArray;
 
 public class SoundEngine {
 
 	private  SoundPool mSoundPool;
-	private  HashMap<Integer,Integer> mSoundPoolMap;
+	private  SparseArray<Integer> mSoundPoolMap;
 	private  Context mContext;
-	private  HashMap<Integer,Float> mVolumeMap;
-	private  HashMap<Integer,Boolean> mLoadComplete;
+	private  SparseArray<Float> mVolumeMap;
+	private  SparseArray<Boolean> mLoadComplete;
 	private  boolean delayPlay = false;
 	private  boolean delayLooped = false;
 	private  boolean stopPlaying = false;
@@ -26,9 +23,9 @@ public class SoundEngine {
 	public SoundEngine(Context context){
 		mContext = context;
 		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
-	    mSoundPoolMap = new HashMap<Integer,Integer>();
-	    mVolumeMap = new HashMap<Integer,Float>();
-	    mLoadComplete = new HashMap<Integer,Boolean>();
+	    mSoundPoolMap = new SparseArray<Integer>();
+	    mVolumeMap = new SparseArray<Float>();
+	    mLoadComplete = new SparseArray<Boolean>();
 	    mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
 
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
@@ -51,14 +48,14 @@ public class SoundEngine {
 	{
 		mContext = context;
 		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
-	    mSoundPoolMap = new HashMap<Integer,Integer>();
-	    mVolumeMap = new HashMap<Integer,Float>();
-	    mLoadComplete = new HashMap<Integer,Boolean>();
+	    mSoundPoolMap = new SparseArray<Integer>();
+	    mVolumeMap = new SparseArray<Float>();
+	    mLoadComplete = new SparseArray<Boolean>();
 	    mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener(){
 
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
-				if (mLoadComplete.containsKey(sampleId)){
+				if (mLoadComplete.get(sampleId) != null){
 					mLoadComplete.remove(sampleId);
 				}
 				mLoadComplete.put(sampleId, true);
@@ -94,7 +91,7 @@ public class SoundEngine {
 	 * @param volume - volume of sound 0..1
 	 */
 	public void setPlaySoundVolume(int index, float volume){
-		if (mVolumeMap.containsKey(index)){
+		if (mVolumeMap.get(index) != null){
 			mVolumeMap.remove(index);
 		}
 		mVolumeMap.put(index, volume);
@@ -108,12 +105,12 @@ public class SoundEngine {
 	{
 		delayPlay	= true;
 		delayLooped	= false;
-		if (mSoundPoolMap.containsKey(index)){
-			if (	mLoadComplete.containsKey(mSoundPoolMap.get(index))
+		if (mSoundPoolMap.get(index) != null){
+			if (	mLoadComplete.get(mSoundPoolMap.get(index)) != null
 				 && mLoadComplete.get(mSoundPoolMap.get(index))){
 				
 				float streamVolume = 1;
-				if (mVolumeMap.containsKey(index)){
+				if (mVolumeMap.get(index) != null){
 					streamVolume = mVolumeMap.get(index);
 				}
 				
@@ -131,7 +128,7 @@ public class SoundEngine {
 		delayPlay	= true;
 		delayLooped	= true;
 		
-		if ( mSoundPoolMap.containsKey(index) ){
+		if ( mSoundPoolMap.get(index) != null ){
 			
 			muzPlay = new PlayTask(index);
 			
@@ -157,7 +154,7 @@ public class SoundEngine {
 				}
 						
 				streamVolume = 1;
-				if (mVolumeMap.containsKey(ind)){
+				if (mVolumeMap.get(ind) != null){
 					streamVolume = mVolumeMap.get(ind);
 				}
 				if (mSoundPool != null){
@@ -184,11 +181,9 @@ public class SoundEngine {
 			muzPlay.cancel(true);
 		}
 		if (mSoundPool != null){
-			Collection<Integer> sounds = mSoundPoolMap.values();
-			Iterator<Integer> iter = sounds.iterator();
 			Integer id;
-			for (int i = 0; i < sounds.size(); i++){
-				id = iter.next();
+			for (int i = 0; i < mSoundPoolMap.size(); i++){
+				id = mSoundPoolMap.get(mSoundPoolMap.keyAt(i));
 				mSoundPool.stop(id);
 				mSoundPool.unload(id);
 			}

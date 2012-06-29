@@ -192,29 +192,29 @@ public class LevelStorage {
 		try {
 			while (xml.next() != XmlPullParser.END_DOCUMENT){
 				if (SCORE.equals(xml.getName())){
-					score = new Integer(xml.nextText());
+					score = Integer.valueOf(xml.nextText());
 				}
 				if (SCORE1STAR.equals(xml.getName())){
-					sc1Star = new Integer(xml.nextText());
+					sc1Star = Integer.valueOf(xml.nextText());
 				}
 				if (SCORE2STAR.equals(xml.getName())){
-					sc2Star = new Integer(xml.nextText());
+					sc2Star = Integer.valueOf(xml.nextText());
 				}
 				if (SCORE3STAR.equals(xml.getName())){
-					sc3Star = new Integer(xml.nextText());
+					sc3Star = Integer.valueOf(xml.nextText());
 				}
 				if (BALL.equals(xml.getName())){
 					deep = xml.getDepth();
 					xml.next();
 					while(xml.getDepth() > deep){
 						if (PROP_X.equals(xml.getName())){
-							x1 = new Integer(xml.nextText());
+							x1 = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_Y.equals(xml.getName())){
-							y1 = new Integer(xml.nextText());
+							y1 = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_DIAM.equals(xml.getName())){
-							d = new Integer(xml.nextText());
+							d = Integer.valueOf(xml.nextText());
 						}
 						xml.next();
 					}
@@ -230,13 +230,13 @@ public class LevelStorage {
 					xml.next();
 					while(xml.getDepth() > deep){
 						if (PROP_X.equals(xml.getName())){
-							finX = new Integer(xml.nextText());
+							finX = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_Y.equals(xml.getName())){
-							finY = new Integer(xml.nextText());
+							finY = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_DIAM.equals(xml.getName())){
-							finDiam = new Integer(xml.nextText());
+							finDiam = Integer.valueOf(xml.nextText());
 						}
 						xml.next();
 					}
@@ -252,19 +252,19 @@ public class LevelStorage {
 					xml.next();
 					while(xml.getDepth() > deep){
 						if (PROP_X1.equals(xml.getName())){
-							x1 = new Integer(xml.nextText());
+							x1 = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_Y1.equals(xml.getName())){
-							y1 = new Integer(xml.nextText());
+							y1 = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_X2.equals(xml.getName())){
-							x2 = new Integer(xml.nextText());
+							x2 = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_Y2.equals(xml.getName())){
-							y2 = new Integer(xml.nextText());
+							y2 = Integer.valueOf(xml.nextText());
 						}
 						if (PROP_SOFT.equals(xml.getName())){
-							softness = new Float(xml.nextText());
+							softness = Float.valueOf(xml.nextText());
 						}
 						xml.next();
 					}
