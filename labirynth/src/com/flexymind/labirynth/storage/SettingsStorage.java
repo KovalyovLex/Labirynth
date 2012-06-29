@@ -8,11 +8,13 @@ public class SettingsStorage {
 	//////////////////////////////////////////////////
 	/////		Константы для настроек			//////
 	//////////////////////////////////////////////////
-	private static final String STORAGE = "Labirynth settings";
-	private static final String ACCELX = "accelX";
-	private static final String ACCELY = "accelY";
-	private static final String ACCELZ = "accelZ";
-	private static final String ACCELSENSIVITY = "accelSens";
+	private static final String STORAGE				= "Labyrinth settings";
+	private static final String ACCELX				= "accelX";
+	private static final String ACCELY				= "accelY";
+	private static final String ACCELZ				= "accelZ";
+	private static final String ACCELSENSIVITY		= "accelSens";
+	private static final String VIBROINTENSIVITY	= "vibroInt";
+	private static final String SOUNDSVOLUME		= "soundVolume";
 	
 	private static Context context = null;
 	private static SharedPreferences settings = null;
@@ -56,6 +58,42 @@ public class SettingsStorage {
 		pos[1] = settings.getFloat(ACCELY, 0);
 		pos[2] = settings.getFloat(ACCELZ, 0);
 		return pos;
+	}
+	
+	/**
+	 * Сохраняет значение интенсивности вибро сигнала
+	 * @param sens - зничение
+	 */
+	public static void saveVibroInt(float sens){
+		SharedPreferences.Editor edit = settings.edit();
+		edit.putFloat(VIBROINTENSIVITY, sens);
+		edit.commit();
+	}
+	
+	/**
+	 * Возвращает значение интенсивности вибро сигнала
+	 * @return значение, default 1 (max vibro)
+	 */
+	public static float getVibroInt(){
+		return settings.getFloat(VIBROINTENSIVITY, 1);
+	}
+	
+	/**
+	 * Сохраняет значение громкости звуков в игре
+	 * @param sens - зничение
+	 */
+	public static void saveSoundVolume(float sens){
+		SharedPreferences.Editor edit = settings.edit();
+		edit.putFloat(SOUNDSVOLUME, sens);
+		edit.commit();
+	}
+	
+	/**
+	 * Возвращает значение громкости звуков в игре
+	 * @return значение, default 1 (max vibro)
+	 */
+	public static float getSoundVolume(){
+		return settings.getFloat(SOUNDSVOLUME, 1);
 	}
 	
 	/**

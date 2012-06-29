@@ -3,36 +3,34 @@
     android:id="@+id/startmainlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/flexy3big"
+    android:background="@drawable/mainmenu"
     android:orientation="horizontal"
-    android:padding="8dip" >
+    android:padding="4dip" >
 
     <LinearLayout
         android:id="@+id/buttLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="145px"
-        android:layout_marginLeft="15px"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical" >
 
         <Button
             android:id="@+id/StartButton"
-            android:layout_width="350px"
-            android:layout_height="110px"
+            android:layout_width="350dip"
+            android:layout_height="70dip"
             android:background="@drawable/button1" />
 
         <Button
             android:id="@+id/SettingsButton"
-            android:layout_width="350px"
-            android:layout_height="110px"
+            android:layout_width="350dip"
+            android:layout_height="70dip"
             android:background="@drawable/button2" />
 
         <Button
             android:id="@+id/ExitButton"
-            android:layout_width="350px"
-            android:layout_height="110px"
+            android:layout_width="350dip"
+            android:layout_height="70dip"
             android:background="@drawable/button3" />
     </LinearLayout>
 

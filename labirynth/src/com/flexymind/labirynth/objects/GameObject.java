@@ -1,13 +1,9 @@
 ﻿package com.flexymind.labirynth.objects;
 
 
-import com.flexymind.labirynth.storage.Settings;
+import javax.microedition.khronos.opengles.GL10;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 
 public abstract class GameObject {
@@ -15,139 +11,116 @@ public abstract class GameObject {
     public int index = 0; //номер стенки, с которой происходит соударение
  
     /** Координаты опорной точки */
-    protected Point mPoint;
+    protected PointF mPoint;
  
     /** Высота изображения */
-    protected int mHeight;
+    protected float mHeight;
  
     /** Ширина изображения */
-    protected int mWidth;
+    protected float mWidth;
  
     /** Изображение */
-    protected Drawable mImage;
- 
-    /** Пременная для autoScale */
-    protected boolean needResize = true;
+    protected Square mSquare;
 
     /**
      * Конструктор
      * @param image Изображение, которое будет обозначать данный объект
+     * @param gl OpenGL обьект для рисования
      */
-    public GameObject(Drawable image)
+    public GameObject(GL10 gl, Drawable image)
     {
-        mImage = image;
-        mPoint = new Point(0, 0);
+    	mSquare = new Square();
+    	mSquare.loadGLTexture(gl, image);
+        mPoint = new PointF(0, 0);
+        refreshSize();
+    }
+    
+    /**
+     * Конструктор построение квадрата по 3 точкам 
+	 * @param p1 - left up point
+	 * @param p2 - right bottom point
+     * @param image Изображение, которое будет обозначать данный объект
+     * @param gl OpenGL обьект для рисования
+     */
+    public GameObject(PointF p1, PointF p2, GL10 gl, Drawable image)
+    {
+    	mSquare = new Square(p1, p2);
+        mPoint = new PointF(0, 0);
         refreshSize();
     }
     
     /** Перемещение опорной точки */
     protected void updatePoint() { }
- 
-    /** изменение размеров объекта */
-    public void resize(double ScaleFactorX, double ScaleFactorY)
-    {
-    	int newX;
-    	int newY;
-    	
-    	mPoint.x = (int)(mPoint.x * ScaleFactorX);
-    	mPoint.y = (int)(mPoint.y * ScaleFactorY);
-    	
-    	refreshSize();
-    	newX = (int)(ScaleFactorX * mWidth);
-    	newY = (int)(ScaleFactorY * mHeight);
-    	Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
-    	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newY, true);
-        bmp = tmp;
-        mImage = new BitmapDrawable(bmp);
-        refreshSize();
-        onUpdate();
-    }
     
-    public void refreshSize()
+    protected void refreshSize()
     {
-    	mWidth = mImage.getBounds().width();
-        mHeight = mImage.getBounds().height();
-    }
-    
-    protected void autoSize()
-    {
-        if (Settings.getAutoScale())
-        {
-        	resize(Settings.getScaleFactorX(), Settings.getScaleFactorY());
-        }
+    	mWidth = mSquare.getWidth();
+        mHeight = mSquare.getHeight();
     }
     
     /** Перемещение объекта */
     public void onUpdate()
     {
         updatePoint();
-        mImage.setBounds(mPoint.x, mPoint.y, mPoint.x + mWidth, mPoint.y + mHeight);
+        mSquare.setLeftTop(mPoint);
     }
     
     /** Отрисовка объекта */
-    public void onDraw(Canvas canvas)
+    public void onDraw(GL10 gl)
     {
-    	if(needResize)
-        {
-    		autoSize();
-        	needResize = false;
-        }
-        mImage.draw(canvas);
+    	mSquare.draw(gl);
     }
     
-    
     /** Задает левую границу объекта */
-    protected void setLeft(int value) { mPoint.x = value; }
+    protected void setLeft(float value) { mPoint.x = value; }
  
     /** Задает правую границу объекта */
-    protected void setRight(int value) { mPoint.x = value - mWidth; }
+    protected void setRight(float value) { mPoint.x = value - mWidth; }
  
     /** Задает верхнюю границу объекта */
-    protected void setTop(int value) { mPoint.y = value; }
+    protected void setTop(float value) { mPoint.y = value; }
  
     /** Задает нижнюю границу объекта */
-    protected void setBottom(int value) { mPoint.y = value - mHeight; }
+    protected void setBottom(float value) { mPoint.y = value - mHeight; }
  
     /** Задает абсциссу центра объекта */
-    protected void setCenterX(int value) { mPoint.x = value - mHeight / 2; }
+    protected void setCenterX(float value) { mPoint.x = value - mHeight / 2; }
  
     /** Задает левую ординату центра объекта */
-    protected void setCenterY(int value) { mPoint.y = value - mWidth / 2; }
-    
+    protected void setCenterY(float value) { mPoint.y = value - mWidth / 2; }
     
     
     /** Верхняя граница объекта */
-    public int getTop() { return mPoint.y; }
+    public float getTop() { return mPoint.y; }
 
     /** Нижняя граница объекта */
-    public int getBottom() { return mPoint.y + mHeight; }
+    public float getBottom() { return mPoint.y + mHeight; }
 
     /** Левая граница объекта */
-    public int getLeft() { return mPoint.x; }
+    public float getLeft() { return mPoint.x; }
 
     /** Правая граница объекта */
-    public int getRight() { return mPoint.x + mWidth; }
+    public float getRight() { return mPoint.x + mWidth; }
 
     /** Центральная точка объекта */
-    public Point getCenter() { return new Point(mPoint.x + mWidth / 2, mPoint.y + mHeight / 2); }
+    public PointF getCenter() { return new PointF(mPoint.x + mWidth / 2, mPoint.y + mHeight / 2); }
 
     /** Верхняя левая точка объекта */
-    public Point getPoint() { return mPoint; }
+    public PointF getPoint() { return mPoint; }
     
     /** Высота объекта */
-    public int getHeight() { return mHeight; }
+    public float getHeight() { return mHeight; }
 
     /** Ширина объекта */
-    public int getWidth() { return mWidth; }
-
-   
+    public float getWidth() { return mWidth; }
     
-    /** @return Прямоугольник, ограничивающий объект */
-    public Rect getRect() { return mImage.getBounds(); }
-    
-    public static boolean intersectsFinish(GameObject obj1, GameObject obj2)
-    {
-        return Rect.intersects(obj1.getRect(), obj2.getRect());
+    public Square getSquare(){
+    	return mSquare;
     }
-
+    
+    protected void onDestroy()
+    {
+    	mSquare.onDestroy();
+    }
+    
 }

@@ -6,14 +6,14 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="10" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         
         <activity
-            android:name="com.flexymind.labirynth.screens.GameScreen"
+            android:name="com.flexymind.labirynth.screens.game.GameScreen"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
@@ -50,7 +50,7 @@
         </activity>
         
         <activity
-            android:name="com.flexymind.labirynth.screens.settings.SettingsScreen"
+            android:name="com.flexymind.labirynth.screens.game.LoadingScreen"
             android:configChanges="orientation"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
@@ -60,6 +60,18 @@
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name="com.flexymind.labirynth.screens.settings.SettingsScreen"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.SAMPLE_CODE" />
+            </intent-filter>
+        </activity>
+        
     </application>
 
 </manifest>

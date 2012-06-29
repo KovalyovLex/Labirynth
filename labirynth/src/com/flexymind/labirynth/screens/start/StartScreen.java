@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
@@ -43,6 +44,8 @@ public class StartScreen extends Activity implements OnClickListener {
 		
 		Settings.GenerateSettings(display.getWidth(), display.getHeight());
 
+		Settings.setOrientation(display.getRotation());
+		
 		// Кнопка "Start"
 		Button startButton = (Button) findViewById(R.id.StartButton);
 		startButton.setOnClickListener(this);
@@ -60,6 +63,8 @@ public class StartScreen extends Activity implements OnClickListener {
 		AutoSize();
 		
 		startActivity = this;
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
 	/** Обработка нажатия кнопок */

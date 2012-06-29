@@ -1,17 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Labirynth Maze</string>
+    <string name="app_name">Labyrinth</string>
     <string name="start_title">Start Game</string>
     <string name="settings_title">Settings</string>
-    <string name="exit_title">Exit</string>
+    <string name="exit_title">Exit</string>
     <string name="levelname">Name of Level</string>
     <string name="quit">Quit</string>
     <string name="levels">Levels</string>
-    <string name="restart">Restart</string>
-
+    <string name="next">Next level</string>
     <string name="settingsSensivity">Sensitivity of the accelerometer</string>
-
     <string name="calibrate">Calibrating the accelerometer</string>
     <string name="blockedLevel">This level is blocked!</string>
+    <string name="restart">Restart</string>
+    <string name="finishWinTitle">You WIN !</string>
+    <string name="finistLooseTitle">Sorry, you loose, try again</string>
+    <string name="vibrointensity">Intensity of vibration</string>
+    <string name="loading">Loading#8230</string>
+    <string name="volumeOfSound">Volume of sounds</string>
+    
 </resources>

@@ -2,205 +2,13 @@
 <levels>
 	<level name="First level">
     	
-	    <isFree>true</isFree>
+	    <drawable>level1</drawable>
 	    
-	    <drawable>level1mini</drawable>
+	    <score>9000</score>
 	    
-    	<ball>
-    	    <X>170</X>
-    	    <Y>170</Y>
-    	    <D>20</D>
-    	</ball>
-    	
-    	<finish>
-    		<X>680</X>
-    	    <Y>300</Y>
-    	    <D>50</D>
-    	</finish>
-    	
-    	<wall>
-    	    <X1>200</X1> 
-    	    <Y1>75</Y1> 
-    	    <X2>200</X2>
-    	    <Y2>255</Y2>
-    	    <X3>220</X3>
-    	    <Y3>255</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>400</X1> 
-    	    <Y1>75</Y1> 
-    	    <X2>400</X2>
-    	    <Y2>255</Y2>
-    	    <X3>420</X3>
-    	    <Y3>255</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>300</X1> 
-    	    <Y1>240</Y1> 
-    	    <X2>300</X2>
-    	    <Y2>430</Y2>
-    	    <X3>320</X3>
-    	    <Y3>430</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>500</X1> 
-    	    <Y1>240</Y1> 
-    	    <X2>500</X2>
-    	    <Y2>430</Y2>
-    	    <X3>520</X3>
-    	    <Y3>430</Y3>
-    	</wall>
-    	
-
-	</level>
-	
-	<level name="Second level">
-    	
-	    <isFree>false</isFree>
-	    
-	    <drawable>level2mini</drawable>
-	    
-    	<ball>
-    	    <X>100</X>
-    	    <Y>200</Y>
-    	    <D>20</D>
-    	</ball>
-    	
-    	<finish>
-    		<X>700</X>
-    	    <Y>400</Y>
-    	    <D>40</D>
-    	</finish>
-    	
-    	<wall>
-    	    <X1>40</X1>
-    	    <Y1>260</Y1>
-    	    <X2>40</X2>
-    	    <Y2>340</Y2>
-    	    <X3>550</X3>
-    	    <Y3>340</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>620</X1>
-    	    <Y1>240</Y1>
-    	    <X2>620</X2>
-    	    <Y2>400</Y2>
-    	    <X3>640</X3>
-    	    <Y3>400</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>640</X1>
-    	    <Y1>320</Y1>
-    	    <X2>640</X2>
-    	    <Y2>340</Y2>
-    	    <X3>740</X3>
-    	    <Y3>340</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>620</X1>
-    	    <Y1>40</Y1>
-    	    <X2>620</X2>
-    	    <Y2>160</Y2>
-    	    <X3>640</X3>
-    	    <Y3>160</Y3>
-    	</wall>
-    	
-	</level>
-	
-	<level name="Third level">
-    	
-	    <isFree>false</isFree>
-	    
-	    <drawable>level3mini</drawable>
-	    
-    	<ball>
-    	    <X>100</X>
-    	    <Y>200</Y>
-    	    <D>20</D>
-    	</ball>
-    	
-    	<finish>
-    		<X>700</X>
-    	    <Y>400</Y>
-    	    <D>40</D>
-    	</finish>
-    	
-    	<wall>
-    	    <X1>40</X1>
-    	    <Y1>260</Y1>
-    	    <X2>40</X2>
-    	    <Y2>300</Y2>
-    	    <X3>220</X3>
-    	    <Y3>300</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>320</X1>
-    	    <Y1>160</Y1>
-    	    <X2>320</X2>
-    	    <Y2>400</Y2>
-    	    <X3>340</X3>
-    	    <Y3>400</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>420</X1>
-    	    <Y1>160</Y1>
-    	    <X2>420</X2>
-    	    <Y2>180</Y2>
-    	    <X3>580</X3>
-    	    <Y3>180</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>480</X1>
-    	    <Y1>300</Y1>
-    	    <X2>480</X2>
-    	    <Y2>420</Y2>
-    	    <X3>500</X3>
-    	    <Y3>420</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>500</X1>
-    	    <Y1>400</Y1>
-    	    <X2>500</X2>
-    	    <Y2>420</Y2>
-    	    <X3>640</X3>
-    	    <Y3>420</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>620</X1>
-    	    <Y1>40</Y1>
-    	    <X2>620</X2>
-    	    <Y2>160</Y2>
-    	    <X3>640</X3>
-    	    <Y3>160</Y3>
-    	</wall>
-    	
-    	<wall>
-    	    <X1>700</X1>
-    	    <Y1>160</Y1>
-    	    <X2>700</X2>
-    	    <Y2>320</Y2>
-    	    <X3>720</X3>
-    	    <Y3>320</Y3>
-    	</wall>
-    	
-	</level>
-	
-	<level name="Test level">
-    	
-	    <isFree>true</isFree>
-	    
-	    <drawable>level1mini</drawable>
+	    <sc1star>6000</sc1star>
+	    <sc2star>7500</sc2star>
+	    <sc3star>8500</sc3star>
 	    
     	<ball>
     	    <X>170</X>
@@ -209,8 +17,8 @@
     	</ball>
     	
     	<finish>
-    		<X>680</X>
-    	    <Y>300</Y>
+    		<X>100</X>
+    	    <Y>200</Y>
     	    <D>50</D>
     	</finish>
     	
@@ -219,28 +27,159 @@
     	    <Y1>75</Y1> 
     	    <X2>220</X2>
     	    <Y2>255</Y2>
-    	    <X3>240</X3>
-    	    <Y3>255</Y3>
+    	    <softness>0.1</softness>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>400</X1> 
+    	    <Y1>75</Y1> 
+    	    <X2>420</X2>
+    	    <Y2>255</Y2>
+    	    <softness>0.2</softness>
     	</wall>
     	
     	<wall>
     	    <X1>300</X1> 
     	    <Y1>240</Y1> 
-    	    <X2>300</X2>
+    	    <X2>320</X2>
     	    <Y2>430</Y2>
-    	    <X3>320</X3>
-    	    <Y3>430</Y3>
+    	    <softness>0.7</softness>
     	</wall>
     	
     	<wall>
     	    <X1>500</X1> 
-    	    <Y1>200</Y1> 
-    	    <X2>700</X2>
-    	    <Y2>200</Y2>
-    	    <X3>700</X3>
-    	    <Y3>180</Y3>
+    	    <Y1>240</Y1> 
+    	    <X2>520</X2>
+    	    <Y2>430</Y2>
+    	    <softness>0.9</softness>
     	</wall>
     	
 
 	</level>
+	
+	<level name="Second level">
+    	
+	    <drawable>level4</drawable>
+	    
+	    <score>9000</score>
+	    
+	    <sc1star>6000</sc1star>
+	    <sc2star>7500</sc2star>
+	    <sc3star>8500</sc3star>
+	    
+    	<ball>
+    	    <X>100</X>
+    	    <Y>200</Y>
+    	    <D>20</D>
+    	</ball>
+    	
+    	<finish>
+    		<X>700</X>
+    	    <Y>400</Y>
+    	    <D>40</D>
+    	</finish>
+    	
+    	<wall>
+    	    <X1>40</X1>
+    	    <Y1>260</Y1>
+    	    <X2>550</X2>
+    	    <Y2>340</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>620</X1>
+    	    <Y1>240</Y1>
+    	    <X2>640</X2>
+    	    <Y2>400</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>640</X1>
+    	    <Y1>320</Y1>
+    	    <X2>740</X2>
+    	    <Y2>340</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>620</X1>
+    	    <Y1>40</Y1>
+    	    <X2>640</X2>
+    	    <Y2>160</Y2>
+    	</wall>
+    	
+	</level>
+	
+	<level name="Third level">
+    	
+	    <drawable>level5</drawable>
+	    
+	    <score>9000</score>
+	    
+	    <sc1star>6000</sc1star>
+	    <sc2star>7500</sc2star>
+	    <sc3star>8500</sc3star>
+	    
+    	<ball>
+    	    <X>100</X>
+    	    <Y>200</Y>
+    	    <D>20</D>
+    	</ball>
+    	
+    	<finish>
+    		<X>700</X>
+    	    <Y>400</Y>
+    	    <D>40</D>
+    	</finish>
+    	
+    	<wall>
+    	    <X1>40</X1>
+    	    <Y1>260</Y1>
+    	    <X2>220</X2>
+    	    <Y2>300</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>320</X1>
+    	    <Y1>160</Y1>
+    	    <X2>340</X2>
+    	    <Y2>400</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>420</X1>
+    	    <Y1>160</Y1>
+    	    <X2>580</X2>
+    	    <Y2>180</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>480</X1>
+    	    <Y1>300</Y1>
+    	    <X2>500</X2>
+    	    <Y2>420</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>500</X1>
+    	    <Y1>400</Y1>
+    	    <X2>640</X2>
+    	    <Y2>420</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>620</X1>
+    	    <Y1>40</Y1>
+    	    <X2>640</X2>
+    	    <Y2>160</Y2>
+    	</wall>
+    	
+    	<wall>
+    	    <X1>700</X1>
+    	    <Y1>160</Y1>
+    	    <X2>720</X2>
+    	    <Y2>320</Y2>
+    	</wall>
+    	
+	</level>
+	
 </levels>

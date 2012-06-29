@@ -1,11 +1,28 @@
-*.class
 
 # Package Files #
 *.jar
 *.war
 *.ear
 *.dex
+
+# built application files
 *.apk
 *.ap_
 
-./labirynth/bin/*
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+bin/
+gen/
+
+*.DS_Store

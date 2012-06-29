@@ -1,9 +1,11 @@
 ﻿package com.flexymind.labirynth.objects;
 
 
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
+import javax.microedition.khronos.opengles.GL10;
+
+import com.flexymind.labirynth.storage.Settings;
+
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 
 /**
@@ -12,32 +14,26 @@ import android.graphics.drawable.Drawable;
  */
 public class FINISH extends GameObject{
 
-	public FINISH(Drawable image, Point point, int finDiam) {
-		super(image);
+	public FINISH(	GL10 gl,
+					Drawable image,
+					PointF point,
+					int finDiam) {
+		super(gl, image);
 		mPoint = point;
-        this.mHeight = this.mWidth = finDiam;
+		mPoint.x *= Settings.getScaleFactorX();
+        mPoint.y *= Settings.getScaleFactorY();
+        
+		float min = (Settings.getScaleFactorX() < Settings.getScaleFactorY()) ? (float)Settings.getScaleFactorX() : (float)Settings.getScaleFactorY();
+        
+		mSquare.setSize(finDiam * min, finDiam * min);
+        refreshSize();
+		mSquare.setLeftTop(mPoint);
 	}
 	
-	/** изменение размеров объекта */
-    public void resize(double ScaleFactorX, double ScaleFactorY)
-    {
-    	int newX;
-    	
-    	mPoint.x = (int)(mPoint.x * ScaleFactorX);
-    	mPoint.y = (int)(mPoint.y * ScaleFactorY);
-    	
-    	newX = (int)(ScaleFactorX * mWidth);
-    	
-    	mWidth = mHeight = newX;
-    	
-    	Bitmap bmp = ((BitmapDrawable)mImage).getBitmap();
-    	Bitmap tmp = Bitmap.createScaledBitmap(bmp, newX, newX, true);
-        bmp = tmp;
-        mImage = new BitmapDrawable(bmp);
-        onUpdate();
-    }
+    /** Перемещение объекта */
+    public void onUpdate() { }
 	
-    public int finDiam(){
+    public float finDiam(){
 		return this.mHeight;
     }
     

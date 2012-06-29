@@ -1,31 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/gameLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:keepScreenOn="true" >
 
-    <com.flexymind.labirynth.screens.GameView
+    <com.flexymind.labirynth.screens.game.OpenGL.GLGameView
         android:id="@+id/game"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
-
-    <RelativeLayout
-        android:id="@+id/gameFieldLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
 
-        <RelativeLayout
-            android:id="@+id/wallLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/ballLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </RelativeLayout>
-    </RelativeLayout>
-
-</FrameLayout>
+</merge>

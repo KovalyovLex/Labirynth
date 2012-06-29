@@ -11,7 +11,7 @@
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView1"
         android:layout_width="350px"
-        android:layout_height="wrap_content"
+        android:layout_height="330px"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="0px"
@@ -21,15 +21,14 @@
             android:id="@+id/levelsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+        	android:layout_marginBottom="0px"
+        	android:layout_marginLeft="0px"
             android:orientation="horizontal" >
 
             <LinearLayout
                 android:id="@+id/chosebuttonlayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-        		android:layout_alignParentLeft="true"
         		android:layout_marginBottom="0px"
         		android:layout_marginLeft="0px"
                 android:orientation="vertical" >
@@ -45,7 +44,8 @@
                     android:id="@+id/imageButtonChoose"
                     android:layout_width="350px"
                     android:layout_height="300px"
-                    android:src="@drawable/level1mini" />
+                    android:layout_marginBottom="0px"
+                    android:src="@drawable/level1" />
 
             </LinearLayout>
         </LinearLayout>
